@@ -28,7 +28,7 @@ Une fois la partie finie, le nom du gagnant est affiché et l’hôte peut direc
 - Les cartes doivent être grisées si elles ne peuvent pas être jouées
 - Le score est calculé automatiquement et peut être affiché en tout temps
 - Les joueurs peuvent afficher les règles en tout temps
-- Le déroulement de la partie doit être correct et les règles respectées
+- Le déroulement de la partie doit être correct et les règles respectées (voir section "Spécification du Skull King" pour la liste complète des contraintes du jeu qui doivent être gérées)
 - Le joueur commençant la manche doit changer systématiquement
 - Diverses informations doivent être affichées en tout temps à l’écran (voir mockup pour plus de détails)
 ### Contenu additionnel (si le temps le permet)
@@ -83,9 +83,22 @@ La documentation disponible sur notre repository GitHub permet ainsi à une pers
 
 ## Spécifications du Skull King
 ### But du jeu
-Le jeu se déroule en 10 manches, durant lesquelles les joueurs peuvent gagner ou perdre des points. Le joueur avec le plus de points à la fin desdites manches remporte la partie.
+Le jeu se déroule en 10 manches durant lesquelles les joueurs peuvent gagner ou perdre des points. Le joueur avec le plus de points à la fin desdites manches remporte la partie.
 
-## Informations techniques
+### Distribuation des cartes
+- A chaque manche, tous les joueurs recoivent le nombre de cartes défini par le numéro de la manche.
+- Les cartes sont complètement mélangées entre les manches.
+
+### Choix du pari
+- A chaque manche, tous les joueurs parient sur le nombre de plis qu'ils pensent gagner. Cette valeur se situe entre 0 et le nombre de cartes en mains.
+- Un délai de 10 secondes est imposé pour emettre un pari.
+  - Si aucune valeur valide n'est entrée une fois le délai passé, le vote de 0 est émis par défaut.
+
+### Règles générales
+- La première carte couleur jouée définit l’atout (elle n'est pas forcément jouée par le premier joueur du pli).
+- Dans le cas où plusieurs cartes spéciales de même niveau sont jouées et sont gagnantes, le joueur ayant joué une de ces dernières en premier gagne le pli.
+
+### Informations techniques
 Par défaut, le jeu comporte 66 cartes :
 - 52 cartes numérotées de 1 à 13 et de 4 couleurs différentes (rouge, bleu, jaune et noir)
 - 5 cartes “Escape”
@@ -94,15 +107,29 @@ Par défaut, le jeu comporte 66 cartes :
 - 1 carte “Scary Mary”
 - 1 carte “Skull King”
 
-## Règles du jeu
-- La première carte couleur jouée définit l’atout. Les autres joueurs doivent obligatoirement jouer des cartes de la couleur de l’atout. S’ils n’ont pas de cartes de cette couleur, ils peuvent jouer des cartes d’une autre couleur.
-- Toutes les autres cartes sont dites spéciales et peuvent être jouées en tout temps.
-- Dans le cas où plusieurs cartes spéciales de même niveau sont jouées et sont gagnantes, le joueur ayant joué une de ces dernières en premier gagne le pli.
-## Ordre de passage
-- Au début du jeu, l’hôte commence à jouer
-- A chaque pli suivant, le gagnant du pli précédent commence à jouer
-- A chaque manche suivante, les joueurs commencent à jouer l’un après l’autre
-## Calcul du score
+### Puissances de cartes
+De la plus forte à la moins forte :
+- Skull King
+  - SAUF si une Sirène est jouée dans le même pli (peu importe si avant ou après)
+- Pirate ou Scary Mary (pirate)
+- Sirène
+- Cartes noires, de 13 à 1
+- Cartes de la couleur de l'atout, de 13 à 1
+- Escape, Scary Mary (escape) ou cartes d'une autre couleur que l'atout
+
+### Cartes grisées
+- Les cartes spéciales sont jouables en tout temps et ne peuvent donc pas être grisées
+- S'il n'y a pas d'atout, toutes les cartes couleurs sont jouables
+- S'il y a un atout :
+  - Si le joueur possède des cartes de la couleur de l'atout, les cartes des autres couleurs sont grisées (noires y compris)
+  - Si le joueur ne possède aucune carte de la couleur de l'atout, toutes les cartes sont jouables
+
+### Ordre de passage
+- Au début du jeu, l’hôte commence à jouer.
+- A chaque pli suivant, le gagnant du pli précédent commence à jouer.
+- A chaque manche suivante, les joueurs commencent à jouer l’un après l’autre.
+
+### Calcul du score
 - Si on parie 0 :
   - Si on fait 0 pli, on gagne le numéro de la manche * 10
   - Si on fait 1 pli ou plus, on perd le numéro de la manche * 10
@@ -113,18 +140,10 @@ Par défaut, le jeu comporte 66 cartes :
   - Si un Skull King gagne le pli, 30 points bonus sont obtenus par pirate joué
   - Si une Sirène gagne le pli, 50 points bonus sont obtenus si le Skull King est aussi joué
 
-## Déroulement d’une manche
+### Déroulement d’une manche
 - Chaque joueur reçoit le même nombre de cartes tirées aléatoirement (incrémenté à chaque pli)
 - Les joueurs entrent leur vote (entre 0 et le numéro de la manche), puis valident
 - Lorsque tous les joueurs ont validé, chaque joueur joue l’une de ses cartes, l’une après l’autre.
 - Le joueur remportant le pli est défini et peut commencer le pli suivant, jusqu’à ce qu’il n’y ait plus de cartes.
 - Les points sont finalement ajoutés ou retirés à chaque joueur en fonction de leur vote et des plis remportés.
 - Après 10 manches, le joueur ayant le plus de points remporte la partie
-
-## A faire
-- Présentation du projet et des requirements 
-- Mockups de l’application
-- Landing page
-- Schéma d’architecture
-- Mise en place du git et des outils de déploiements automatisés
-- Système de versioning
