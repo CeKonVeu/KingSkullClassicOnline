@@ -8,11 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Resources\Images\Black" />
-      <Folder Include="Resources\Images\Blue" />
-      <Folder Include="Resources\Images\Red" />
-      <Folder Include="Resources\Images\Special" />
-      <Folder Include="Resources\Images\Yellow" />
+      <Folder Include="Resources" />
     </ItemGroup>
 
 </Project>

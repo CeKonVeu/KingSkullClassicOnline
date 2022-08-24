@@ -17,6 +17,7 @@ public class Player
     public Player(string playerName)
     {
         Name = playerName;
+        _hand = new List<Card.Card>();
         Votes = new (int, int, int)[10];
     }
 
@@ -41,6 +42,8 @@ public class Player
     {
         Votes[turnNumber] = (vote, result, score);
     }
+
+    public List<Card.Card> Hand => _hand;
 
     public void addCards(List<Card.Card> c)
     {

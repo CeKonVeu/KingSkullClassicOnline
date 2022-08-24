@@ -8,16 +8,22 @@ namespace GameLogic;
 public class Controller
 {
     private readonly List<Card.Card> _deck;
-    private Player[] _players;
+    private List<Player> _players;
     private int _turn;
+
+    public List<Card.Card> Deck => _deck;
+
+    public List<Player> Players => _players;
+
+    public int Turn => _turn;
 
     /// <summary>
     ///     Constructeur
     /// </summary>
     public Controller()
     {
-        _players = new Player[Config.MaxPlayer];
-        _turn = 0;
+        _players = new List<Player>();
+        _turn = 1;
         _deck = new List<Card.Card>();
         CreateDeck();
     }
@@ -67,14 +73,33 @@ public class Controller
     /// <summary>
     ///     fait une copie du deck et distribue les cartes aux joueurs
     /// </summary>
-    private void DealCards()
+    public void DealCards()
     {
         List<Card.Card> temp = new List<Card.Card>();
         temp.AddRange(Shuffle(_deck.ToArray()));
 
-        for (var index = 0; index < _players.Length; index++)
+        for (var index = 0; index < _players.Count; index++)
         {
             _players[index].addCards(temp.GetRange(0 + index * _turn, _turn));
         }
+    }
+
+    /// <summary>
+    /// ajoute un joueur au controleur
+    /// </summary>
+    /// <param name="p">joueur à ajouter</param>
+    public void AddPlayer(Player p)
+    {
+        if(_players.Count < Config.MaxPlayer)
+            _players.Add(p);
+    }
+    
+    /// <summary>
+    /// enlève un joueur au controleur
+    /// </summary>
+    /// <param name="p">joueur à enlever</param>
+    public void RemovePlayer(Player p)
+    {
+        _players.Remove(p);
     }
 }
