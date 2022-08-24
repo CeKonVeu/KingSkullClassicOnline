@@ -1,5 +1,8 @@
 ﻿namespace GameLogic;
 
+/// <summary>
+/// contient les différentes constantes nécessaires dans le programme
+/// </summary>
 public static class Config
 {
     public static readonly int NumberNumcards = 13;
