@@ -43,8 +43,15 @@ public class Player
         Votes[turnNumber] = (vote, result, score);
     }
 
+    /// <summary>
+    /// getter sur la main du joueur
+    /// </summary>
     public List<Card.Card> Hand => _hand;
 
+    /// <summary>
+    /// ajoute des cartes à la main du joueur
+    /// </summary>
+    /// <param name="c">liste des cartes a ajouter</param>
     public void addCards(List<Card.Card> c)
     {
         _hand = c;
