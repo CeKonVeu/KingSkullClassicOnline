@@ -28,10 +28,22 @@
         <li>@message</li>
     }
 </ul>
-
+<div class="form-group">
+    <label>
+        lobbyName:
+        <input @bind="lobbyInput"/>
+    </label>
+</div>
+<ul>
+    <li>@lobbyName</li>
+</ul>
 <p>
     <button @onclick="TriggerPrompt">Trigger browser window prompt</button>
     <button @onclick="Animate">Animation</button>
+</p>
+
+<p>
+    <button @onclick="ConnectToHub">ROOM</button>
 </p>
 
 <p>
@@ -49,10 +61,12 @@
     private readonly List<string> messages = new();
     private string? userInput;
     private string? messageInput;
+    private string? lobbyInput;
     private IJSObjectReference importedDHTML;
 
     private IJSObjectReference? module;
     private string? result;
+    private string? lobbyName;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -72,6 +86,7 @@
     {
         if (module is not null) await module.InvokeVoidAsync("init");
     }
+
 
     public async ValueTask<string?> Prompt(string message)
     {
@@ -97,23 +112,41 @@
             .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
             .Build();
 
+        await hubConnection.StartAsync();
+    //join the group in the hub
+        await hubConnection.SendAsync("JoinGroup", Guid.NewGuid());
+        hubConnection.On<string>("ReceiveLobbyName", lobbyName =>
+        {
+            this.lobbyName = lobbyName;
+            StateHasChanged();
+        });
         hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
         {
             var encodedMsg = $"{user}: {message}";
             messages.Add(encodedMsg);
             StateHasChanged();
         });
-
-        await hubConnection.StartAsync();
     }
 
     private async Task Send()
     {
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("SendMessage", userInput, messageInput);
+            await hubConnection.SendAsync("SendMessage", userInput, messageInput, lobbyName);
         }
     }
+
+    private async Task ConnectToHub()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("LeaveGroup", lobbyName);
+        }
+        await hubConnection.SendAsync("JoinGroup", lobbyInput);
+        hubConnection.On<string>("ReceiveLobbyName", lobbyName => { this.lobbyName = lobbyName; });
+        StateHasChanged();
+    }
+
 
     public bool IsConnected =>
         hubConnection?.State == HubConnectionState.Connected;

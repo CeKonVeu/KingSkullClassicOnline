@@ -7,13 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.8"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.8" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Client\KingSkullClassicOnline.Client.csproj"/>
-        <ProjectReference Include="..\Engine\KingSkullClassicOnline.Engine.csproj"/>
+        <ProjectReference Include="..\Client\KingSkullClassicOnline.Client.csproj" />
+        <ProjectReference Include="..\Engine\KingSkullClassicOnline.Engine.csproj" />
     </ItemGroup>
 
 
