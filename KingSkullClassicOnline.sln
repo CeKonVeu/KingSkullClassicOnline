@@ -10,7 +10,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KingSkullClassicOnline.Engi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLogic", "GameLogic\GameLogic.csproj", "{DDF15679-44EE-4E48-8B1C-67E92CC52BF5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicUnitTest", "LogicUnitTest\LogicUnitTest.csproj", "{30EDA50F-B454-408F-8BD4-1B1B856A7E06}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KingSkullClassicOnline.Tests", "KingSkullClassicOnline.Tests\KingSkullClassicOnline.Tests.csproj", "{30EDA50F-B454-408F-8BD4-1B1B856A7E06}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

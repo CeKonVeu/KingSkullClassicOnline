@@ -8,52 +8,50 @@
 public class Player
 {
     public bool IsOwner;
-    private List<Card.Card> _hand;
 
     /// <summary>
-    /// constructeur
+    ///     constructeur
     /// </summary>
     /// <param name="playerName">nom du joueur</param>
     public Player(string playerName)
     {
         Name = playerName;
-        _hand = new List<Card.Card>();
-        Votes = new (int, int, int)[10];
+        Hand = new List<Card.Card>();
+        Votes = new (int, int)[10];
     }
 
     /// <summary>
-    /// permet de récupérer le nom
+    ///     permet de récupérer le nom
     /// </summary>
     public string Name { get; }
 
     /// <summary>
-    /// permet de récupérer les votes
+    ///     permet de récupérer les votes
     /// </summary>
-    public (int, int, int)[] Votes { get; }
+    public (int, int)[] Votes { get; }
 
     /// <summary>
-    /// Ajoute des points au score du joueur
+    ///     getter sur la main du joueur
+    /// </summary>
+    public List<Card.Card> Hand { get; private set; }
+
+    /// <summary>
+    ///     Ajoute des points au score du joueur
     /// </summary>
     /// <param name="vote">vote du tour</param>
-    /// <param name="result">résultats du tour</param>
     /// <param name="score">score à ajouter</param>
     /// <param name="turnNumber">numéro du tour</param>
-    public void addScore(int vote, int result, int score, int turnNumber)
+    public void AddScore(int vote, int score)
     {
-        Votes[turnNumber] = (vote, result, score);
+        Votes[Controller.Turn] = (vote, Votes[Controller.Turn].Item2 + score);
     }
 
     /// <summary>
-    /// getter sur la main du joueur
-    /// </summary>
-    public List<Card.Card> Hand => _hand;
-
-    /// <summary>
-    /// ajoute des cartes à la main du joueur
+    ///     ajoute des cartes à la main du joueur
     /// </summary>
     /// <param name="c">liste des cartes a ajouter</param>
     public void addCards(List<Card.Card> c)
     {
-        _hand = c;
+        Hand = c;
     }
 }
