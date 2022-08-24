@@ -43,11 +43,11 @@ public class Controller
 
         for (var i = 0; i < Config.NumberEscapes; ++i) _deck.Add(new SpecialCard(0, "Escape")); // escape
 
-        for (var i = 0; i < Config.NumberMermaids; ++i) _deck.Add(new SpecialCard(1, "Mermaid")); // mermaids
+        for (var i = 0; i < Config.NumberMermaids; ++i) _deck.Add(new SpecialCard(14, "Mermaid")); // mermaids
 
-        for (var i = 0; i < Config.NumberPirates; ++i) _deck.Add(new SpecialCard(2, "Pirate_"+i)); // pirates
+        for (var i = 0; i < Config.NumberPirates; ++i) _deck.Add(new SpecialCard(15, "Pirate_"+i)); // pirates
 
-        for (var i = 0; i < Config.NumberSkullking; ++i) _deck.Add(new SpecialCard(3, "SkullKing")); // Skull king
+        for (var i = 0; i < Config.NumberSkullking; ++i) _deck.Add(new SpecialCard(16, "SkullKing")); // Skull king
     }
 
     static Random _random = new Random();
