@@ -44,12 +44,37 @@ public class Controller
         for (var i = 0; i < Config.NumberSkullking; ++i) _deck.Add(new SpecialCard(3)); // Skull king
     }
 
+    static Random _random = new Random();
+    
+    /// <summary>
+    /// Mélange un array utilisant le "fisher yates shuffle"
+    /// </summary>
+    /// <param name="array">l'array à mélanger</param>
+    /// <typeparam name="T">type du contenu de l'array</typeparam>
+    /// <returns>l'array mélangé</returns>
+    public static T[] Shuffle<T>(T[] array)
+    {
+        int n = array.Length;
+        for (int i = 0; i < (n - 1); i++)
+        {
+            int r = i + _random.Next(n - i);
+            (array[r], array[i]) = (array[i], array[r]);
+        }
+
+        return array;
+    }
+    
     /// <summary>
     ///     fait une copie du deck et distribue les cartes aux joueurs
     /// </summary>
     private void DealCards()
     {
-        var rng = new Random();
-        var temp = _deck.OrderBy(a => rng.Next()).ToList();
+        List<Card.Card> temp = new List<Card.Card>();
+        temp.AddRange(Shuffle(_deck.ToArray()));
+
+        for (var index = 0; index < _players.Length; index++)
+        {
+            _players[index].addCards(temp.GetRange(0 + index * _turn, _turn));
+        }
     }
 }
