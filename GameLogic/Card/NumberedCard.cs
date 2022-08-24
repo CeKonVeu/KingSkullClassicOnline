@@ -14,8 +14,9 @@ public class NumberedCard : Card
     /// constructeur
     /// </summary>
     /// <param name="value">valeur de la carte</param>
+    /// <param name="name">nom de la carte</param>
     /// <param name="color">couleur de la carte</param>
-    public NumberedCard(int value, Colors color) : base(value)
+    public NumberedCard(int value, string name,Colors color) : base(value, name)
     {
         Color = color;
     }

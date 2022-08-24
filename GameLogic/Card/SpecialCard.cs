@@ -9,7 +9,8 @@ public class SpecialCard : Card
     /// constructeur
     /// </summary>
     /// <param name="value">valeur de la carte</param>
-    public SpecialCard(int value) : base(value)
+    /// <param name="name">nom de la carte</param>
+    public SpecialCard(int value, string name) : base(value, name)
     {
     }
 }

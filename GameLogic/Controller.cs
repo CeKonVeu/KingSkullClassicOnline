@@ -29,19 +29,19 @@ public class Controller
     {
         for (var i = 1; i <= Config.NumberNumcards; ++i)
         {
-            _deck.Add(new NumberedCard(i, Colors.Red));
-            _deck.Add(new NumberedCard(i, Colors.Blue));
-            _deck.Add(new NumberedCard(i, Colors.Yellow));
-            _deck.Add(new NumberedCard(i, Colors.Black));
+            _deck.Add(new NumberedCard(i,"Red_"+i, Colors.Red));
+            _deck.Add(new NumberedCard(i,"Blue_"+i, Colors.Blue));
+            _deck.Add(new NumberedCard(i,"Yellow_"+i, Colors.Yellow));
+            _deck.Add(new NumberedCard(i,"Black"+i, Colors.Black));
         }
 
-        for (var i = 0; i < Config.NumberEscapes; ++i) _deck.Add(new SpecialCard(0)); // escape
+        for (var i = 0; i < Config.NumberEscapes; ++i) _deck.Add(new SpecialCard(0, "Escape")); // escape
 
-        for (var i = 0; i < Config.NumberMermaids; ++i) _deck.Add(new SpecialCard(1)); // mermaids
+        for (var i = 0; i < Config.NumberMermaids; ++i) _deck.Add(new SpecialCard(1, "Mermaid")); // mermaids
 
-        for (var i = 0; i < Config.NumberPirates; ++i) _deck.Add(new SpecialCard(2)); // pirates
+        for (var i = 0; i < Config.NumberPirates; ++i) _deck.Add(new SpecialCard(2, "Pirate_"+i)); // pirates
 
-        for (var i = 0; i < Config.NumberSkullking; ++i) _deck.Add(new SpecialCard(3)); // Skull king
+        for (var i = 0; i < Config.NumberSkullking; ++i) _deck.Add(new SpecialCard(3, "SkullKing")); // Skull king
     }
 
     static Random _random = new Random();
