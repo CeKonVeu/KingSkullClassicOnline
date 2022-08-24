@@ -7,7 +7,8 @@ Alexandre Jaquier, Stéphane Marengo, Loris Marzullo, Loïc Rosset, Géraud Silv
 Comme son nom l’indique, l’application « King Skull Classic Online » permet de jouer au jeu de cartes Skull King en ligne. Cela peut s’avérer utile pour y jouer avec des joueurs à distance ou si on ne possède pas le jeu physiquement (mais préalablement acheté 🙂).
 De plus, certains aspects du jeu sont parfois fastidieux, comme le calcul et le relevé des points, et pourraient être automatisés.
 L’idée de base est de recréer intégralement le jeu en version informatisée, en gérant toutes les situations possibles durant une partie typique. Dans un second temps, il serait appréciable d’ajouter un menu permettant de personnaliser certaines règles et le deck de cartes.
-Description du projet
+
+## Description du projet
 Le jeu est accessible directement depuis une page web. Le premier joueur, l’hôte de la partie, peut y créer une room. Cela va générer un URL qui peut être envoyé à ses amis pour qu’ils rejoignent cette même room. Chaque joueur doit s'attribuer un nom, puis l’hôte peut décider de commencer la partie.
 
 Dans les grandes lignes, le jeu se présente comme suit : il y a 10 manches, et à chaque manche les joueurs reçoivent autant de cartes que le numéro de la manche. Donc manche 1, ils reçoivent une carte, manche 2, ils reçoivent deux cartes, et ainsi de suite. Au début de chaque manche, les joueurs parient sur le nombre de plis qu’ils pensent gagner, puis jouent une carte chacun leur tour. Celui qui joue la carte la plus haute remporte le pli, et la manche continue jusqu’à ce que toutes les cartes aient été jouées. Les valeurs et types des cartes, ainsi que la manière de compter les points sont spécifiés plus bas dans ce document.
@@ -147,3 +148,36 @@ De la plus forte à la moins forte :
 - Le joueur remportant le pli est défini et peut commencer le pli suivant, jusqu’à ce qu’il n’y ait plus de cartes.
 - Les points sont finalement ajoutés ou retirés à chaque joueur en fonction de leur vote et des plis remportés.
 - Après 10 manches, le joueur ayant le plus de points remporte la partie
+
+## Déploiement et pipeline de livraison
+
+### Outils utilisés
+- GitHub
+- GitHub Actions
+- Microsoft Azure
+
+L'application est accessible sur [kingskullclassiconline.azurewebsites.net](https://kingskullclassiconline.azurewebsites.net/)
+
+### Mise en place de l'environnement de déploiement
+Lors de la mise à jour de l'application en production, et donc après avoir merge une pull request sur la branche main, un premier job est démarré sur github. Il va effectuer diverses github actions.
+
+1. Build le projet avec une commande dotnet afin d'obtenir une représentation intermédiaire du code (web assembly, binaire et exécutable). 
+2. Utiliser la commande Publish de dotnet pour publier l’application et ses dépendances dans un dossier pour le déploiement sur un système d’hébergement.
+3. Upload les artefacts afin de partager le projet publier avec le prochain job.
+
+Ensuite un autre job s'occupant du transfert de la solution sur le serveur de production Azure est démarré.
+
+1. Récupération des fichiers du job précédent avec download artifact
+2. Déploiement sur Azure Web app
+
+Ce workflow est mit à disposition par Azure.
+
+Pour plus d'informations :
+
+https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-build
+
+https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-publish
+
+https://github.com/actions/upload-artifact
+
+https://github.com/actions/download-artifact
