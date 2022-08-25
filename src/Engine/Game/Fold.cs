@@ -5,16 +5,16 @@
 /// </summary>
 public class Fold
 {
-    private readonly List<Play> _cardsPlayed;
-
     /// <summary>
     ///     constructeur
     /// </summary>
     public Fold()
     {
-        _cardsPlayed = new List<Play>();
+        CardsPlayed = new List<Play>();
         TurnColor = Colors.None;
     }
+
+    public List<Play> CardsPlayed { get; }
 
     public Colors TurnColor { get; private set; }
 
@@ -29,7 +29,7 @@ public class Fold
     {
         if (c < 13 && c > 1 && TurnColor == Colors.None) TurnColor = c.Color;
 
-        _cardsPlayed.Add(new Play(p, c));
+        CardsPlayed.Add(new Play(p, c));
     }
 
     /// <summary>
@@ -40,7 +40,7 @@ public class Fold
     {
         Play? winningPlay = null, sirenPlay = null;
         HasSkullKing = false;
-        foreach (var play in _cardsPlayed)
+        foreach (var play in CardsPlayed)
         {
             var isNumbered = play.Card.Value <= 13 && play.Card.Value > 1;
 
@@ -52,10 +52,11 @@ public class Fold
             if (HasSkullKing && sirenPlay != null)
                 winningPlay = sirenPlay;
 
-            else if (winningPlay == null)
-                if ((isNumbered && winningPlay.Card < play.Card && play.Card.Color == TurnColor) ||
-                    (!isNumbered && winningPlay.Card < play.Card))
-                    winningPlay = play;
+            else if (winningPlay == null ||
+                     (isNumbered && TurnColor != Colors.Black && play.Card.Color == Colors.Black) ||
+                     (isNumbered && winningPlay.Card < play.Card && play.Card.Color == TurnColor) ||
+                     (!isNumbered && winningPlay.Card < play.Card))
+                winningPlay = play;
         }
 
         return winningPlay;
@@ -68,7 +69,7 @@ public class Fold
     public int GetNumberPirate()
     {
         var nbPirates = 0;
-        foreach (var card in _cardsPlayed)
+        foreach (var card in CardsPlayed)
             if (card.Card == Config.PirateValue)
                 nbPirates++;
         return nbPirates;

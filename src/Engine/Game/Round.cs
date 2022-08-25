@@ -7,65 +7,25 @@ public class Round
 {
     private static readonly Random Random = new();
     private readonly Controller _controller;
-    private readonly Fold[] _plis;
-    private int[] _votes;
 
     /// <summary>
     ///     constructeur
     /// </summary>
     /// <param name="numPlayers">nombre de joueurs dans la partie</param>
     /// <param name="turn">tour du round</param>
-    public Round(int numPlayers, int turn, Controller controller)
+    public Round(Controller controller)
     {
         CurrentPlayer = 0;
         _controller = controller;
-        _votes = new int[numPlayers];
-        _plis = new Fold[turn];
+        Votes = new int[controller.Players.Count];
+        Plis = new Fold[controller.Turn];
     }
 
-    public int CurrentPlayer { get; }
+    public int[] Votes { get; }
 
-    /// <summary>
-    ///     ajoute les votes aux joueurs
-    /// </summary>
-    /// <param name="votes"></param>
-    public void addVotes(int[] votes)
-    {
-        _votes = votes;
-    }
+    public Fold[] Plis { get; }
 
-    /// <summary>
-    ///     mets à jour le score de chaque joueurs selon les résultats des plis
-    /// </summary>
-    public void UpdateScore()
-    {
-        for (var i = 0; i < _controller.Players.Count; i++)
-        {
-            int bonusPoints = 0, wonFold = 0, score;
-
-            foreach (var fold in _plis)
-                if (fold.GetWinner().Player == _controller.Players[i])
-                {
-                    wonFold++;
-                    if (fold.GetWinner().Card == Config.MermaidValue && fold.HasSkullKing)
-                        bonusPoints += Config.BonusMermaid;
-                    else if (fold.GetWinner().Card == Config.SkullKingValue)
-                        bonusPoints += fold.GetNumberPirate() * Config.BonusSkullKing;
-                }
-
-            if (wonFold == _votes[i])
-                if (_votes[i] == 0)
-                    score = bonusPoints + Config.Score0 * _controller.Turn;
-                else
-                    score = bonusPoints + Config.ScoreVoted * _votes[i];
-            else if (_votes[i] == 0)
-                score = -(Config.Score0 * _controller.Turn);
-            else
-                score = Config.ScoreBadVote * Math.Abs(_votes[i] - wonFold);
-
-            _controller.Players[i].AddScore(_votes[i], score);
-        }
-    }
+    public int CurrentPlayer { get; set; }
 
     /// <summary>
     ///     Mélange un array utilisant le "fisher yates shuffle"
@@ -103,16 +63,30 @@ public class Round
     public void Play()
     {
         DealCards();
+        for (var index = 0; index < _controller.Players.Count; index++)
+        {
+            var player = _controller.Players[index];
+            Votes[index] = player.Vote(_controller.Turn);
+        }
+
         for (var i = 0; i < _controller.Turn; ++i)
         {
-            _plis[i] = new Fold();
+            Plis[i] = new Fold();
             foreach (var p in _controller.Players)
             {
-                var cardPlayed = p.Hand[p.PlayCard(_plis[i].TurnColor)];
-                _plis[i].PlayCard(p, cardPlayed);
+                CurrentPlayer++;
+                var indexCard = p.PlayCard(Plis[i].TurnColor);
+                var cardPlayed = p.Hand[indexCard];
+                p.Hand.RemoveAt(indexCard);
+                Plis[i].PlayCard(p, cardPlayed);
             }
         }
 
-        UpdateScore();
+        CurrentPlayer = 0;
+        for (var index = 0; index < _controller.Players.Count; index++)
+        {
+            var p = _controller.Players[index];
+            Utils.UpdateScore(p, Plis, Votes[index], _controller.Turn);
+        }
     }
 }

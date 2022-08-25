@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace LogicUnitTest;
 
-public class Tests
+public class ControllerTests
 {
     private int _cardsInDeck;
     private Controller _controller = null!;
@@ -48,14 +48,4 @@ public class Tests
         _controller.RemovePlayer(p3);
         CollectionAssert.DoesNotContain(_controller.Players, p3);
     }
-
-    /*[Test]
-    public void ItShouldDealCardsCorrectly()
-    {
-        _controller.AddPlayer(p1);
-        _controller.AddPlayer(p2);
-        _controller.DealCards();
-        Assert.AreEqual(_controller.Turn, p1.Hand.Count);
-        Assert.AreEqual(_controller.Turn, p2.Hand.Count);
-    }*/
 }

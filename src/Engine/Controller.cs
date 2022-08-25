@@ -37,7 +37,7 @@ public class Controller
             Deck.Add(new NumberedCard(i, "Red_" + i, Colors.Red));
             Deck.Add(new NumberedCard(i, "Blue_" + i, Colors.Blue));
             Deck.Add(new NumberedCard(i, "Yellow_" + i, Colors.Yellow));
-            Deck.Add(new NumberedCard(i, "Black" + i, Colors.Black));
+            Deck.Add(new NumberedCard(i, "Black_" + i, Colors.Black));
         }
 
         for (var i = 0; i < Config.NumberEscapes; ++i)
@@ -83,7 +83,7 @@ public class Controller
     {
         while (Turn <= Config.TurnNumber)
         {
-            _currentRound = new Round(Players.Count, Turn, this);
+            _currentRound = new Round(this);
             _currentRound.Play();
             Turn++;
         }

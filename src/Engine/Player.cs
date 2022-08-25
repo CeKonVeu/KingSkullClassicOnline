@@ -17,7 +17,7 @@ public class Player
     /// <param name="playerName">nom du joueur</param>
     public Player(string playerName, Controller controller)
     {
-        _selectedCard = -1;
+        _selectedCard = 0;
         _controller = controller;
         Name = playerName;
         Hand = new List<Card.Card>();
@@ -57,17 +57,14 @@ public class Player
                 break;
             }
 
-
-        for (var i = 0; i < Hand.Count; i++)
-            if (hasCardOfColor)
-            {
-                if (Hand[i].Color == Colors.None || Hand[i].Color == TurnColor)
-                    playableCards.Add(i);
-            }
-            else
-            {
+        if (!hasCardOfColor)
+            for (var i = 0; i < Hand.Count; ++i)
                 playableCards.Add(i);
-            }
+        else
+            for (var i = 0; i < Hand.Count; i++)
+                if (hasCardOfColor)
+                    if (Hand[i].Color == Colors.None || Hand[i].Color == TurnColor)
+                        playableCards.Add(i);
 
         return playableCards.Contains(_selectedCard);
     }
@@ -97,13 +94,11 @@ public class Player
     /// </summary>
     public int PlayCard(Colors turnColor)
     {
-        while (CheckIfCardRespectsRule(turnColor))
-        {
-        }
+        while (!CheckIfCardRespectsRule(turnColor)) _selectedCard++;
 
         var temp = _selectedCard;
 
-        _selectedCard = -1;
+        _selectedCard = 0;
 
         return temp;
     }
@@ -117,5 +112,21 @@ public class Player
         for (var i = 0; i < Hand.Count; i++)
             if (c == Hand[i])
                 _selectedCard = i;
+    }
+
+    /// <summary>
+    ///     récupère le vote du joueur
+    /// </summary>
+    /// <param name="turn">limite de vote supérieur</param>
+    /// <returns>vote effectué</returns>
+    public int Vote(int turn)
+    {
+        // TODO récupérer textbox et redemander vote si le if ne passe pas
+        var vote = 2;
+
+        if (vote >= 0 && vote <= turn)
+            return vote;
+
+        return -1;
     }
 }
