@@ -40,6 +40,7 @@ Une fois la partie finie, le nom du gagnant est affiché et le créateur peut di
   - Dès la manche 5, le joueur en tête doit parier 0
 - Les joueurs peuvent visualiser le tableau des scores des parties précédentes
 - Un système de drag and drop pour jouer une carte
+- Ajout d'animations pour rendre le jeu plus attrayant
 ## Besoins non-fonctionnels
 - Le jeu doit être fluide
 - Les joueurs ne doivent pas subir de déconnexion, dans la mesure du possible
