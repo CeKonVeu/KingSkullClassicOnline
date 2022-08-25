@@ -14,8 +14,8 @@ public static class Config
     public const int MaxPlayer = 6;
     public const int EscapeValue = 0;
     public const int MermaidValue = NumberNumCards + 1;
-    public const int PirateValue = NumberMermaids + 1;
-    public const int SkullKingValue = NumberPirates + 1;
+    public const int PirateValue = MermaidValue + 1;
+    public const int SkullKingValue = PirateValue + 1;
     public const int ScoreVoted = 20;
     public const int Score0 = 10;
     public const int ScoreBadVote = -10;
