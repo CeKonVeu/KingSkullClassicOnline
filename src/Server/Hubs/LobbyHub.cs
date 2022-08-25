@@ -14,16 +14,16 @@ public class LobbyHub : Hub
 
     public async Task CreateGroup(string groupName)
     {
-        await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
         if (groupsNumber.ContainsKey(groupName))
             return;
+        await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
         groupsNumber.Add(groupName, 1);
         await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
         Clients.Group(groupName).SendAsync("ReceiveLobbyName", groupName);
     }
     public async Task JoinGroup(string groupName)
     {
-        //cannot join if there is already 6 players in the group
+        //cannot join if there is already 6 players in the group or a non existing group
         if (!groupsNumber.ContainsKey(groupName) || groupsNumber[groupName] >= 6)
             return;
 
@@ -34,7 +34,14 @@ public class LobbyHub : Hub
 
     public Task LeaveGroup(string groupName)
     {
-        --groupsNumber[groupName];
+        if (groupsNumber.ContainsKey(groupName))
+        {
+            --groupsNumber[groupName];
+            if(groupsNumber[groupName] <= 0)
+            {
+                groupsNumber.Remove(groupName);
+            }
+        }
         return Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
     }
 }

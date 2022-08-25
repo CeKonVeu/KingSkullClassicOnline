@@ -113,19 +113,26 @@
             .Build();
 
         await hubConnection.StartAsync();
-    //join the group in the hub
+        //join the group in the hub
         await hubConnection.SendAsync("CreateGroup", Guid.NewGuid());
+        //Change the group name and leave the old one
         hubConnection.On<string>("ReceiveLobbyName", lobbyName =>
         {
-            this.lobbyName = lobbyName;
+            var ancientLobbyName = this.lobbyName;
+            this.lobbyName = lobbyName; 
+            if(lobbyName != ancientLobbyName)
+                hubConnection.SendAsync("LeaveGroup", ancientLobbyName);
             StateHasChanged();
         });
+
         hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
         {
             var encodedMsg = $"{user}: {message}";
             messages.Add(encodedMsg);
             StateHasChanged();
         });
+        StateHasChanged();
+
     }
 
     private async Task Send()
@@ -138,15 +145,10 @@
 
     private async Task ConnectToGroup()
     {
-        var ancientLobbyName = lobbyName;
         if (hubConnection is not null)
         {
             await hubConnection.SendAsync("CreateGroup", lobbyInput);
-            hubConnection.On<string>("ReceiveLobbyName", lobbyName => { this.lobbyName = lobbyName; });
-            if(lobbyName != ancientLobbyName)
-                await hubConnection.SendAsync("LeaveGroup", ancientLobbyName);
         }
-        StateHasChanged();
     }
 
 
