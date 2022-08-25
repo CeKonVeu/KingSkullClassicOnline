@@ -12,13 +12,19 @@ public class LobbyHub : Hub
         await Clients.Group(group).SendAsync("ReceiveMessage", user, message);
     }
 
+    public async Task CreateGroup(string groupName)
+    {
+        await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+        if (groupsNumber.ContainsKey(groupName))
+            return;
+        groupsNumber.Add(groupName, 1);
+        await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+        Clients.Group(groupName).SendAsync("ReceiveLobbyName", groupName);
+    }
     public async Task JoinGroup(string groupName)
     {
         //cannot join if there is already 6 players in the group
-        if (!groupsNumber.ContainsKey(groupName))
-        {
-            groupsNumber.Add(groupName,0);
-        } else if (groupsNumber[groupName] >= 6)
+        if (!groupsNumber.ContainsKey(groupName) || groupsNumber[groupName] >= 6)
             return;
 
         await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
