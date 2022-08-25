@@ -53,7 +53,7 @@
         </multiplicity>
       </role>
     </association>
-    <association aggregation="NONE" direction="SECOND_TO_FIRST" id="186519" name="Gère">
+    <association aggregation="NONE" direction="SECOND_TO_FIRST" id="186519" name="GÃ¨re">
       <role componentId="186336" name="" visibility="PRIVATE">
         <multiplicity>
           <min>1</min>
@@ -67,7 +67,7 @@
         </multiplicity>
       </role>
     </association>
-    <association aggregation="NONE" direction="FIRST_TO_SECOND" id="186401" name="cartes jouées">
+    <association aggregation="NONE" direction="FIRST_TO_SECOND" id="186401" name="cartes jouÃ©es">
       <role componentId="186336" name="" visibility="PRIVATE">
         <multiplicity>
           <min>1</min>
@@ -95,7 +95,7 @@
         </multiplicity>
       </role>
     </association>
-    <association aggregation="NONE" direction="BIDIRECTIONAL" id="186316" name="Posspède">
+    <association aggregation="NONE" direction="BIDIRECTIONAL" id="186316" name="PosspÃ¨de">
       <role componentId="186315" name="" visibility="PRIVATE">
         <multiplicity>
           <min>1</min>
