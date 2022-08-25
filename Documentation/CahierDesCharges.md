@@ -70,15 +70,20 @@ Une batterie de tests est effectuée sur le projet à chaque pull request avec N
 
 Aussi, à chaque fois qu'un merge a lieu sur la branche main, l'application est déployée automatiquement sur le serveur Azure.
 
-La documentation disponible sur notre repository GitHub permet ainsi à une personne tierce d’installer notre solution en local, de posséder la marche à suivre pour qu’elle puisse contribuer au projet.
+La documentation disponible sur notre repository GitHub permet ainsi à une personne tierce d’installer notre solution en local.
 
 ## Choix des technologies
 ### Backend
 - C# ASP.NET
 - Serveur sur Microsoft Azure
-### Communication avec SignalR
-- Frontend
+
+### Frontend
 - Blazor
+- MudBlazor
+- HTML, CSS, JS, SASS
+
+### Communication client-serveur
+- signalr
 
 ## Spécifications du Skull King
 ### But du jeu
