@@ -64,11 +64,11 @@ Nomenclature pour les branches :
 - Documentation : doc-
 
 Nous nous plions à la recommandation “Commit early, commit often” et lorsqu’un membre 
-souhaite merge sa branche à la branche principale, il sera nécessaire que sa branche soit review et approved par un autre membre du groupe.
+souhaite merge sa branche à la branche principale, il sera nécessaire que sa branche soit revue et approuvée par un autre membre du groupe.
 
-Une batterie de tests (unitaires, …) sont effectués sur le projet à chaque pull request avec NUnit.
+Une batterie de tests est effectuée sur le projet à chaque pull request avec NUnit.
 
-Aussi, à chaque fois que le build est mis à jour, celui-ci est instantanément transféré au serveur Azure afin d’avoir toujours la dernière version de l’application à disposition.
+Aussi, à chaque fois qu'un merge a lieu sur la branche main, l'application est déployée automatiquement sur le serveur Azure.
 
 La documentation disponible sur notre repository GitHub permet ainsi à une personne tierce d’installer notre solution en local, de posséder la marche à suivre pour qu’elle puisse contribuer au projet.
 
