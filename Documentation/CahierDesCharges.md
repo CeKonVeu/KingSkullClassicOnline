@@ -95,7 +95,7 @@ Le jeu se déroule en 10 manches durant lesquelles les joueurs peuvent gagner ou
 
 ### Choix du pari
 - A chaque manche, tous les joueurs parient sur le nombre de plis qu'ils pensent gagner. Cette valeur se situe entre 0 et le nombre de cartes en mains.
-- Un délai de 10 secondes est imposé pour emettre un pari.
+- Un délai de 10 secondes est imposé pour émettre un pari.
   - Si aucune valeur valide n'est entrée une fois le délai passé, le vote de 0 est émis par défaut.
 
 ### Règles générales
@@ -119,7 +119,7 @@ De la plus forte à la moins forte :
 - Sirène
 - Cartes noires, de 13 à 1
 - Cartes de la couleur de l'atout, de 13 à 1
-- Escape, Scary Mary (escape) ou cartes d'une autre couleur que l'atout
+- Escape, Scary Mary (escape), cartes d'une autre couleur que l'atout
 
 ### Cartes grisées
 - Les cartes spéciales sont jouables en tout temps et ne peuvent donc pas être grisées
@@ -145,9 +145,9 @@ De la plus forte à la moins forte :
   - Si une Sirène gagne le pli, 50 points bonus sont obtenus si le Skull King est aussi joué
 
 ### Déroulement d’une manche
-- Chaque joueur reçoit le même nombre de cartes tirées aléatoirement (incrémenté à chaque pli)
+- Chaque joueur reçoit le même nombre de cartes tirées aléatoirement (incrémenté à chaque manche)
 - Les joueurs entrent leur vote (entre 0 et le numéro de la manche), puis valident
-- Lorsque tous les joueurs ont validé, chaque joueur joue l’une de ses cartes, l’une après l’autre.
+- Lorsque tous les joueurs ont validé, chaque joueur joue l’une de ses cartes, l’un après l’autre.
 - Le joueur remportant le pli est défini et peut commencer le pli suivant, jusqu’à ce qu’il n’y ait plus de cartes.
 - Les points sont finalement ajoutés ou retirés à chaque joueur en fonction de leur vote et des plis remportés.
 - Après 10 manches, le joueur ayant le plus de points remporte la partie
@@ -162,16 +162,18 @@ De la plus forte à la moins forte :
 L'application est accessible sur [kingskullclassiconline.azurewebsites.net](https://kingskullclassiconline.azurewebsites.net/)
 
 ### Mise en place de l'environnement de déploiement
-Lors de la mise à jour de l'application en production, et donc après avoir merge une pull request sur la branche main, un premier job est démarré sur github. Il va effectuer diverses github actions.
+Lorsqu'un merge est effectué sur la branche main, une action GitHub s'occupe d'effectuer les tâches suivantes : 
 
-1. Build le projet avec une commande dotnet afin d'obtenir une représentation intermédiaire du code (web assembly, binaire et exécutable). 
-2. Utiliser la commande Publish de dotnet pour publier l’application et ses dépendances dans un dossier pour le déploiement sur un système d’hébergement.
-3. Upload les artefacts afin de partager le projet publier avec le prochain job.
+#### Job 1
 
-Ensuite un autre job s'occupant du transfert de la solution sur le serveur de production Azure est démarré.
+1. Build le projet avec la commande `dotnet build` afin d'obtenir une représentation intermédiaire du code (web assembly, binaire et exécutable). 
+2. Utiliser la commande `dotnet publish` pour publier l’application et ses dépendances dans un dossier.
+3. Mise à disposition des fichiers générés pour le prochain job (upload artifact).
 
-1. Récupération des fichiers du job précédent avec download artifact
-2. Déploiement sur Azure Web app
+#### Job 2
+
+1. Récupération des fichiers du job précédent (download artifact)
+2. Déploiement sur Azure Web app à l'aide de l'action GitHub fournie par Azure
 
 Ce workflow est mit à disposition par Azure.
 
