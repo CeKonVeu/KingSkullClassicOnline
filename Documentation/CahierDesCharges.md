@@ -9,11 +9,11 @@ De plus, certains aspects du jeu sont parfois fastidieux, comme le calcul et le 
 L’idée de base est de recréer intégralement le jeu en version informatisée, en gérant toutes les situations possibles durant une partie typique. Dans un second temps, il serait appréciable d’ajouter un menu permettant de personnaliser certaines règles et le deck de cartes.
 
 ## Description du projet
-Le jeu est accessible directement depuis une page web. Le premier joueur, l’hôte de la partie, peut y créer une room. Cela va générer un URL qui peut être envoyé à ses amis pour qu’ils rejoignent cette même room. Chaque joueur doit s'attribuer un nom, puis l’hôte peut décider de commencer la partie.
+Le jeu est accessible directement depuis une page web. Le premier joueur, le créateur de la partie, peut y créer une room. Cela va générer un URL qui peut être envoyé à ses amis pour qu’ils rejoignent cette même room. Chaque joueur doit s'attribuer un nom, puis le créateur peut décider de commencer la partie.
 
 Dans les grandes lignes, le jeu se présente comme suit : il y a 10 manches, et à chaque manche les joueurs reçoivent autant de cartes que le numéro de la manche. Donc manche 1, ils reçoivent une carte, manche 2, ils reçoivent deux cartes, et ainsi de suite. Au début de chaque manche, les joueurs parient sur le nombre de plis qu’ils pensent gagner, puis jouent une carte chacun leur tour. Celui qui joue la carte la plus haute remporte le pli, et la manche continue jusqu’à ce que toutes les cartes aient été jouées. Les valeurs et types des cartes, ainsi que la manière de compter les points sont spécifiés plus bas dans ce document.
 
-Une fois la partie finie, le nom du gagnant est affiché et l’hôte peut directement relancer une partie s’il le souhaite.
+Une fois la partie finie, le nom du gagnant est affiché et le créateur peut directement relancer une partie s’il le souhaite.
 
 ## Besoins fonctionnels
 ### Minimum requis
@@ -21,7 +21,7 @@ Une fois la partie finie, le nom du gagnant est affiché et l’hôte peut direc
 - Un joueur doit pouvoir créer une room
 - Les autres joueurs doivent pouvoir rejoindre cette room via un URL
 - Les joueurs doivent s’identifier avec un pseudo
-- L’hôte doit pouvoir lancer la partie
+- Le créateur doit pouvoir lancer la partie
 - Chaque joueur doit avoir un point de vue différent sur la partie (pour voir uniquement leurs cartes)
 - Les joueurs doivent pouvoir voter en début de chaque manche
 - Les votations doivent avoir un temps limité
@@ -33,7 +33,7 @@ Une fois la partie finie, le nom du gagnant est affiché et l’hôte peut direc
 - Le joueur commençant la manche doit changer systématiquement
 - Diverses informations doivent être affichées en tout temps à l’écran (voir mockup pour plus de détails)
 ### Contenu additionnel (si le temps le permet)
-- Avant de commencer la partie, l’hôte de la partie peut modifier les règles telles que :
+- Avant de commencer la partie, le créateur de la partie peut modifier les règles telles que :
   - Le deck de jeu (nombre de chaque type de carte)
   - Le nombre de joueurs (possibilité de dépasser la limite de 6)
   - Aux manches 5 et 10 tout le monde doit parier 0
@@ -126,7 +126,7 @@ De la plus forte à la moins forte :
   - Si le joueur ne possède aucune carte de la couleur de l'atout, toutes les cartes sont jouables
 
 ### Ordre de passage
-- Au début du jeu, l’hôte commence à jouer.
+- Au début du jeu, le créateur commence à jouer.
 - A chaque pli suivant, le gagnant du pli précédent commence à jouer.
 - A chaque manche suivante, les joueurs commencent à jouer l’un après l’autre.
 
