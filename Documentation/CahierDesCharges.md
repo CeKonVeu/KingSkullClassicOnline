@@ -39,6 +39,7 @@ Une fois la partie finie, le nom du gagnant est affiché et le créateur peut di
   - Aux manches 5 et 10 tout le monde doit parier 0
   - Dès la manche 5, le joueur en tête doit parier 0
 - Les joueurs peuvent visualiser le tableau des scores des parties précédentes
+- Un système de drag and drop pour jouer une carte
 ## Besoins non-fonctionnels
 - Le jeu doit être fluide
 - Les joueurs ne doivent pas subir de déconnexion, dans la mesure du possible
