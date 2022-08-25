@@ -56,16 +56,12 @@ En annexe.
 ## Méthodologie de développement
 Le projet se trouve sur un repository GitHub, nous allons donc utiliser les divers outils à disposition sur cette plateforme afin d’améliorer notre processus de travail.
 
-L’une des premières étapes du projet est de formaliser les user stories en se basant sur les fonctionnalités requises et les contraintes inhérentes au projet.
-
-Ces users stories sont ensuite séparées en une ou plusieurs issues sur GitHub, ainsi un membre de l’équipe pourra s’attribuer une tâche à effectuer. Cependant, nous ne trouvons pas nécessaire d’avoir un kanban pour afficher l’état global du projet.
-
-Une nouvelle branche est ainsi créée pour chaque fonctionnalité, fix, etc. réalisé par un membre de l’équipe.
+Les différentes tâches de réalisation du projet correspondent aux issues de notre repository. Pour les tâches trop vagues, il y a une liste de sous-étapes dans la description de l'issues. Celles-ci sont représentées à l'aide de checkbox afin d'indiquer clairement quelles étapes sont finies.
 
 Nomenclature pour les branches :
-Fix : fix-....
-Fonctionnalité : feat-
-Documentation : doc-
+- Fix : fix-....
+- Fonctionnalité : feat-
+- Documentation : doc-
 
 Nous nous plions à la recommandation “Commit early, commit often” et lorsqu’un membre 
 souhaite merge sa branche à la branche principale, il sera nécessaire que sa branche soit review et approved par un autre membre du groupe.
