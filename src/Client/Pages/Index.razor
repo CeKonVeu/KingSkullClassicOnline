@@ -146,7 +146,7 @@
     {
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("CreateGroup", lobbyInput);
+            await hubConnection.SendAsync("JoinGroup", lobbyInput);
         }
     }
 

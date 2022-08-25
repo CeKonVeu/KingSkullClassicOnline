@@ -3,6 +3,7 @@
 @inject NavigationManager NavigationManager
 @using Microsoft.AspNetCore.SignalR.Client
 @implements IAsyncDisposable
+@inject NavigationManager NavManager
 
 <h3>Room</h3>
 <p>@id</p>
@@ -53,6 +54,7 @@
             await hubConnection.DisposeAsync();
         }
     }
+
     protected override async Task OnInitializedAsync()
     {
         hubConnection = new HubConnectionBuilder()
@@ -60,18 +62,22 @@
             .Build();
 
         await hubConnection.StartAsync();
-    //join the group in the hub
+        //join the group in the hub
         await hubConnection.SendAsync("JoinGroup", id);
-    //Change the group name and leave the old one
+        if(lobbyName is null)
+        {
+            NavManager.NavigateTo("/404");
+            return;
+        }
+        //Change the group name and leave the old one
         hubConnection.On<string>("ReceiveLobbyName", lobbyName =>
         {
             var ancientLobbyName = this.lobbyName;
-            this.lobbyName = lobbyName; 
-            if(lobbyName != ancientLobbyName)
+            this.lobbyName = lobbyName;
+            if (lobbyName != ancientLobbyName)
                 hubConnection.SendAsync("LeaveGroup", ancientLobbyName);
             StateHasChanged();
         });
-
         hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
         {
             var encodedMsg = $"{user}: {message}";
