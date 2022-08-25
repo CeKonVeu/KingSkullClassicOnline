@@ -56,10 +56,10 @@ En annexe.
 ## Méthodologie de développement
 Le projet se trouve sur un repository GitHub, nous allons donc utiliser les divers outils à disposition sur cette plateforme afin d’améliorer notre processus de travail.
 
-Les différentes tâches de réalisation du projet correspondent aux issues de notre repository. Pour les tâches trop vagues, il y a une liste de sous-étapes dans la description de l'issues. Celles-ci sont représentées à l'aide de checkbox afin d'indiquer clairement quelles étapes sont finies.
+Les différentes tâches de réalisation du projet correspondent aux issues de notre repository. Pour les tâches trop vagues, il y a une liste de sous-étapes dans la description de l'issue. Celles-ci sont représentées à l'aide de checkbox afin d'indiquer clairement quelles étapes sont finies.
 
 Nomenclature pour les branches :
-- Fix : fix-....
+- Fix : fix-
 - Fonctionnalité : feat-
 - Documentation : doc-
 
