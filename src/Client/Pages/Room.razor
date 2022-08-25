@@ -1,7 +1,84 @@
 @page "/room/{id}"
+@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.SignalR.Client
+@implements IAsyncDisposable
+
 <h3>Room</h3>
 <p>@id</p>
+<div class="form-group">
+    <label>
+        lobbyName:
+        <input @bind="lobbyInput"/>
+    </label>
+</div>
+<hr>
+<ul>
+    <li>@lobbyName</li>
+</ul>
+<ul id="messagesList">
+    @foreach (var message in messages)
+    {
+        <li>@message</li>
+    }
+</ul>
 @code {
     [Parameter]
     public string id { get; set; }
+    
+    private string? lobbyInput;
+    private string? lobbyName;
+    private readonly List<string> messages = new();
+
+    private HubConnection? hubConnection;
+    private IJSObjectReference importedDHTML;
+    private IJSObjectReference? module;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            module = await JS.InvokeAsync<IJSObjectReference>("import",
+                "../Pages/Index.razor.js");
+        }
+    }
+    
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (module is not null)
+        {
+            await module.DisposeAsync();
+        }
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
+            .Build();
+
+        await hubConnection.StartAsync();
+    //join the group in the hub
+        await hubConnection.SendAsync("JoinGroup", id);
+    //Change the group name and leave the old one
+        hubConnection.On<string>("ReceiveLobbyName", lobbyName =>
+        {
+            var ancientLobbyName = this.lobbyName;
+            this.lobbyName = lobbyName; 
+            if(lobbyName != ancientLobbyName)
+                hubConnection.SendAsync("LeaveGroup", ancientLobbyName);
+            StateHasChanged();
+        });
+
+        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        {
+            var encodedMsg = $"{user}: {message}";
+            messages.Add(encodedMsg);
+            StateHasChanged();
+        });
+        StateHasChanged();
+
+    }
 }
