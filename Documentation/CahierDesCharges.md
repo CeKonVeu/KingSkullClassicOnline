@@ -83,7 +83,7 @@ La documentation disponible sur notre repository GitHub permet ainsi à une pers
 - HTML, CSS, JS, SASS
 
 ### Communication client-serveur
-- signalr
+- SignalR
 
 ## Spécifications du Skull King
 ### But du jeu
