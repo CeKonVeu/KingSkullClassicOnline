@@ -32,7 +32,7 @@ public class Controller
     /// </summary>
     private void CreateDeck()
     {
-        for (var i = 1; i <= Config.NumberNumcards; ++i)
+        for (var i = 1; i <= Config.NumberNumCards; ++i)
         {
             Deck.Add(new NumberedCard(i, "Red_" + i, Colors.Red));
             Deck.Add(new NumberedCard(i, "Blue_" + i, Colors.Blue));
@@ -50,9 +50,9 @@ public class Controller
             Deck.Add(new SpecialCard(Config.PirateValue, "Pirate_" + i)); // pirates
 
         for (var i = 0; i < Config.NumberScaryM; ++i)
-            Deck.Add(new SpecialCard(Config.PirateValue, "ScaryMary")); // scary merry
+            Deck.Add(new SpecialCard(Config.PirateValue, "ScaryMary")); // scary Mary
 
-        for (var i = 0; i < Config.NumberSkullking; ++i)
+        for (var i = 0; i < Config.NumberSkullKing; ++i)
             Deck.Add(new SpecialCard(Config.SkullKingValue, "SkullKing")); // Skull king
     }
 

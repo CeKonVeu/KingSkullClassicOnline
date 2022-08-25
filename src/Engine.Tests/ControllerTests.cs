@@ -1,4 +1,3 @@
-using KingSkullClassicOnline.Engine;
 using NUnit.Framework;
 
 namespace KingSkullClassicOnline.Engine.Tests;
@@ -14,8 +13,8 @@ public class ControllerTests
     public void Setup()
     {
         _controller = new Controller();
-        _cardsInDeck = Config.NumberEscapes + Config.NumberMermaids + Config.NumberPirates + Config.NumberSkullking +
-                       4 * Config.NumberNumcards + Config.NumberScaryM;
+        _cardsInDeck = Config.NumberEscapes + Config.NumberMermaids + Config.NumberPirates + Config.NumberSkullKing +
+                       4 * Config.NumberNumCards + Config.NumberScaryM;
 
         p1 = new Player("Loic", _controller);
         p2 = new Player("Alex", _controller);

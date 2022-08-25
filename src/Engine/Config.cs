@@ -5,21 +5,21 @@
 /// </summary>
 public static class Config
 {
-    public static readonly int NumberNumcards = 13;
-    public static readonly int NumberEscapes = 5;
-    public static readonly int NumberPirates = 5;
-    public static readonly int NumberScaryM = 1;
-    public static readonly int NumberMermaids = 2;
-    public static readonly int NumberSkullking = 1;
-    public static readonly int MaxPlayer = 6;
-    public static readonly int EscapeValue = 0;
-    public static readonly int MermaidValue = 14;
-    public static readonly int PirateValue = 15;
-    public static readonly int SkullKingValue = 16;
-    public static readonly int ScoreVoted = 20;
-    public static readonly int Score0 = 10;
-    public static readonly int ScoreBadVote = -10;
-    public static readonly int BonusMermaid = 50;
-    public static readonly int BonusSkullKing = 30;
-    public static readonly int TurnNumber = 10;
+    public const int NumberNumCards = 13;
+    public const int NumberEscapes = 5;
+    public const int NumberPirates = 5;
+    public const int NumberSkullKing = 1;
+    public const int NumberScaryM = 1;
+    public const int NumberMermaids = 2;
+    public const int MaxPlayer = 6;
+    public const int EscapeValue = 0;
+    public const int MermaidValue = NumberNumCards + 1;
+    public const int PirateValue = NumberMermaids + 1;
+    public const int SkullKingValue = NumberPirates + 1;
+    public const int ScoreVoted = 20;
+    public const int Score0 = 10;
+    public const int ScoreBadVote = -10;
+    public const int BonusMermaid = 50;
+    public const int BonusSkullKing = 30;
+    public const int TurnNumber = 10;
 }
