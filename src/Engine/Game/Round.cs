@@ -109,7 +109,10 @@ public class Round
             foreach (var p in _controller.Players)
             {
                 var cardPlayed = p.Hand[p.PlayCard(_plis[i].TurnColor)];
+                _plis[i].PlayCard(p, cardPlayed);
             }
         }
+
+        UpdateScore();
     }
 }

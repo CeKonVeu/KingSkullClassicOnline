@@ -25,7 +25,7 @@ public class Controller
 
     public List<Player> Players { get; }
 
-    public int Turn { get; }
+    public int Turn { get; set; }
 
     /// <summary>
     ///     Crée un deck de cartes selon les spécificités du fichier config
@@ -85,6 +85,7 @@ public class Controller
         {
             _currentRound = new Round(Players.Count, Turn, this);
             _currentRound.Play();
+            Turn++;
         }
     }
 }
