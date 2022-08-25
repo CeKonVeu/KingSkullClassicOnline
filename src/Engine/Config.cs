@@ -1,4 +1,4 @@
-﻿namespace GameLogic;
+﻿namespace KingSkullClassicOnline.Engine;
 
 /// <summary>
 ///     contient les différentes constantes nécessaires dans le programme
@@ -21,4 +21,5 @@ public static class Config
     public static readonly int ScoreBadVote = -10;
     public static readonly int BonusMermaid = 50;
     public static readonly int BonusSkullKing = 30;
+    public static readonly int TurnNumber = 10;
 }

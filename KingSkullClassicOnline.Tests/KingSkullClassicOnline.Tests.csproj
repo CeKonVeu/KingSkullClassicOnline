@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\GameLogic\GameLogic.csproj" />
+      <ProjectReference Include="..\src\Engine\KingSkullClassicOnline.Engine.csproj" />
     </ItemGroup>
 
 </Project>

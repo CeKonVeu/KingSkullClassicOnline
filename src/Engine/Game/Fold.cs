@@ -1,4 +1,4 @@
-﻿namespace GameLogic;
+﻿namespace KingSkullClassicOnline.Engine.Game;
 
 /// <summary>
 ///     gère le déroulement d'un pli
@@ -13,7 +13,10 @@ public class Fold
     public Fold()
     {
         _cardsPlayed = new List<Play>();
+        TurnColor = Colors.None;
     }
+
+    public Colors TurnColor { get; private set; }
 
     public bool HasSkullKing { get; private set; }
 
@@ -24,6 +27,8 @@ public class Fold
     /// <param name="c">carte jouée</param>
     public void PlayCard(Player p, Card.Card c)
     {
+        if (c < 13 && c > 1 && TurnColor == Colors.None) TurnColor = c.Color;
+
         _cardsPlayed.Add(new Play(p, c));
     }
 
@@ -37,6 +42,8 @@ public class Fold
         HasSkullKing = false;
         foreach (var play in _cardsPlayed)
         {
+            var isNumbered = play.Card.Value <= 13 && play.Card.Value > 1;
+
             if (play.Card == Config.MermaidValue)
                 sirenPlay = play;
             else if (play.Card == Config.SkullKingValue)
@@ -45,7 +52,10 @@ public class Fold
             if (HasSkullKing && sirenPlay != null)
                 winningPlay = sirenPlay;
 
-            else if (winningPlay == null || winningPlay.Card < play.Card) winningPlay = play;
+            else if (winningPlay == null)
+                if ((isNumbered && winningPlay.Card < play.Card && play.Card.Color == TurnColor) ||
+                    (!isNumbered && winningPlay.Card < play.Card))
+                    winningPlay = play;
         }
 
         return winningPlay;

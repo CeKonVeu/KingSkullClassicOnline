@@ -1,13 +1,14 @@
-﻿using GameLogic.Card;
+﻿using KingSkullClassicOnline.Engine.Card;
+using KingSkullClassicOnline.Engine.Game;
 
-namespace GameLogic;
+namespace KingSkullClassicOnline.Engine;
 
 /// <summary>
 ///     Gère le déroulement d'une partie
 /// </summary>
 public class Controller
 {
-    private static readonly Random _random = new();
+    private Round _currentRound;
 
     /// <summary>
     ///     Constructeur
@@ -22,9 +23,9 @@ public class Controller
 
     public List<Card.Card> Deck { get; }
 
-    public static List<Player> Players { get; private set; }
+    public List<Player> Players { get; }
 
-    public static int Turn { get; private set; }
+    public int Turn { get; }
 
     /// <summary>
     ///     Crée un deck de cartes selon les spécificités du fichier config
@@ -55,35 +56,6 @@ public class Controller
             Deck.Add(new SpecialCard(Config.SkullKingValue, "SkullKing")); // Skull king
     }
 
-    /// <summary>
-    ///     Mélange un array utilisant le "fisher yates shuffle"
-    /// </summary>
-    /// <param name="array">l'array à mélanger</param>
-    /// <typeparam name="T">type du contenu de l'array</typeparam>
-    /// <returns>l'array mélangé</returns>
-    public static T[] Shuffle<T>(T[] array)
-    {
-        var n = array.Length;
-        for (var i = 0; i < n - 1; i++)
-        {
-            var r = i + _random.Next(n - i);
-            (array[r], array[i]) = (array[i], array[r]);
-        }
-
-        return array;
-    }
-
-    /// <summary>
-    ///     fait une copie du deck et distribue les cartes aux joueurs
-    /// </summary>
-    public void DealCards()
-    {
-        var temp = new List<Card.Card>();
-        temp.AddRange(Shuffle(Deck.ToArray()));
-
-        for (var index = 0; index < Players.Count; index++)
-            Players[index].addCards(temp.GetRange(0 + index * Turn, Turn));
-    }
 
     /// <summary>
     ///     ajoute un joueur au controleur
@@ -102,5 +74,17 @@ public class Controller
     public void RemovePlayer(Player p)
     {
         Players.Remove(p);
+    }
+
+    /// <summary>
+    ///     lance une partie et crée la première manche
+    /// </summary>
+    public void StartGame()
+    {
+        while (Turn <= Config.TurnNumber)
+        {
+            _currentRound = new Round(Players.Count, Turn, this);
+            _currentRound.Play();
+        }
     }
 }
