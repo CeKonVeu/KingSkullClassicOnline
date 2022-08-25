@@ -8,7 +8,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KingSkullClassicOnline.Clie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KingSkullClassicOnline.Engine", "src\Engine\KingSkullClassicOnline.Engine.csproj", "{B32D03C5-8A65-4347-AF71-C95438A65B9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KingSkullClassicOnline.Tests", "KingSkullClassicOnline.Tests\KingSkullClassicOnline.Tests.csproj", "{30EDA50F-B454-408F-8BD4-1B1B856A7E06}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KingSkullClassicOnline.Engine.Tests", "src\Engine.Tests\KingSkullClassicOnline.Engine.Tests.csproj", "{30EDA50F-B454-408F-8BD4-1B1B856A7E06}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

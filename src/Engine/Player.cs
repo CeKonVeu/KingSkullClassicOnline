@@ -95,23 +95,12 @@ public class Player
     public int PlayCard(Colors turnColor)
     {
         while (!CheckIfCardRespectsRule(turnColor)) _selectedCard++;
-
+        //TODO selectcard = carte sélectionée
         var temp = _selectedCard;
 
         _selectedCard = 0;
 
         return temp;
-    }
-
-    /// <summary>
-    ///     récupère la position de la carte sélectionée
-    /// </summary>
-    /// <param name="c">carte sélectionée</param>
-    public void SelectCard(Card.Card c)
-    {
-        for (var i = 0; i < Hand.Count; i++)
-            if (c == Hand[i])
-                _selectedCard = i;
     }
 
     /// <summary>

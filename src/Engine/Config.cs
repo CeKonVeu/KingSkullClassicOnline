@@ -10,7 +10,7 @@ public static class Config
     public static readonly int NumberPirates = 5;
     public static readonly int NumberScaryM = 1;
     public static readonly int NumberMermaids = 2;
-    public static readonly int NumberSkullking = 2;
+    public static readonly int NumberSkullking = 1;
     public static readonly int MaxPlayer = 6;
     public static readonly int EscapeValue = 0;
     public static readonly int MermaidValue = 14;

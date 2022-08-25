@@ -2,7 +2,7 @@
 using KingSkullClassicOnline.Engine.Game;
 using NUnit.Framework;
 
-namespace LogicUnitTest;
+namespace KingSkullClassicOnline.Engine.Tests;
 
 public class RoundTests
 {

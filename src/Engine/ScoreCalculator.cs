@@ -2,7 +2,10 @@
 
 namespace KingSkullClassicOnline.Engine;
 
-public static class Utils
+/// <summary>
+///     Mets à disposition des méthodes statiques
+/// </summary>
+public static class ScoreCalculator
 {
     /// <summary>
     ///     met à jour le score d'un joueur en fonction de ses résultats après une manche

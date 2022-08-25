@@ -1,7 +1,7 @@
 using KingSkullClassicOnline.Engine;
 using NUnit.Framework;
 
-namespace LogicUnitTest;
+namespace KingSkullClassicOnline.Engine.Tests;
 
 public class ControllerTests
 {

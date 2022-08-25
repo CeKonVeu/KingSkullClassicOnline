@@ -6,7 +6,7 @@
 
         <IsPackable>false</IsPackable>
 
-        <RootNamespace>LogicUnitTest</RootNamespace>
+        <RootNamespace>KingSkullClassicOnline.Engine.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\Engine\KingSkullClassicOnline.Engine.csproj" />
+      <ProjectReference Include="..\Engine\KingSkullClassicOnline.Engine.csproj" />
     </ItemGroup>
 
 </Project>

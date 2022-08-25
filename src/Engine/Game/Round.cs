@@ -86,7 +86,7 @@ public class Round
         for (var index = 0; index < _controller.Players.Count; index++)
         {
             var p = _controller.Players[index];
-            Utils.UpdateScore(p, Plis, Votes[index], _controller.Turn);
+            ScoreCalculator.UpdateScore(p, Plis, Votes[index], _controller.Turn);
         }
     }
 }
