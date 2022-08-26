@@ -42,7 +42,8 @@ Une fois la partie finie, le nom du gagnant est affiché et le créateur peut di
 - Un système de drag and drop pour jouer une carte
 - Ajout d'animations pour rendre le jeu plus attrayant
 ## Besoins non-fonctionnels
-- Le jeu doit être fluide
+- La page d'accueil doit être chargée en moins de 4 secondes.
+- Le jeu doit être fluide. Il doit y avoir un délai de maximum 2 secondes entre le moment où un joueur joue une carte et le moment où l'état du jeu est mis à jour pour les autres joueurs.
 - Les joueurs ne doivent pas subir de déconnexion, dans la mesure du possible
 - Plusieurs parties peuvent être jouées en simultané
 - L’interface de jeu doit être intuitive à utiliser
@@ -74,16 +75,16 @@ La documentation disponible sur notre repository GitHub permet ainsi à une pers
 
 ## Choix des technologies
 ### Backend
-- C# ASP.NET
+- C# ASP.NET : framework permettant de générer à la demande des pages web afin de réaliser des applications web.
 - Serveur sur Microsoft Azure
 
 ### Frontend
-- Blazor
-- MudBlazor
+- Blazor WebAssembly : framework permettant de développer des applications web en C# et HTML. L'application est compilée en WebAssembly et téléchargée par le client, la permettant ainsi de s'exécuter directement sur le navigateur.
+- MudBlazor : librairie de composants graphiques.
 - HTML, CSS, JS, SASS
 
 ### Communication client-serveur
-- SignalR
+- SignalR : librairie permettant de simplifier la communication client-serveur en temps réel.
 
 ## Spécifications du Skull King
 ### But du jeu
@@ -118,7 +119,7 @@ De la plus forte à la moins forte :
 - Pirate ou Scary Mary (pirate)
 - Sirène
 - Cartes noires, de 13 à 1
-- Cartes de la couleur de l'atout, de 13 à 1
+- Cartes de la couleur de l'atout (peut être noir), de 13 à 1
 - Escape, Scary Mary (escape), cartes d'une autre couleur que l'atout
 
 ### Cartes grisées
@@ -155,7 +156,7 @@ De la plus forte à la moins forte :
 ## Déploiement et pipeline de livraison
 
 ### Outils utilisés
-- GitHub
+- GitHub ([https://github.com/CeKonVeu/KingSkullClassicOnline](https://github.com/CeKonVeu/KingSkullClassicOnline))
 - GitHub Actions
 - Microsoft Azure
 
