@@ -1,2 +1,0 @@
-- Lien vers le Mockup : https://www.figma.com/file/MxSReXJyfKx2mXFr3LZPRx/Mockups-%3A-King-Skull?node-id=0%3A1
-- Lien vers les règles du jeu au format PDF : https://www.schmidtspiele.de/files/Produkte/7/75024%20-%20Skull%20King/75024_Skull_King_DE_FR_IT_GB.pdf
