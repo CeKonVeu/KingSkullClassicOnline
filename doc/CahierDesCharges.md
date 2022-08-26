@@ -49,10 +49,12 @@ Une fois la partie finie, le nom du gagnant est affiché et le créateur peut di
 - L’interface de jeu doit être intuitive à utiliser
 
 ## Mockups
-En annexe.
+
+Disponible [ici](./mockups/)
 
 ## Landing Page
-En annexe.
+
+Disponible [ici](./LandingPage.md)
 
 ## Méthodologie de développement
 Le projet se trouve sur un repository GitHub, nous allons donc utiliser les divers outils à disposition sur cette plateforme afin d’améliorer notre processus de travail.
@@ -87,6 +89,12 @@ La documentation disponible sur notre repository GitHub permet ainsi à une pers
 - SignalR : librairie permettant de simplifier la communication client-serveur en temps réel.
 
 ## Spécifications du Skull King
+
+### Règles détaillées
+
+
+Disponible [ici](https://www.schmidtspiele.de/files/Produkte/7/75024%20-%20Skull%20King/75024_Skull_King_DE_FR_IT_GB.pdf)
+
 ### But du jeu
 Le jeu se déroule en 10 manches durant lesquelles les joueurs peuvent gagner ou perdre des points. Le joueur avec le plus de points à la fin desdites manches remporte la partie.
 
@@ -178,7 +186,7 @@ Lorsqu'un merge est effectué sur la branche main, une action GitHub s'occupe d'
 
 Ce workflow est mit à disposition par Azure.
 
-Pour plus d'informations :
+#### Liens utiles
 
 https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-build
 
