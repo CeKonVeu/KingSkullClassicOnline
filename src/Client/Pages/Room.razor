@@ -57,6 +57,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        //TODO regler le problème de render avant la redirection (due au fait que OnInitializedAsync est asynchrone)
         hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
             .Build();
@@ -64,12 +65,7 @@
         await hubConnection.StartAsync();
         //join the group in the hub
         await hubConnection.SendAsync("JoinGroup", id);
-        if(lobbyName is null)
-        {
-            NavManager.NavigateTo("/404");
-            return;
-        }
-        //Change the group name and leave the old one
+    //Change the group name and leave the old one
         hubConnection.On<string>("ReceiveLobbyName", lobbyName =>
         {
             var ancientLobbyName = this.lobbyName;
@@ -77,7 +73,12 @@
             if (lobbyName != ancientLobbyName)
                 hubConnection.SendAsync("LeaveGroup", ancientLobbyName);
             StateHasChanged();
-        });
+        }); 
+        if(lobbyName is null)
+        {
+            NavManager.NavigateTo("/404");
+            return;
+        }
         hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
         {
             var encodedMsg = $"{user}: {message}";
