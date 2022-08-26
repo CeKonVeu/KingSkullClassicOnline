@@ -5,6 +5,7 @@ name: Build and deploy ASP.Net Core app to Azure Web App - KingSkullClassicOnlin
 
 on:
   release:
+    types: [released]
   workflow_dispatch:
 
 jobs:
