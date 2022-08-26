@@ -30,4 +30,4 @@ Cette partie ne traite que du cas où la partie Client et Server sont installés
 
 Si vous ne possédez pas encore de compte [Azure](https://azure.microsoft.com/fr-fr/), vous devez vous en créer un.
 
-Ensuite, 
+Ensuite,
