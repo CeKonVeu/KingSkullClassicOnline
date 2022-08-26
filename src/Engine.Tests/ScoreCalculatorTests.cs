@@ -1,5 +1,4 @@
 using System;
-using KingSkullClassicOnline.Engine;
 using KingSkullClassicOnline.Engine.Card;
 using KingSkullClassicOnline.Engine.Game;
 using NUnit.Framework;
@@ -40,8 +39,8 @@ public class ScoreCalculatorTests
         ScoreCalculator.UpdateScore(_player, _plis, _vote, _turn);
         ScoreCalculator.UpdateScore(_player2, _plis, _vote2, _turn);
 
-        Assert.AreEqual(_player.Votes[1], (_vote, _turn * Config.ScoreVoted));
-        Assert.AreEqual(_player2.Votes[1], (_vote2, Math.Abs(_vote2 - 0) * Config.ScoreBadVote));
+        Assert.AreEqual(_player.Votes[0], (_vote, _turn * Config.ScoreVoted));
+        Assert.AreEqual(_player2.Votes[0], (_vote2, Math.Abs(_vote2 - 0) * Config.ScoreBadVote));
     }
 
     [Test]
@@ -55,8 +54,8 @@ public class ScoreCalculatorTests
         ScoreCalculator.UpdateScore(_player, _plis, _vote, _turn);
         ScoreCalculator.UpdateScore(_player2, _plis, _vote2, _turn);
 
-        Assert.AreEqual(_player.Votes[1], (_vote, -(_turn * Config.Score0)));
-        Assert.AreEqual(_player2.Votes[1], (_vote2, _turn * Config.Score0));
+        Assert.AreEqual(_player.Votes[0], (_vote, -(_turn * Config.Score0)));
+        Assert.AreEqual(_player2.Votes[0], (_vote2, _turn * Config.Score0));
     }
 
     [Test]
@@ -70,8 +69,8 @@ public class ScoreCalculatorTests
         ScoreCalculator.UpdateScore(_player, _plis, _vote, _turn);
         ScoreCalculator.UpdateScore(_player2, _plis, _vote2, _turn);
 
-        Assert.AreEqual(_player.Votes[1], (_vote, _turn * Config.ScoreVoted + Config.BonusMermaid));
-        Assert.AreEqual(_player2.Votes[1], (_vote2, _turn * Config.Score0));
+        Assert.AreEqual(_player.Votes[0], (_vote, _turn * Config.ScoreVoted + Config.BonusMermaid));
+        Assert.AreEqual(_player2.Votes[0], (_vote2, _turn * Config.Score0));
     }
 
     [Test]
@@ -85,8 +84,8 @@ public class ScoreCalculatorTests
         ScoreCalculator.UpdateScore(_player, _plis, _vote, _turn);
         ScoreCalculator.UpdateScore(_player2, _plis, _vote2, _turn);
 
-        Assert.AreEqual(_player.Votes[1], (_vote, _turn * Config.ScoreVoted + Config.BonusSkullKing));
-        Assert.AreEqual(_player2.Votes[1], (_vote2, _turn * Config.Score0));
+        Assert.AreEqual(_player.Votes[0], (_vote, _turn * Config.ScoreVoted + Config.BonusSkullKing));
+        Assert.AreEqual(_player2.Votes[0], (_vote2, _turn * Config.Score0));
     }
 
     [Test]
@@ -100,7 +99,7 @@ public class ScoreCalculatorTests
         ScoreCalculator.UpdateScore(_player, _plis, _vote, _turn);
         ScoreCalculator.UpdateScore(_player2, _plis, _vote2, _turn);
 
-        Assert.AreEqual(_player.Votes[1], (_vote, Math.Abs(_vote - _turn) * Config.ScoreBadVote));
-        Assert.AreEqual(_player2.Votes[1], (_vote2, _turn * Config.Score0));
+        Assert.AreEqual(_player.Votes[0], (_vote, Math.Abs(_vote - _turn) * Config.ScoreBadVote));
+        Assert.AreEqual(_player2.Votes[0], (_vote2, _turn * Config.Score0));
     }
 }

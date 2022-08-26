@@ -47,4 +47,15 @@ public class ControllerTests
         _controller.RemovePlayer(p3);
         CollectionAssert.DoesNotContain(_controller.Players, p3);
     }
+
+    [Test]
+    public void ItShouldRespectTheGameConfig()
+    {
+        _controller.AddPlayer(p1);
+        _controller.AddPlayer(p2);
+        _controller.AddPlayer(p3);
+        _controller.StartGame();
+        var brij = _controller.Players[0].Votes;
+        Assert.AreEqual(_controller.Turn, Config.TurnNumber + 1);
+    }
 }

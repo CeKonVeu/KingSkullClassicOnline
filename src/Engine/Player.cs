@@ -77,7 +77,7 @@ public class Player
     /// <param name="turnNumber">numéro du tour</param>
     public void AddScore(int vote, int score)
     {
-        Votes[_controller.Turn] = (vote, Votes[_controller.Turn].Item2 + score);
+        Votes[_controller.Turn - 1] = (vote, Votes[Math.Max(0, _controller.Turn - 2)].Item2 + score);
     }
 
     /// <summary>
@@ -111,7 +111,7 @@ public class Player
     public int Vote(int turn)
     {
         // TODO récupérer textbox et redemander vote si le if ne passe pas
-        var vote = 2;
+        var vote = turn;
 
         if (vote >= 0 && vote <= turn)
             return vote;

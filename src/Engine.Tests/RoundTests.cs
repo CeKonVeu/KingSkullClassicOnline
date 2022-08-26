@@ -1,5 +1,4 @@
-﻿using KingSkullClassicOnline.Engine;
-using KingSkullClassicOnline.Engine.Game;
+﻿using KingSkullClassicOnline.Engine.Game;
 using NUnit.Framework;
 
 namespace KingSkullClassicOnline.Engine.Tests;

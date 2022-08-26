@@ -69,17 +69,22 @@ public class Round
             Votes[index] = player.Vote(_controller.Turn);
         }
 
+        var lastWinner = 0;
+
         for (var i = 0; i < _controller.Turn; ++i)
         {
             Plis[i] = new Fold();
-            foreach (var p in _controller.Players)
+            for (var index = 0; index < _controller.Players.Count; index++)
             {
+                var p = _controller.Players[(index + lastWinner) % _controller.Players.Count];
                 CurrentPlayer++;
                 var indexCard = p.PlayCard(Plis[i].TurnColor);
                 var cardPlayed = p.Hand[indexCard];
                 p.Hand.RemoveAt(indexCard);
                 Plis[i].PlayCard(p, cardPlayed);
             }
+
+            lastWinner = _controller.Players.IndexOf(Plis[i].GetWinner().Player);
         }
 
         CurrentPlayer = 0;
@@ -88,5 +93,17 @@ public class Round
             var p = _controller.Players[index];
             ScoreCalculator.UpdateScore(p, Plis, Votes[index], _controller.Turn);
         }
+
+        ChangePlayerOrder();
+    }
+
+    /// <summary>
+    ///     Change l'ordre des joueurs
+    /// </summary>
+    private void ChangePlayerOrder()
+    {
+        var temp = _controller.Players.First();
+        _controller.Players.RemoveAt(0);
+        _controller.Players.Add(temp);
     }
 }
