@@ -98,7 +98,7 @@ Disponible [ici](https://www.schmidtspiele.de/files/Produkte/7/75024%20-%20Skull
 ### But du jeu
 Le jeu se déroule en 10 manches durant lesquelles les joueurs peuvent gagner ou perdre des points. Le joueur avec le plus de points à la fin desdites manches remporte la partie.
 
-### Distribuation des cartes
+### Distribution des cartes
 - A chaque manche, tous les joueurs recoivent le nombre de cartes défini par le numéro de la manche.
 - Les cartes sont complètement mélangées entre les manches.
 
