@@ -42,6 +42,14 @@ public class ControllerTests
         _controller.RemovePlayer(p3);
         CollectionAssert.DoesNotContain(_controller.Players, p3);
     }
+    
+    [Test]
+    public void ItShouldRemovePlayersByNames()
+    {
+        Assert.Contains(p3, _controller.Players);
+        _controller.RemovePlayer(p3.Name);
+        CollectionAssert.DoesNotContain(_controller.Players, p3);
+    }
 
     [Test]
     public void ItShouldRespectTheGameConfig()

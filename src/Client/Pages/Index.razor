@@ -41,10 +41,12 @@
     <button @onclick="TriggerPrompt">Trigger browser window prompt</button>
     <button @onclick="Animate">Animation</button>
 </p>
+<div class="form-group">
+    <p>
+        <button @onclick="ConnectToGroup">ROOM</button>
+    </p>
+</div>
 
-<p>
-    <button @onclick="ConnectToGroup">ROOM</button>
-</p>
 
 <p>
     @result
@@ -112,8 +114,6 @@
             .Build();
 
         await hubConnection.StartAsync();
-        //join the group in the hub
-        await hubConnection.SendAsync("CreateGroup", Guid.NewGuid());
         //Change the group name and leave the old one
         hubConnection.On<string>("ReceiveLobbyName", lobbyName =>
         {
@@ -146,7 +146,7 @@
     {
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("JoinGroup", lobbyInput);
+            await hubConnection.SendAsync("CreateGroup", lobbyInput, userInput);
         }
     }
 
