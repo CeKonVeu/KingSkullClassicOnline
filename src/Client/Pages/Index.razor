@@ -41,10 +41,12 @@
     <button @onclick="TriggerPrompt">Trigger browser window prompt</button>
     <button @onclick="Animate">Animation</button>
 </p>
+<div class="form-group">
+    <p>
+        <button @onclick="ConnectToGroup">ROOM</button>
+    </p>
+</div>
 
-<p>
-    <button @onclick="ConnectToGroup">ROOM</button>
-</p>
 
 <p>
     @result
@@ -63,7 +65,6 @@
     private string? messageInput;
     private string? lobbyInput;
     private IJSObjectReference importedDHTML;
-
     private IJSObjectReference? module;
     private string? result;
     private string? lobbyName;
@@ -113,19 +114,24 @@
             .Build();
 
         await hubConnection.StartAsync();
-    //join the group in the hub
-        await hubConnection.SendAsync("JoinGroup", Guid.NewGuid());
+        //Change the group name and leave the old one
         hubConnection.On<string>("ReceiveLobbyName", lobbyName =>
         {
-            this.lobbyName = lobbyName;
+            var ancientLobbyName = this.lobbyName;
+            this.lobbyName = lobbyName; 
+            if(lobbyName != ancientLobbyName)
+                hubConnection.SendAsync("LeaveGroup", ancientLobbyName);
             StateHasChanged();
         });
+
         hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
         {
             var encodedMsg = $"{user}: {message}";
             messages.Add(encodedMsg);
             StateHasChanged();
         });
+        StateHasChanged();
+
     }
 
     private async Task Send()
@@ -140,11 +146,8 @@
     {
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("LeaveGroup", lobbyName);
+            await hubConnection.SendAsync("CreateGroup", lobbyInput, userInput);
         }
-        await hubConnection.SendAsync("JoinGroup", lobbyInput);
-        hubConnection.On<string>("ReceiveLobbyName", lobbyName => { this.lobbyName = lobbyName; });
-        StateHasChanged();
     }
 
 

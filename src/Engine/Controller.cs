@@ -75,6 +75,18 @@ public class Controller
     {
         Players.Remove(p);
     }
+    
+    /// <summary>
+    ///     enlève un joueur au controleur
+    /// </summary>
+    /// <param name="p">joueur à enlever</param>
+    public void RemovePlayer(string p)
+    {
+        // remove the player from the list with the name p
+        var player = Players.Find(x => x.Name == p);
+        if(player != null)
+            Players.Remove(player);
+    }
 
     /// <summary>
     ///     lance une partie et crée la première manche
