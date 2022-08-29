@@ -1,6 +1,7 @@
 ﻿@page "/"
 @inject IJSRuntime JS
 @inject NavigationManager NavigationManager
+@inject IDialogService DialogService
 @using Microsoft.AspNetCore.SignalR.Client
 @implements IAsyncDisposable
 
@@ -18,7 +19,10 @@
         <input @bind="messageInput" size="50"/>
     </label>
 </div>
-<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+
+<MudButton @onclick="VotePopup" Variant="Variant.Filled" Color="Color.Primary">
+    Send
+</MudButton>
 
 <hr>
 
@@ -52,7 +56,6 @@
     @result
 </p>
 
-
 <div class="card">
     <img src="https://exlibris.azureedge.net/screenshots/4001/5047/5024/4/4001504750244_s5.jpg" class="card-image" draggable="false">
 </div>
@@ -68,6 +71,8 @@
     private IJSObjectReference? module;
     private string? result;
     private string? lobbyName;
+
+    public static int turnNumber = 10; // TODO = controller.Turn
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -140,6 +145,12 @@
         {
             await hubConnection.SendAsync("SendMessage", userInput, messageInput, lobbyName);
         }
+    }
+    
+    private void VotePopup()
+    {
+        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true };
+        DialogService.Show<VotePopup>("Votez !", options);
     }
 
     private async Task ConnectToGroup()
