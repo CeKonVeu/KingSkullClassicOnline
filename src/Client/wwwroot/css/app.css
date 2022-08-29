@@ -1,1 +1,1 @@
-html,body{margin:0;height:100vh;width:100vw}#app{height:100%;background:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)),url(https://img.freepik.com/fotos-gratis/fundo-velho-da-textura-do-papel_1232-1932.jpg?w=2000) no-repeat center;background-size:cover}
+*{cursor:url("../cursors/standard.png") 3 0,auto}html,body{margin:0;height:100vh;width:100vw}#app{height:100%;background:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)),url(https://img.freepik.com/fotos-gratis/fundo-velho-da-textura-do-papel_1232-1932.jpg?w=2000) no-repeat center;background-size:cover}
