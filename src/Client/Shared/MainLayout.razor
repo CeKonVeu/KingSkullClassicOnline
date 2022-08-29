@@ -1,8 +1,16 @@
 ﻿@inherits LayoutComponentBase
 
 <MudThemeProvider/>
-<MudDialogProvider/>
 <MudSnackbarProvider/>
+
+<MudDialogProvider
+    FullWidth="true"
+    MaxWidth="MaxWidth.ExtraSmall"
+    CloseButton="false"
+    DisableBackdropClick="true"
+    Position="DialogPosition.Center"
+    CloseOnEscapeKey="false"
+/>
 
 <MudLayout>
     <MudContainer Class="ps-5 py-8 border-none">

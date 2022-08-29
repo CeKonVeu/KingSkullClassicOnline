@@ -1,0 +1,53 @@
+﻿@using System.Threading;
+
+<MudDialog>
+    <DialogContent>
+        <h1>@Count</h1>
+    </DialogContent>
+    <DialogActions>
+        <MudSlider TickMarks="true" TickMarkLabels="@votes" Min="0" Max="@Index.turnNumber" Step="1"/>
+        <MudButton Color="Color.Primary" OnClick="Submit">Vote</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@functions {
+    private int Count { get; set; } = 10;
+
+    void StartCountdown()
+    {
+        var timer = new Timer(new TimerCallback(_ =>
+        {
+            if (Count > 0)
+            {
+                Count--;
+
+                InvokeAsync(() =>
+                {
+                    StateHasChanged();
+                });
+            } else
+            {
+                // TODO Transmettre la valeur du slider dans le submit
+                Submit();
+            }
+        }), null, 1000, 1000);
+    }
+}
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    string[] votes =  Enumerable.Range(0, @Index.turnNumber+1).ToArray().Select(x=>x.ToString()).ToArray();
+
+    // TODO Enregistrer le vote
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            StartCountdown();
+        }
+    }
+}
