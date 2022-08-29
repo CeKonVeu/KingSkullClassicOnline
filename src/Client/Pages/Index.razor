@@ -43,7 +43,7 @@
 </p>
 
 <p>
-    <button @onclick="ConnectToHub">ROOM</button>
+    <button @onclick="ConnectToGroup">ROOM</button>
 </p>
 
 <p>
@@ -136,7 +136,7 @@
         }
     }
 
-    private async Task ConnectToHub()
+    private async Task ConnectToGroup()
     {
         if (hubConnection is not null)
         {
