@@ -33,7 +33,7 @@ public class LobbyHub : Hub
             return;
         await Groups.AddToGroupAsync(Context.ConnectionId, lobbyName);
         groups.Add(lobbyName, new Controller());
-        Clients.Client(Context.ConnectionId).SendAsync("ReceiveLobbyName", lobbyName);
+        Clients.Caller.SendAsync("ReceiveLobbyName", lobbyName);
         Player player = new Player(playerName, groups[lobbyName]);
     }
     
@@ -49,7 +49,7 @@ public class LobbyHub : Hub
             return;
 
         await Groups.AddToGroupAsync(Context.ConnectionId, lobbyName);
-        Clients.Client(Context.ConnectionId).SendAsync("ReceiveLobbyName", lobbyName);
+        Clients.Caller.SendAsync("ReceiveLobbyName", lobbyName);
         Player player = new Player(playerName, groups[lobbyName]);
     }
 
