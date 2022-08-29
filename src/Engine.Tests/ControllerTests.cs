@@ -55,7 +55,6 @@ public class ControllerTests
         _controller.AddPlayer(p2);
         _controller.AddPlayer(p3);
         _controller.StartGame();
-        var brij = _controller.Players[0].Votes;
         Assert.AreEqual(_controller.Turn, Config.TurnNumber + 1);
     }
 }
