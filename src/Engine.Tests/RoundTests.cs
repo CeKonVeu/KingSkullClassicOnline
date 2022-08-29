@@ -19,10 +19,6 @@ public class RoundTests
         _p2 = new Player("Alex", _controller);
         _p3 = new Player("Loris", _controller);
 
-        _controller.AddPlayer(_p1);
-        _controller.AddPlayer(_p2);
-        _controller.AddPlayer(_p3);
-
         _controller.Turn = 2;
 
         _round = new Round(_controller);

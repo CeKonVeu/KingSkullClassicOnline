@@ -22,6 +22,7 @@ public class Player
         Name = playerName;
         Hand = new List<Card.Card>();
         Votes = new (int, int)[10];
+        _controller.AddPlayer(this);
     }
 
     /// <summary>

@@ -30,10 +30,6 @@ public class ControllerTests
     [Test]
     public void ItShouldAddPlayers()
     {
-        _controller.AddPlayer(p1);
-        _controller.AddPlayer(p2);
-        _controller.AddPlayer(p3);
-
         Assert.Contains(p1, _controller.Players);
         Assert.Contains(p2, _controller.Players);
         Assert.Contains(p3, _controller.Players);
@@ -42,7 +38,6 @@ public class ControllerTests
     [Test]
     public void ItShouldRemovePlayers()
     {
-        _controller.AddPlayer(p3);
         Assert.Contains(p3, _controller.Players);
         _controller.RemovePlayer(p3);
         CollectionAssert.DoesNotContain(_controller.Players, p3);
@@ -51,9 +46,6 @@ public class ControllerTests
     [Test]
     public void ItShouldRespectTheGameConfig()
     {
-        _controller.AddPlayer(p1);
-        _controller.AddPlayer(p2);
-        _controller.AddPlayer(p3);
         _controller.StartGame();
         Assert.AreEqual(_controller.Turn, Config.TurnNumber + 1);
     }
