@@ -6,7 +6,7 @@
 @using KingSkullClassicOnline.Engine
 @implements IAsyncDisposable
 
-<PageTitle>@vote</PageTitle>
+<PageTitle>Test</PageTitle>
 
 <div class="form-group">
     <label>
@@ -122,12 +122,12 @@
             .Build();
 
         await hubConnection.StartAsync();
-        //Change the group name and leave the old one
+    //Change the group name and leave the old one
         hubConnection.On<string>("ReceiveLobbyName", lobbyName =>
         {
             var ancientLobbyName = this.lobbyName;
-            this.lobbyName = lobbyName; 
-            if(lobbyName != ancientLobbyName)
+            this.lobbyName = lobbyName;
+            if (lobbyName != ancientLobbyName)
                 hubConnection.SendAsync("LeaveGroup", ancientLobbyName);
             StateHasChanged();
         });
@@ -139,7 +139,6 @@
             StateHasChanged();
         });
         StateHasChanged();
-
     }
 
     private async Task Send()
@@ -152,7 +151,7 @@
 
     async Task VotePopup()
     {
-        var options = new DialogOptions {MaxWidth = MaxWidth.Medium, FullWidth = true};
+        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true };
         var dialog = DialogService.Show<VotePopup>("Votez !", options);
         var result = await dialog.Result;
 
