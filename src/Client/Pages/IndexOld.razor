@@ -1,0 +1,154 @@
+﻿@page "/old"
+@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.SignalR.Client
+@implements IAsyncDisposable
+
+<PageTitle>Index3</PageTitle>
+
+<div class="form-group">
+    <label>
+        User:
+        <input @bind="userInput"/>
+    </label>
+</div>
+<div class="form-group">
+    <label>
+        Message:
+        <input @bind="messageInput" size="50"/>
+    </label>
+</div>
+<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+
+<hr>
+
+<ul id="messagesList">
+    @foreach (var message in messages)
+    {
+        <li>@message</li>
+    }
+</ul>
+<div class="form-group">
+    <label>
+        lobbyName:
+        <input @bind="lobbyInput"/>
+    </label>
+</div>
+<ul>
+    <li>@lobbyName</li>
+</ul>
+<p>
+    <button @onclick="TriggerPrompt">Trigger browser window prompt</button>
+    <button @onclick="Animate">Animation</button>
+</p>
+
+<p>
+    <button @onclick="ConnectToGroup">ROOM</button>
+</p>
+
+<p>
+    @result
+</p>
+
+
+<div class="card">
+    <img src="https://exlibris.azureedge.net/screenshots/4001/5047/5024/4/4001504750244_s5.jpg" class="card-image" draggable="false">
+</div>
+
+
+@code {
+    private HubConnection? hubConnection;
+    private readonly List<string> messages = new();
+    private string? userInput;
+    private string? messageInput;
+    private string? lobbyInput;
+    private IJSObjectReference importedDHTML;
+
+    private IJSObjectReference? module;
+    private string? result;
+    private string? lobbyName;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            module = await JS.InvokeAsync<IJSObjectReference>("import",
+                "../Pages/Index.razor.js");
+        }
+    }
+
+    private async Task TriggerPrompt()
+    {
+        result = await Prompt("Provide some text");
+    }
+
+    private async Task Animate()
+    {
+        if (module is not null) await module.InvokeVoidAsync("init");
+    }
+
+
+    public async ValueTask<string?> Prompt(string message)
+    {
+        return module is not null ?
+            await module.InvokeAsync<string>("showPrompt", message) : null;
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (module is not null)
+        {
+            await module.DisposeAsync();
+        }
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
+            .Build();
+
+        await hubConnection.StartAsync();
+    //join the group in the hub
+        await hubConnection.SendAsync("JoinGroup", Guid.NewGuid());
+        hubConnection.On<string>("ReceiveLobbyName", lobbyName =>
+        {
+            this.lobbyName = lobbyName;
+            StateHasChanged();
+        });
+        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        {
+            var encodedMsg = $"{user}: {message}";
+            messages.Add(encodedMsg);
+            StateHasChanged();
+        });
+    }
+
+    private async Task Send()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("SendMessage", userInput, messageInput, lobbyName);
+        }
+    }
+
+    private async Task ConnectToGroup()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("LeaveGroup", lobbyName);
+        }
+        await hubConnection.SendAsync("JoinGroup", lobbyInput);
+        hubConnection.On<string>("ReceiveLobbyName", lobbyName => { this.lobbyName = lobbyName; });
+        StateHasChanged();
+    }
+
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+}

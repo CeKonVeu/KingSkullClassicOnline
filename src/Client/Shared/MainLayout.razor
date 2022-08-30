@@ -1,28 +1,41 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider/>
-<MudDialogProvider/>
+<MudThemeProvider Theme="CustomTheme"/>
 <MudSnackbarProvider/>
 
+<MudDialogProvider
+    FullWidth="true"
+    MaxWidth="MaxWidth.ExtraSmall"
+    CloseButton="true"
+    DisableBackdropClick="false"
+    Position="DialogPosition.Center"
+/>
+
 <MudLayout>
-    <MudContainer Class="ps-5 py-8 border-none">
-        @Body
-    </MudContainer>
+    <MudMainContent Class="py-8">
+        <MudContainer Class="mx-auto" Style="height:100vh">
+            @Body
+        </MudContainer>
+    </MudMainContent>
 </MudLayout>
 
-@* *@
-@* <div class="page"> *@
-@*     <div class="sidebar"> *@
-@*         <NavMenu /> *@
-@*     </div> *@
-@* *@
-@*     <main> *@
-@*         <div class="top-row px-4"> *@
-@*             <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a> *@
-@*         </div> *@
-@* *@
-@*         <article class="content px-4"> *@
-@*             @Body *@
-@*         </article> *@
-@*     </main> *@
-@* </div> *@
+@code
+{
+    readonly MudTheme CustomTheme = new()
+    {
+        Palette = new Palette
+        {
+            Primary = Colors.Yellow.Darken1,
+            Secondary = Colors.Green.Accent4,
+            PrimaryContrastText = Colors.Shades.Black,
+            TextSecondary = Colors.Yellow.Darken1,
+            TextPrimary = Colors.Shades.White,
+            LinesInputs = Colors.Yellow.Darken1,
+            ActionDefault = Colors.Yellow.Lighten3
+        },
+        LayoutProperties = new LayoutProperties
+        {
+            AppbarHeight = "0"
+        }
+    };
+}
