@@ -1,11 +1,10 @@
-﻿@using System.Threading;
-
-<MudDialog>
+﻿<MudDialog>
     <DialogContent>
+        <h1>@Value1</h1>
         <h1>@Count</h1>
     </DialogContent>
     <DialogActions>
-        <MudSlider TickMarks="true" TickMarkLabels="@votes" Min="0" Max="@Index.turnNumber" Step="1"/>
+        <MudSlider TickMarks="true" TickMarkLabels="@votes" Min="0" Max="@Index.turnNumber" Step="1" @bind-Value="@Value1" Immediate="true"/>
         <MudButton Color="Color.Primary" OnClick="Submit">Vote</MudButton>
     </DialogActions>
 </MudDialog>
@@ -14,35 +13,41 @@
 @functions {
     private int Count { get; set; } = 10;
 
+    public double? Value1 { get; set; } = 5;
+
     void StartCountdown()
     {
-        var timer = new Timer(new TimerCallback(_ =>
+        var timer = new Timer(_ =>
         {
             if (Count > 0)
             {
                 Count--;
 
-                InvokeAsync(() =>
-                {
-                    StateHasChanged();
-                });
-            } else
+                InvokeAsync(() => { StateHasChanged(); });
+            }
+            else
             {
-                // TODO Transmettre la valeur du slider dans le submit
+    // TODO Transmettre la valeur du slider dans le submit
                 Submit();
             }
-        }), null, 1000, 1000);
+        }, null, 1000, 1000);
     }
+
 }
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    string[] votes =  Enumerable.Range(0, @Index.turnNumber+1).ToArray().Select(x=>x.ToString()).ToArray();
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    readonly string[] votes = Enumerable.Range(0, Index.turnNumber + 1).ToArray().Select(x => x.ToString()).ToArray();
 
     // TODO Enregistrer le vote
-    void Submit() => MudDialog.Close(DialogResult.Ok(true));
-    
+    void Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(Value1));
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -50,4 +55,5 @@
             StartCountdown();
         }
     }
+
 }

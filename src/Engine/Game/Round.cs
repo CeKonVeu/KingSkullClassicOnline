@@ -66,7 +66,7 @@ public class Round
         for (var index = 0; index < _controller.Players.Count; index++)
         {
             var player = _controller.Players[index];
-            Votes[index] = player.Vote(_controller.Turn);
+            Votes[index] = player.CurrentVote;
         }
 
         var lastWinner = 0;

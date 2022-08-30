@@ -3,9 +3,10 @@
 @inject NavigationManager NavigationManager
 @inject IDialogService DialogService
 @using Microsoft.AspNetCore.SignalR.Client
+@using KingSkullClassicOnline.Engine
 @implements IAsyncDisposable
 
-<PageTitle>Index3</PageTitle>
+<PageTitle>@vote</PageTitle>
 
 <div class="form-group">
     <label>
@@ -71,8 +72,10 @@
     private IJSObjectReference? module;
     private string? result;
     private string? lobbyName;
+    int vote;
 
     public static int turnNumber = 10; // TODO = controller.Turn
+    readonly Player p = new("Paul", new Controller()); // TODO = lui meme
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -146,11 +149,16 @@
             await hubConnection.SendAsync("SendMessage", userInput, messageInput, lobbyName);
         }
     }
-    
-    private void VotePopup()
+
+    async Task VotePopup()
     {
-        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true };
-        DialogService.Show<VotePopup>("Votez !", options);
+        var options = new DialogOptions {MaxWidth = MaxWidth.Medium, FullWidth = true};
+        var dialog = DialogService.Show<VotePopup>("Votez !", options);
+        var result = await dialog.Result;
+
+        vote = Convert.ToInt32(result.Data);
+
+        p.setVote(vote);
     }
 
     private async Task ConnectToGroup()
