@@ -1,0 +1,115 @@
+@page "/room/{id}"
+@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.SignalR.Client
+@implements IAsyncDisposable
+@inject NavigationManager NavManager
+
+<h3>Room</h3>
+<p>@id</p>
+<div class="form-group">
+    <label>
+        lobbyName:
+        <input @bind="lobbyInput"/>
+    </label>
+</div>
+<div class="form-group">
+    <label>
+        playerName:
+        <input @bind="playerName"/>
+    </label>
+</div>
+<p>
+    <button @onclick="ConnectToGroup">ROOM</button>
+</p>
+<hr>
+<ul>
+    <li>@lobbyName</li>
+</ul>
+<ul id="messagesList">
+    @foreach (var message in messages)
+    {
+        <li>@message</li>
+    }
+</ul>
+@code {
+    [Parameter]
+    public string id { get; set; }
+    
+    private string? lobbyInput;
+    private string? lobbyName;
+    private string? playerName;
+    private readonly List<string> messages = new();
+
+    private HubConnection? hubConnection;
+    private IJSObjectReference importedDHTML;
+    private IJSObjectReference? module;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            module = await JS.InvokeAsync<IJSObjectReference>("import",
+                "../Pages/Index.razor.js");
+        }
+    }
+    
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (module is not null)
+        {
+            await module.DisposeAsync();
+        }
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+        //TODO regler le problème de render avant la redirection (due au fait que OnInitializedAsync est asynchrone)
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
+            .Build();
+
+        await hubConnection.StartAsync();
+        //Change the group name and leave the old one
+        hubConnection.On<string>("ReceiveLobbyName", lobbyName =>
+        {
+            var ancientLobbyName = this.lobbyName;
+            this.lobbyName = lobbyName;
+            if (lobbyName != ancientLobbyName)
+                hubConnection.SendAsync("LeaveGroup", ancientLobbyName);
+            StateHasChanged();
+        }); 
+        await hubConnection.SendAsync("DoesLobbyExist", id);
+        hubConnection.On<string>("DoesLobbyExist", lobbyName =>
+        {
+            if(lobbyName is "")
+            {
+                NavManager.NavigateTo("/404");
+            }
+            else
+            {
+                this.lobbyName = lobbyName;
+            }
+        }); 
+
+        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        {
+            var encodedMsg = $"{user}: {message}";
+            messages.Add(encodedMsg);
+            StateHasChanged();
+        });
+        StateHasChanged();
+
+    }
+    private async Task ConnectToGroup()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("JoinGroup", id, playerName);
+        }
+    }
+}
