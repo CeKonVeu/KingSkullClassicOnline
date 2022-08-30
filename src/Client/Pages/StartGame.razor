@@ -36,7 +36,7 @@
         </MudButton>
 
         <MudButton
-            @onclick="OpenDialog"
+            @onclick="OpenRulesDialog"
             Style="@($"color:{Colors.Shades.Black}; background:{Colors.Yellow.Darken1};")"
             Variant="Variant.Filled"
             Size="Size.Large"
@@ -71,7 +71,7 @@
     public string ReadOnly { get; set; } = "https://localhost:7114/startgame/amogus";
 
     // Pop-up des règles
-    private void OpenDialog()
+    private void OpenRulesDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<ChangeRules>("Modifier les règles", options);

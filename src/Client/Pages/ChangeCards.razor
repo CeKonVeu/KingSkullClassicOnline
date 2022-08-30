@@ -1,0 +1,46 @@
+@inject IDialogService DialogService
+
+<MudDialog>
+    <DialogActions>
+        <MudContainer>
+            <MudStack>
+                @foreach (var nbCard in NbCards)
+                {
+                    <CardNumber
+                        Name="@nbCard.Item1"
+                        Color="@nbCard.Item2"
+                        Value="@nbCard.Item3">
+                    </CardNumber>
+                }
+
+                <MudButton
+                    OnClick="CloseCardsDialog"
+                    Color="Color.Primary">
+                    Valider
+                </MudButton>
+
+            </MudStack>
+        </MudContainer>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    void CloseCardsDialog()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    public Tuple<string, Color, int>[] NbCards =
+    {
+        Tuple.Create("SkullKing", Color.Primary, 1),
+        Tuple.Create("Pirate", Color.Dark, 5),
+        Tuple.Create("ScaryMary", Color.Success, 1),
+        Tuple.Create("Mermaid", Color.Secondary, 1),
+        Tuple.Create("Escape", Color.Tertiary, 5)
+    };
+
+}
