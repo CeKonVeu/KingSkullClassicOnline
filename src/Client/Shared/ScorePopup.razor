@@ -49,11 +49,11 @@
         
         int playerNumber = _score.Length;
         
-        @for (int i = 0; i < @Config.TurnNumber; i++)
+        for (int i = 0; i < @Config.TurnNumber; i++)
         {
             _scoreReformat[i] = new (int, int)[playerNumber];
             
-            @for (int x = 0; x < _score.Length; x++)
+            for (int x = 0; x < _score.Length; x++)
             {
                 _scoreReformat[i][x] = _score[x].Votes[i];
             }
