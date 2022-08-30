@@ -17,6 +17,11 @@
 
   &:last-child {
     width: 100px;
-    flex-grow: 0;
+  }
+
+  &.disabled {
+    pointer-events: none;
+    filter: grayscale(0.4);
+    opacity: 0.6;
   }
 }
