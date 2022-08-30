@@ -1,0 +1,20 @@
+﻿<MudContainer Class="d-flex justify-center gap-1">
+    @foreach (var card in Cards)
+    {
+        <div class="card-container">
+            <MudImage Class="card" Src="@($"./cards/{card}.png")" Elevation="1" UserAttributes="_imgCustomAttr"/>
+        </div>
+    }
+</MudContainer>
+
+@code {
+
+    [Parameter]
+    public string[] Cards { get; set; } = Array.Empty<string>();
+
+    private readonly Dictionary<string, object> _imgCustomAttr = new()
+    {
+        { "draggable", "false" }
+    };
+
+}
