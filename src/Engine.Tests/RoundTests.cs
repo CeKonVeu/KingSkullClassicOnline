@@ -44,7 +44,7 @@ public class RoundTests
     public void ItShouldPlayCorrectly()
     {
         _round.Play();
-        CollectionAssert.AreEqual(new[] {2, 2, 2}, _round.Votes);
+        CollectionAssert.AreEqual(new[] {0, 0, 0}, _round.Votes);
 
         foreach (var pli in _round.Plis) Assert.AreEqual(_controller.Players.Count, pli.CardsPlayed.Count);
     }

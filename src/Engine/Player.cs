@@ -9,6 +9,7 @@ public class Player
 {
     private readonly Controller _controller;
     private int _selectedCard;
+    public int CurrentVote;
     public bool IsOwner;
 
     /// <summary>
@@ -19,6 +20,7 @@ public class Player
     {
         _selectedCard = 0;
         _controller = controller;
+        CurrentVote = 0;
         Name = playerName;
         Hand = new List<Card.Card>();
         Votes = new (int, int)[10];
@@ -105,18 +107,11 @@ public class Player
     }
 
     /// <summary>
-    ///     récupère le vote du joueur
+    ///     set le vote du joueur
     /// </summary>
-    /// <param name="turn">limite de vote supérieur</param>
-    /// <returns>vote effectué</returns>
-    public int Vote(int turn)
+    /// <param name="turn">valeur reçue pour le vote</param>
+    public void setVote(int vote)
     {
-        // TODO récupérer textbox et redemander vote si le if ne passe pas
-        var vote = turn;
-
-        if (vote >= 0 && vote <= turn)
-            return vote;
-
-        return -1;
+        CurrentVote = vote;
     }
 }
