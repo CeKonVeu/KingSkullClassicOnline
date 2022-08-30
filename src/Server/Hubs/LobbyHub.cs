@@ -33,8 +33,8 @@ public class LobbyHub : Hub
             return;
         await Groups.AddToGroupAsync(Context.ConnectionId, lobbyName);
         groups.Add(lobbyName, new Controller());
-        Clients.Caller.SendAsync("ReceiveLobbyName", lobbyName);
         Player player = new Player(playerName, groups[lobbyName]);
+        Clients.Caller.SendAsync("ReceiveLobbyName", lobbyName);
     }
     
     /// <summary>
@@ -49,8 +49,8 @@ public class LobbyHub : Hub
             return;
 
         await Groups.AddToGroupAsync(Context.ConnectionId, lobbyName);
-        Clients.Caller.SendAsync("ReceiveLobbyName", lobbyName);
         Player player = new Player(playerName, groups[lobbyName]);
+        Clients.Caller.SendAsync("ReceiveLobbyName", lobbyName);
     }
 
     /// <summary>
@@ -76,8 +76,6 @@ public class LobbyHub : Hub
         if (groups.ContainsKey(lobbyName))
         {
             groups[lobbyName].RemovePlayer(playerName);
-            //find the playerName in the group and remove it
-            
             if(groups[lobbyName].Players.Count <= 0)
             {
                 groups.Remove(lobbyName);
