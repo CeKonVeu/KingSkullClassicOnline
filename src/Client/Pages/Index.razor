@@ -5,7 +5,7 @@
 <h1 class="title">King Skull</h1>
 <h2 class="title">Classic Online</h2>
 
-<MudContainer Class="mt-16" MaxWidth="MaxWidth.Small">
+<MudContainer Class="mt-16 bg" MaxWidth="MaxWidth.Small">
     <MudStack>
         <MudTextField
             @bind-Value="TextValue"
@@ -24,6 +24,17 @@
         </MudButton>
     </MudStack>
 </MudContainer>
+
+<style>
+/* TODO trouver une solution*/
+    #app {
+      background: linear-gradient(
+                      rgba(0, 0, 0, 0.4),
+                      rgba(0, 0, 0, 0.6)
+      ), url(./images/boat.jfif) no-repeat center;
+      background-size: cover;
+    }
+</style>
 
 @code {
     public string TextValue { get; set; }
