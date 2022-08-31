@@ -62,7 +62,6 @@ public class Round
     /// </summary>
     public void Play()
     {
-        DealCards();
         for (var index = 0; index < _controller.Players.Count; index++)
         {
             var player = _controller.Players[index];

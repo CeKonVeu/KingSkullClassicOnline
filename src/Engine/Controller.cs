@@ -8,18 +8,23 @@ namespace KingSkullClassicOnline.Engine;
 /// </summary>
 public class Controller
 {
-    private Round _currentRound;
+    public int areReady;
+    public Dictionary<string, string?> playerId;
 
     /// <summary>
     ///     Constructeur
     /// </summary>
     public Controller()
     {
+        areReady = 0;
+        playerId = new Dictionary<string, string?>();
         Players = new List<Player>();
         Turn = 1;
         Deck = new List<Card.Card>();
         CreateDeck();
     }
+
+    public Round CurrentRound { get; set; }
 
     public List<Card.Card> Deck { get; }
 
@@ -61,10 +66,12 @@ public class Controller
     ///     ajoute un joueur au controleur
     /// </summary>
     /// <param name="p">joueur à ajouter</param>
-    public void AddPlayer(Player p)
+    /// <param name="connetionId">id de connexion du joueur</param>
+    public void AddPlayer(Player p, string? connetionId)
     {
         if (Players.Count < Config.MaxPlayer)
             Players.Add(p);
+        playerId.Add(p.Name, connetionId);
     }
 
     /// <summary>
@@ -75,7 +82,7 @@ public class Controller
     {
         Players.Remove(p);
     }
-    
+
     /// <summary>
     ///     enlève un joueur au controleur
     /// </summary>
@@ -84,7 +91,7 @@ public class Controller
     {
         // remove the player from the list with the name p
         var player = Players.Find(x => x.Name == p);
-        if(player != null)
+        if (player != null)
             Players.Remove(player);
     }
 
@@ -95,9 +102,19 @@ public class Controller
     {
         while (Turn <= Config.TurnNumber)
         {
-            _currentRound = new Round(this);
-            _currentRound.Play();
+            CurrentRound = new Round(this);
+            CurrentRound.Play();
             Turn++;
         }
+    }
+
+    /// <summary>
+    ///     récupère l'id de connexion d'un joueur
+    /// </summary>
+    /// <param name="playerName">nom du joueur</param>
+    /// <returns>son id</returns>
+    public string? GetConnectionId(string playerName)
+    {
+        return playerId[playerName];
     }
 }

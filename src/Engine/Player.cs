@@ -16,6 +16,7 @@ public class Player
     ///     constructeur
     /// </summary>
     /// <param name="playerName">nom du joueur</param>
+    /// <param name="connectionId">id de connexion</param>
     public Player(string playerName, Controller controller)
     {
         _selectedCard = 0;
@@ -24,7 +25,6 @@ public class Player
         Name = playerName;
         Hand = new List<Card.Card>();
         Votes = new (int, int)[10];
-        _controller.AddPlayer(this);
     }
 
     /// <summary>

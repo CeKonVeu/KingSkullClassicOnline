@@ -32,10 +32,14 @@
         <li>@message</li>
     }
 </ul>
+<MudButton OnClick="Send">send</MudButton>
+<MudButton OnClick="Re">re</MudButton>
+
 @code {
+
     [Parameter]
     public string id { get; set; }
-    
+
     private string? lobbyInput;
     private string? lobbyName;
     private string? playerName;
@@ -44,6 +48,7 @@
     private HubConnection? hubConnection;
     private IJSObjectReference importedDHTML;
     private IJSObjectReference? module;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -52,7 +57,7 @@
                 "../Pages/Index.razor.js");
         }
     }
-    
+
     async ValueTask IAsyncDisposable.DisposeAsync()
     {
         if (module is not null)
@@ -65,28 +70,41 @@
         }
     }
 
+    private async Task Send()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("SendMessage", "room", "cum", lobbyName);
+        }
+    }
+
+    private async Task Re()
+    {
+        NavManager.NavigateTo("/startGame");
+    }
+
     protected override async Task OnInitializedAsync()
     {
-        
-        //TODO regler le problème de render avant la redirection (due au fait que OnInitializedAsync est asynchrone)
+    //TODO regler le problème de render avant la redirection (due au fait que OnInitializedAsync est asynchrone)
         hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
             .Build();
 
         await hubConnection.StartAsync();
-        //Change the group name and leave the old one
+    //Change the group name and leave the old one
         hubConnection.On<string>("ReceiveLobbyName", lobbyName =>
         {
             var ancientLobbyName = this.lobbyName;
             this.lobbyName = lobbyName;
-            if (lobbyName != ancientLobbyName)
-                hubConnection.SendAsync("LeaveGroup", ancientLobbyName);
+            Data.LobbyName = lobbyName;
+            Data.Player = playerName;
+            hubConnection.SendAsync("LeaveGroup", ancientLobbyName);
             StateHasChanged();
-        }); 
+        });
         await hubConnection.SendAsync("DoesLobbyExist", id);
         hubConnection.On<string>("DoesLobbyExist", lobbyName =>
         {
-            if(lobbyName is "")
+            if (lobbyName is "")
             {
                 NavManager.NavigateTo("/404");
             }
@@ -94,7 +112,7 @@
             {
                 this.lobbyName = lobbyName;
             }
-        }); 
+        });
 
         hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
         {
@@ -103,13 +121,16 @@
             StateHasChanged();
         });
         StateHasChanged();
-
     }
+
     private async Task ConnectToGroup()
     {
         if (hubConnection is not null)
         {
             await hubConnection.SendAsync("JoinGroup", id, playerName);
+            Data.LobbyName = id;
+            Data.Player = playerName;
         }
     }
+
 }

@@ -1,0 +1,63 @@
+﻿@page "/game"
+@using Microsoft.AspNetCore.SignalR.Client
+@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
+@inject IDialogService DialogService
+
+<h3>@lobbyName</h3>
+<MudButton @onclick="VotePopup" Variant="Variant.Filled" Color="Color.Primary">
+    @test
+</MudButton>
+<HandGame Cards="@cards"/>
+
+@code {
+    private HubConnection? _hubConnection;
+    private int vote;
+    private string[] cards = Array.Empty<string>();
+    private string test = "Send";
+    private string lobbyName = "a";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
+            .Build();
+
+        await _hubConnection.StartAsync();
+
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.SendAsync("JoinGroup", Data.LobbyName, Data.Player);
+        }
+
+        lobbyName = Data.LobbyName;
+        StateHasChanged();
+
+        await _hubConnection.SendAsync("ReadyGame", Data.LobbyName);
+
+        _hubConnection.On("ReceiveStartingHand", (string hand) =>
+        {
+            test = "penis";
+            cards = hand.Split(",");
+            StateHasChanged();
+        });
+
+        _hubConnection.On("AskVote", () =>
+        {
+            VotePopup();
+            StateHasChanged();
+            _hubConnection.SendAsync("SendVote", vote, Data.LobbyName, Data.Player);
+        });
+    }
+
+    async Task VotePopup()
+    {
+        var options = new DialogOptions {MaxWidth = MaxWidth.Medium, FullWidth = true};
+        var dialog = DialogService.Show<VotePopup>("Votez !", options);
+        var result = await dialog.Result;
+
+        vote = Convert.ToInt32(result.Data);
+    }
+
+}

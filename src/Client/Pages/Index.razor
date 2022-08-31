@@ -57,10 +57,6 @@
     @result
 </p>
 
-<div class="card">
-    <img src="https://exlibris.azureedge.net/screenshots/4001/5047/5024/4/4001504750244_s5.jpg" class="card-image" draggable="false">
-</div>
-
 
 @code {
     private HubConnection? hubConnection;
@@ -125,11 +121,11 @@
     //Change the group name and leave the old one
         hubConnection.On<string>("ReceiveLobbyName", lobbyName =>
         {
-            var ancientLobbyName = this.lobbyName;
             this.lobbyName = lobbyName;
-            if (lobbyName != ancientLobbyName)
-                hubConnection.SendAsync("LeaveGroup", ancientLobbyName);
-            StateHasChanged();
+            Data.LobbyName = lobbyName;
+            Data.Player = userInput;
+            hubConnection.SendAsync("LeaveGroup", lobbyName);
+            NavigationManager.NavigateTo("/startGame");
         });
 
         hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
@@ -151,7 +147,7 @@
 
     async Task VotePopup()
     {
-        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true };
+        var options = new DialogOptions {MaxWidth = MaxWidth.Medium, FullWidth = true};
         var dialog = DialogService.Show<VotePopup>("Votez !", options);
         var result = await dialog.Result;
 
