@@ -1,64 +1,62 @@
 @inject IDialogService DialogService
 
-<MudDialog>
-    <DialogActions>
+<div>
+    <BaseDialog>
         <MudContainer MaxWidth="MaxWidth.Medium">
             <MudStack>
-                <MudPaper>
-                    <MudCheckBox
-                        @bind-Checked="@FirstPlayerVote0"
-                        Label="Joueur en tête parie 0 à partir de la manche 5">
-                    </MudCheckBox>
-                </MudPaper>
-                
-                <MudPaper>
-                    <MudCheckBox
-                        @bind-Checked="@Round5And10Vote0"
-                        Label="Tous les joueurs parient 0 aux manches 5 et 10">
-                    </MudCheckBox>
-                </MudPaper>
+                <MudCheckBox
+                    @bind-Checked="@FirstPlayerVote0"
+                    Label="Joueur en tête parie 0 à partir de la manche 5">
+                </MudCheckBox>
+
+                <MudCheckBox
+                    @bind-Checked="@Round5And10Vote0"
+                    Label="Les joueurs parient 0 aux manches 5 et 10">
+                </MudCheckBox>
 
                 <MudSlider
                     @bind-Value="MaxPlayers"
                     TickMarks="true"
                     Variant="Variant.Filled"
-                    Min="2"
+                    Color="Color.Dark"
+                    Min="6"
                     Max="10">
                     Nombre de joueurs maximum : @MaxPlayers
                 </MudSlider>
 
                 <MudButton
                     @onclick="OpenCardsDialog"
-                    Style="@($"color:{Colors.Shades.Black}; background:{Colors.Blue.Darken1};")"
                     Variant="Variant.Filled"
-                    Size="Size.Large"
+                    Color="Color.Primary"
                     FullWidth="true">
                     Modifier les cartes
                 </MudButton>
 
                 <MudButton
-                    OnClick="CloseRulesDialog"
+                    OnClick="CloseDialog"
+                    Variant="Variant.Filled"
                     Color="Color.Primary">
                     Valider
                 </MudButton>
 
             </MudStack>
         </MudContainer>
-    </DialogActions>
-</MudDialog>
+    </BaseDialog>
+</div>
+
 
 @code {
 
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; }
 
-    void CloseRulesDialog()
+    public void CloseDialog()
     {
         MudDialog.Close(DialogResult.Ok(true));
     }
 
-    public bool FirstPlayerVote0 { get; set; } = false;
-    public bool Round5And10Vote0 { get; set; } = true;
+    public bool FirstPlayerVote0 { get; set; }
+    public bool Round5And10Vote0 { get; set; }
 
     public int MaxPlayers = 6;
 

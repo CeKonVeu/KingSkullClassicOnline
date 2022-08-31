@@ -1,4 +1,5 @@
 @page "/lobby"
+@using KingSkullClassicOnline.Client.Shared.Popups
 
 @inject IDialogService DialogService
 
@@ -50,7 +51,7 @@
 
 </MudContainer>
 
-<svg>
+<svg style="height: 0">
     <filter id="wavy2">
         <feTurbulence x="0" y="0" baseFrequency="0.02" numOctaves="5" seed="2"/>
         <feDisplacementMap in="SourceGraphic" scale="20"/>
@@ -75,7 +76,7 @@
     private void OpenRulesDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<ChangeRules>("Modifier les règles", options);
+        DialogService.Show<Rules>("Modifier les règles", options);
     }
 
 }
