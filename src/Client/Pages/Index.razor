@@ -124,7 +124,7 @@
             this.lobbyName = lobbyName;
             Data.LobbyName = lobbyName;
             Data.Player = userInput;
-            hubConnection.SendAsync("LeaveGroup", lobbyName);
+            hubConnection.SendAsync("LeaveGroup", lobbyName, userInput);
             NavigationManager.NavigateTo("/startGame");
         });
 

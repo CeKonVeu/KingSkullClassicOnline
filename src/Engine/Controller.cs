@@ -51,7 +51,7 @@ public class Controller
         for (var i = 0; i < Config.NumberMermaids; ++i)
             Deck.Add(new SpecialCard(Config.MermaidValue, "Mermaid")); // mermaids
 
-        for (var i = 0; i < Config.NumberPirates; ++i)
+        for (var i = 1; i <= Config.NumberPirates; ++i)
             Deck.Add(new SpecialCard(Config.PirateValue, "Pirate_" + i)); // pirates
 
         for (var i = 0; i < Config.NumberScaryM; ++i)
@@ -116,5 +116,15 @@ public class Controller
     public string? GetConnectionId(string playerName)
     {
         return playerId[playerName];
+    }
+
+    /// <summary>
+    ///     set un nouvel id de connection au joueur
+    /// </summary>
+    /// <param name="playerName">nom du joueur a changer</param>
+    /// <param name="connec">nouvel id</param>
+    public void SetConnectionId(string playerName, string connec)
+    {
+        playerId[playerName] = connec;
     }
 }

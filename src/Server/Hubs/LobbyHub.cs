@@ -25,8 +25,9 @@ public class LobbyHub : Hub
     ///     Attend que les joueurs soient prets
     /// </summary>
     /// <param name="lobbyName">nom du groupe auquel appartient le joueur</param>
-    public async Task ReadyGame(string lobbyName)
+    public async Task ReadyGame(string lobbyName, string playerName)
     {
+        groups[lobbyName].SetConnectionId(playerName, Context.ConnectionId);
         if (++groups[lobbyName].areReady == groups[lobbyName].Players.Count)
             Game(lobbyName);
     }
@@ -38,19 +39,23 @@ public class LobbyHub : Hub
     private void Game(string lobbyName)
     {
         var controller = groups[lobbyName];
-        while (controller.Turn <= Config.TurnNumber)
+        //while (controller.Turn <= Config.TurnNumber)
+        //{
+        controller.CurrentRound = new Round(controller);
+        controller.Turn++;
+        controller.Turn++;
+        controller.Turn++;
+        controller.CurrentRound.DealCards();
+        foreach (var player in groups[lobbyName].Players)
         {
-            controller.CurrentRound = new Round(controller);
-            controller.CurrentRound.Play();
-            controller.Turn++;
-            controller.CurrentRound.DealCards();
-            foreach (var player in groups[lobbyName].Players)
-            {
-                var res = string.Join(",", player.Hand.Select(card => card.Name));
-                Clients.Client(groups[lobbyName].GetConnectionId(player.Name))
-                    .SendAsync("ReceiveStartingHand", res);
-            }
+            var res = string.Join(",", player.Hand.Select(card => card.Name));
+            Clients.Client(groups[lobbyName].GetConnectionId(player.Name)).SendAsync("ReceiveStartingHand", res);
+            //Clients.Group(lobbyName).SendAsync("ReceiveStartingHand", res, groups[lobbyName].GetConnectionId(player.Name));
         }
+
+        // TODO gestion du pli
+        controller.Turn++;
+        //}
     }
 
     /// <summary>
@@ -116,17 +121,9 @@ public class LobbyHub : Hub
     /// </summary>
     /// <param name="lobbyName">Nom du lobby à quitter</param>
     /// <param name="playerName">Nom du joueur</param>
-    public Task LeaveGroup(string lobbyName, string playerName)
+    public void LeaveGroup(string lobbyName, string playerName)
     {
-        if (groups.ContainsKey(lobbyName))
-        {
-            groups[lobbyName].RemovePlayer(playerName);
-            //find the playerName in the group and remove it
-
-            if (groups[lobbyName].Players.Count <= 0) groups.Remove(lobbyName);
-        }
-
-        return Groups.RemoveFromGroupAsync(Context.ConnectionId, lobbyName);
+        if (groups.ContainsKey(lobbyName)) groups[lobbyName].RemovePlayer(playerName);
     }
 
     public async Task SendVote(int vote, string lobbyName, string playerName)

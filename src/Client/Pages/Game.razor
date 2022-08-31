@@ -14,7 +14,7 @@
     private HubConnection? _hubConnection;
     private int vote;
     private string[] cards = Array.Empty<string>();
-    private string test = "Send";
+    private readonly string test = "Send";
     private string lobbyName = "a";
 
 
@@ -34,11 +34,10 @@
         lobbyName = Data.LobbyName;
         StateHasChanged();
 
-        await _hubConnection.SendAsync("ReadyGame", Data.LobbyName);
+        await _hubConnection.SendAsync("ReadyGame", Data.LobbyName, Data.Player);
 
         _hubConnection.On("ReceiveStartingHand", (string hand) =>
         {
-            test = "penis";
             cards = hand.Split(",");
             StateHasChanged();
         });

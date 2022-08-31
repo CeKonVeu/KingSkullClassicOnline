@@ -36,7 +36,12 @@
             await hubConnection.SendAsync("JoinGroup", Data.LobbyName, Data.Player);
         }
 
-        hubConnection.On("StartGame", () => { NavigationManager.NavigateTo("/Game"); });
+        hubConnection.On("StartGame", () =>
+        {
+            hubConnection.SendAsync("LeaveGroup", lobbyName, Data.Player);
+
+            NavigationManager.NavigateTo("/Game");
+        });
         StateHasChanged();
     }
 
