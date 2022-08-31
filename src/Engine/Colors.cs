@@ -1,4 +1,4 @@
-﻿namespace GameLogic;
+﻿namespace KingSkullClassicOnline.Engine;
 
 public enum Colors
 {

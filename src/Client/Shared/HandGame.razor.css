@@ -1,0 +1,1 @@
+::deep .card{max-width:100px;position:relative;top:0;transition:0.3s}::deep .card:hover{box-shadow:0 0 3px black;top:-25px;cursor:url("../cursors/hook.png") 3 9,auto}.card-container{overflow:visible;min-width:1px}.card-container:last-child{width:100px}.card-container.disabled{pointer-events:none;filter:grayscale(0.4);opacity:0.6}
