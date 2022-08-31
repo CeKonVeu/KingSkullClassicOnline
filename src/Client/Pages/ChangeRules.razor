@@ -5,23 +5,17 @@
         <MudContainer MaxWidth="MaxWidth.Medium">
             <MudStack>
                 <MudPaper>
-                    <MudToggleIconButton
-                        @bind-Toggled="@FirstPlayerVote0"
-                        Icon="@Icons.Filled.CheckBoxOutlineBlank"
-                        Color="@Color.Error"
-                        ToggledIcon="@Icons.Filled.CheckBox"
-                        ToggledColor="@Color.Success"/>
-                    <span>Joueur en tête parie 0 à partir de la manche 5 : @(FirstPlayerVote0 ? "Oui" : "Non")</span>
+                    <MudCheckBox
+                        @bind-Checked="@FirstPlayerVote0"
+                        Label="Joueur en tête parie 0 à partir de la manche 5">
+                    </MudCheckBox>
                 </MudPaper>
-
+                
                 <MudPaper>
-                    <MudToggleIconButton
-                        @bind-Toggled="@Round5And10Vote0"
-                        Icon="@Icons.Filled.CheckBoxOutlineBlank"
-                        Color="@Color.Error"
-                        ToggledIcon="@Icons.Filled.CheckBox"
-                        ToggledColor="@Color.Success"/>
-                    <span>Tous les joueurs parient 0 aux manches 5 et 10 : @(Round5And10Vote0 ? "Oui" : "Non")</span>
+                    <MudCheckBox
+                        @bind-Checked="@Round5And10Vote0"
+                        Label="Tous les joueurs parient 0 aux manches 5 et 10">
+                    </MudCheckBox>
                 </MudPaper>
 
                 <MudSlider
@@ -63,8 +57,8 @@
         MudDialog.Close(DialogResult.Ok(true));
     }
 
-    public bool FirstPlayerVote0 { get; set; }
-    public bool Round5And10Vote0 { get; set; }
+    public bool FirstPlayerVote0 { get; set; } = false;
+    public bool Round5And10Vote0 { get; set; } = true;
 
     public int MaxPlayers = 6;
 
