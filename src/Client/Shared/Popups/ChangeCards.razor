@@ -1,16 +1,16 @@
+@using KingSkullClassicOnline.Client.Shared.Components
 @inject IDialogService DialogService
 
-<MudDialog>
-    <DialogActions>
-        <MudContainer>
+<div>
+    <BaseDialog>
+        <MudContainer MaxWidth="MaxWidth.Medium">
             <MudStack>
                 @foreach (var nbCard in NbCards)
                 {
-                    <CardNumber
+                    <CardSlider
                         Name="@nbCard.Item1"
                         Color="@nbCard.Item2"
-                        Value="@nbCard.Item3">
-                    </CardNumber>
+                        Value="@nbCard.Item3"/>
                 }
 
                 <MudButton
@@ -21,8 +21,8 @@
 
             </MudStack>
         </MudContainer>
-    </DialogActions>
-</MudDialog>
+    </BaseDialog>
+</div>
 
 @code {
 
@@ -36,7 +36,7 @@
 
     public Tuple<string, Color, int>[] NbCards =
     {
-        Tuple.Create("SkullKing", Color.Primary, 1),
+        Tuple.Create("SkullKing", Color.Default, 1),
         Tuple.Create("Pirate", Color.Dark, 5),
         Tuple.Create("ScaryMary", Color.Success, 1),
         Tuple.Create("Mermaid", Color.Secondary, 1),
