@@ -4,49 +4,44 @@
 
 <PageTitle>Start Game</PageTitle>
 
-<MudText
-    Class="pa-4"
-    Style="@($"color:{Colors.Yellow.Darken1}")"
-    Typo="Typo.h3"
-    Align="Align.Center">
-    <b>Joueurs</b>
-</MudText>
+<h2 class="title">Equipage</h2>
 
 <MudContainer MaxWidth="MaxWidth.ExtraSmall">
-
     <MudStack>
-        <MudStack>
-            @foreach (var name in Names)
-            {
-                <MudPaper
-                    Style="text-align:center"
-                    Class="pa-4 ml-16 mr-16">
-                    @name
-                </MudPaper>
-            }
-        </MudStack>
+        <div class="relative">
+            <div class="parchment-bg"></div>
+            <MudStack Class="parchment">
+                @{ var i = 0; }
+                @foreach (var name in Names)
+                {
+                    <MudText
+                        Class="pa-1 ml-16 mr-16"
+                        Typo="Typo.h5">
+                        @name
+                    </MudText>
+                    ++i;
+                }
+            </MudStack>
+        </div>
 
         <MudButton
-            Style="@($"color:{Colors.Shades.Black}; background:{Colors.Yellow.Darken1};")"
             Href="https://localhost:7114/startgame"
             Variant="Variant.Filled"
-            Size="Size.Large"
+            Color="Color.Primary"
             FullWidth="true">
             Commencer la partie
         </MudButton>
 
         <MudButton
             @onclick="OpenRulesDialog"
-            Style="@($"color:{Colors.Shades.Black}; background:{Colors.Yellow.Darken1};")"
             Variant="Variant.Filled"
-            Size="Size.Large"
+            Color="Color.Primary"
             FullWidth="true">
             Modifier les règles
         </MudButton>
 
         <MudTextField
             @bind-Value="ReadOnly"
-            Style="@($"color:{Colors.BlueGrey.Default}; background:{Colors.Shades.White};")"
             Variant="Variant.Filled"
             ReadOnly="true"
             Label="URL pour rejoindre cette room">
@@ -54,6 +49,13 @@
     </MudStack>
 
 </MudContainer>
+
+<svg>
+    <filter id="wavy2">
+        <feTurbulence x="0" y="0" baseFrequency="0.02" numOctaves="5" seed="2"/>
+        <feDisplacementMap in="SourceGraphic" scale="20"/>
+    </filter>
+</svg>
 
 @code {
     // Liste des joueurs affichés
@@ -63,8 +65,7 @@
         "Stéphane",
         "Géraud",
         "Alex",
-        "Loris",
-        "-"
+        "Loris"
     };
 
     // Zone de texte contenant l'URL pour rejoindre la room

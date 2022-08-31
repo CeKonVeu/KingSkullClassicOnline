@@ -26,8 +26,8 @@ html, body {
 #app {
   height: 100%;
   background: linear-gradient(
-                  rgba(0, 0, 0, 0.2),
-                  rgba(0, 0, 0, 0.4)
+                  rgba(0, 0, 0, 0.3),
+                  rgba(0, 0, 0, 0.5)
   ), url(https://img.freepik.com/fotos-gratis/fundo-velho-da-textura-do-papel_1232-1932.jpg?w=2000) no-repeat center;
   background-size: cover;
 }
@@ -70,4 +70,8 @@ html, body {
 .mud-input-filled {
   border-color: var(--mud-palette-text-secondary);
   border-width: 1px 1px 0 1px;
+
+  &:hover {
+    border-color: var(--mud-palette-action-default);
+  }
 }
