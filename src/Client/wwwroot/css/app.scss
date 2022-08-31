@@ -67,9 +67,18 @@ html, body {
 
 }
 
+.mud-shrink ~ label.mud-input-label.mud-input-label-inputcontrol {
+  color: var(--mud-palette-text-secondary);
+}
+
+.mud-input > input.mud-input-root, div.mud-input-slot.mud-input-root {
+  color: #ffffff;
+}
+
 .mud-input-filled {
   border-color: var(--mud-palette-text-secondary);
   border-width: 1px 1px 0 1px;
+
 
   &:hover {
     border-color: var(--mud-palette-action-default);
