@@ -1,0 +1,42 @@
+@page "/game"
+
+<PageTitle>Game @roomName</PageTitle>
+
+<MudStack Row="true">
+    <MudPaper
+        Class="pa-6 ma-2 object-left">
+        <MudText
+            Typo="Typo.h3"
+            Align="Align.Left">
+            <b>@actualFold / @actualRound</b>
+        </MudText>
+    </MudPaper>
+
+    <MudPaper
+        Class="pa-6 ma-2 object-top">
+        <MudTooltip
+            Text="Règles">
+            <MudIconButton
+                Href="https://www.schmidtspiele.de/files/Produkte/7/75024%20-%20Skull%20King/75024_Skull_King_DE_FR_IT_GB.pdf#page=3"
+                Target="_blank"
+                Icon="@Icons.Filled.Help"
+                Variant="Variant.Filled"
+                Color="Color.Warning"
+                Size="Size.Large"/>
+        </MudTooltip>
+
+        <MudTooltip Text="Scores">
+            <MudIconButton
+                Icon="@Icons.Filled.GridOn"
+                Variant="Variant.Filled"
+                Color="Color.Warning"
+                Size="Size.Large"/>
+        </MudTooltip>
+    </MudPaper>
+</MudStack>
+
+@code {
+    public string roomName = "Amogus";
+    public int actualFold = 2;
+    public int actualRound = 9;
+}
