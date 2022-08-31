@@ -1,0 +1,26 @@
+<div class="relative">
+    <MudSlider
+        @bind-Value="@Value"
+        TickMarks="true"
+        Min="0"
+        Max="10"
+        Class="skullking"
+        Color="Color.Dark">
+        Nombre de cartes"@Name" : @Value
+    </MudSlider>
+    <MudImage Class="card" Src="@("./cards/Escape.png")"/>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public string? Name { get; set; }
+
+    [Parameter]
+    public Color Color { get; set; } = Color.Primary;
+
+    [Parameter]
+    public int Value { get; set; }
+
+}

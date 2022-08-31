@@ -1,0 +1,15 @@
+﻿::deep .mud-slider.mud-slider-primary .mud-slider-track-tick {
+  background-color: #000;
+
+}
+
+::deep .card {
+  position: absolute;
+  height: 100%;
+  left: -30px;
+  top: 0;
+}
+
+::deep .mud-slider {
+  margin-left: 15px;
+}
