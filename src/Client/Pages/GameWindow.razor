@@ -1,5 +1,7 @@
 @page "/game"
 
+@inject IDialogService DialogService
+
 <PageTitle>Game @roomName</PageTitle>
 
 <MudStack Row="true">
@@ -30,7 +32,20 @@
             Text="Scores"
             Duration="1000">
             <MudIconButton
+                @onclick="OpenScoresDialog"
                 Icon="@Icons.Filled.GridOn"
+                Variant="Variant.Filled"
+                Color="Color.Warning"
+                Size="Size.Large"/>
+        </MudTooltip>
+
+        @* Bouton de debug -> à dégager *@
+        <MudTooltip
+            Text="Vote"
+            Duration="1000">
+            <MudIconButton
+                @onclick="OpenVoteDialog"
+                Icon="@Icons.Filled.HowToVote"
                 Variant="Variant.Filled"
                 Color="Color.Warning"
                 Size="Size.Large"/>
@@ -42,4 +57,19 @@
     public string roomName = "Amogus";
     public int actualFold = 2;
     public int actualRound = 9;
+
+    // Pop-up des votes
+    private void OpenVoteDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<VotePopup>("Votations", options);
+    }
+
+    // Pop-up des scores
+    private void OpenScoresDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<ScorePopup>("Tableau des scores", options);
+    }
+
 }
