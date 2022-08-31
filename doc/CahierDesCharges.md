@@ -6,7 +6,7 @@ Alexandre Jaquier, Stéphane Marengo, Loris Marzullo, Loïc Rosset, Géraud Silv
 ## Contexte
 Comme son nom l’indique, l’application « King Skull Classic Online » permet de jouer au jeu de cartes Skull King en ligne. Cela peut s’avérer utile pour y jouer avec des joueurs à distance ou si on ne possède pas le jeu physiquement (mais préalablement acheté 🙂).
 De plus, certains aspects du jeu sont parfois fastidieux, comme le calcul et le relevé des points, et pourraient être automatisés.
-L’idée de base est de recréer intégralement le jeu en version informatisée, en gérant toutes les situations possibles durant une partie typique. Dans un second temps, il serait appréciable d’ajouter un menu permettant de personnaliser certaines règles et le deck de cartes.
+Afin de palier à ces problèmes, nous allons recréer intégralement le jeu en version informatisée, en gérant toutes les situations possibles durant une partie typique. Dans un second temps, il serait appréciable d’ajouter un menu permettant de personnaliser certaines règles et le deck de cartes.
 
 ## Description du projet
 Le jeu est accessible directement depuis une page web. Le premier joueur, le créateur de la partie, peut y créer une room. Cela va générer un URL qui peut être envoyé à ses amis pour qu’ils rejoignent cette même room. Chaque joueur doit s'attribuer un nom, puis le créateur peut décider de commencer la partie.
