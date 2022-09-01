@@ -62,6 +62,7 @@ public class Round
     /// </summary>
     public void Play()
     {
+        DealCards();
         for (var index = 0; index < _controller.Players.Count; index++)
         {
             var player = _controller.Players[index];
@@ -99,10 +100,22 @@ public class Round
     /// <summary>
     ///     Change l'ordre des joueurs
     /// </summary>
-    private void ChangePlayerOrder()
+    public void ChangePlayerOrder()
     {
         var temp = _controller.Players.First();
         _controller.Players.RemoveAt(0);
         _controller.Players.Add(temp);
+    }
+
+    /// <summary>
+    ///     ajoute le vote d'un joueur
+    /// </summary>
+    /// <param name="playerName">nom du joueur</param>
+    /// <param name="vote">son vote</param>
+    public void AddVote(string playerName, int vote)
+    {
+        for (var i = 0; i < _controller.Players.Count; ++i)
+            if (_controller.Players[i].Name == playerName)
+                Votes[i] = vote;
     }
 }

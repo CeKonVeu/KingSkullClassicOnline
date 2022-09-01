@@ -36,20 +36,19 @@ public class LobbyHub : Hub
     ///     boucle de jeu
     /// </summary>
     /// <param name="lobbyName">lobby que gère la boucle de jeu</param>
-    private void Game(string lobbyName)
+    private async Task Game(string lobbyName)
     {
         var controller = groups[lobbyName];
         //while (controller.Turn <= Config.TurnNumber)
         //{
         controller.CurrentRound = new Round(controller);
-        controller.Turn++;
-        controller.Turn++;
-        controller.Turn++;
+        controller.Turn = 4;
         controller.CurrentRound.DealCards();
         foreach (var player in groups[lobbyName].Players)
         {
             var res = string.Join(",", player.Hand.Select(card => card.Name));
-            Clients.Client(groups[lobbyName].GetConnectionId(player.Name)).SendAsync("ReceiveStartingHand", res);
+            await Clients.Client(groups[lobbyName].GetConnectionId(player.Name))
+                .SendAsync("ReceiveStartingHand", res);
             //Clients.Group(lobbyName).SendAsync("ReceiveStartingHand", res, groups[lobbyName].GetConnectionId(player.Name));
         }
 

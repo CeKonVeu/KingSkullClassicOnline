@@ -14,7 +14,7 @@
     private HubConnection? _hubConnection;
     private int vote;
     private string[] cards = Array.Empty<string>();
-    private readonly string test = "Send";
+    private string test = "Send";
     private string lobbyName = "a";
 
 
@@ -39,6 +39,12 @@
         _hubConnection.On("ReceiveStartingHand", (string hand) =>
         {
             cards = hand.Split(",");
+            StateHasChanged();
+        });
+
+        _hubConnection.On("ReceiveMessage", (int t) =>
+        {
+            test = t + "";
             StateHasChanged();
         });
 

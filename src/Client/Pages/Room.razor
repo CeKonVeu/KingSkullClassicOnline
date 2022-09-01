@@ -80,6 +80,7 @@
 
     private async Task Re()
     {
+        hubConnection.SendAsync("LeaveGroup", lobbyName, Data.Player);
         NavManager.NavigateTo("/startGame");
     }
 
