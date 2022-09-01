@@ -1,0 +1,62 @@
+﻿@using KingSkullClassicOnline.Engine
+
+<MudDialog>
+    <DialogContent>
+        <MudTable Items="_scoreReformat" Hover="true" Breakpoint="Breakpoint.Sm">
+            <HeaderContent>
+                <MudTh>N°</MudTh>
+                @foreach (var player in _score)
+                {
+                    <MudTh>@player.Name</MudTh>
+                }
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@GetRowNumber(context)</MudTd>
+                
+                @for (var k = 0; k < _score.Length; k++)
+                {
+                    var i = k;
+                    <MudTd DataLabel="">@context[i]</MudTd>
+                }
+            </RowTemplate>
+        </MudTable>
+    </DialogContent>
+    <DialogActions>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private static Controller _controller = new Controller();
+    private Player[] _score = {new ("Richard", _controller), new ("Penelope", _controller)};
+    
+    // TODO Peut-être que la partie de reformatage du score peut être factorisée
+    private (int, int)[][] _scoreReformat = new (int, int)[@Config.TurnNumber][];
+    
+    public int? GetRowNumber(object element) =>
+        _scoreReformat?.TakeWhile(x => x != element).Count() + 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // TODO Utiliser le vrai score
+        
+        _score[0].AddScore(1, 20);
+        _score[0].AddScore(2, 40);
+        _score[0].AddScore(0, -30);
+        
+        _score[1].AddScore(1, -10);
+        _score[1].AddScore(0, 10);
+        _score[1].AddScore(2, 40);
+        
+        int playerNumber = _score.Length;
+        
+        for (int i = 0; i < @Config.TurnNumber; i++)
+        {
+            _scoreReformat[i] = new (int, int)[playerNumber];
+            
+            for (int x = 0; x < _score.Length; x++)
+            {
+                _scoreReformat[i][x] = _score[x].Votes[i];
+            }
+        }
+    }
+}

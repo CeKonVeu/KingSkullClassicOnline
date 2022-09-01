@@ -4,7 +4,7 @@
         <h1>@Count</h1>
     </DialogContent>
     <DialogActions>
-        <MudSlider TickMarks="true" TickMarkLabels="@votes" Min="0" Max="@Index.turnNumber" Step="1" @bind-Value="@Value1" Immediate="true"/>
+        <MudSlider TickMarks="true" TickMarkLabels="@votes" Min="0" Max="0" Step="1" @bind-Value="@Value1" Immediate="true"/>
         <MudButton Color="Color.Primary" OnClick="Submit">Vote</MudButton>
     </DialogActions>
 </MudDialog>
@@ -40,7 +40,7 @@
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; }
 
-    readonly string[] votes = Enumerable.Range(0, Index.turnNumber + 1).ToArray().Select(x => x.ToString()).ToArray();
+    readonly string[] votes = Enumerable.Range(0, 1).ToArray().Select(x => x.ToString()).ToArray();
 
     // TODO Enregistrer le vote
     void Submit()
