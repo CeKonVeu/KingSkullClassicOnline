@@ -1,5 +1,4 @@
 using KingSkullClassicOnline.Server.Hubs;
-using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +44,6 @@ app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 
-app.MapHub<LobbyHub>("/chathub");
+app.MapHub<LobbyHub>("/connectRoom");
 
 app.Run();
