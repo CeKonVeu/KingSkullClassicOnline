@@ -2,7 +2,7 @@
 
 namespace KingSkullClassicOnline.Client;
 
-public static class Data
+public class Data
 {
     public static string? Player { get; set; }
     public static string? LobbyName { get; set; }
