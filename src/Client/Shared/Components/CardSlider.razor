@@ -4,23 +4,35 @@
         TickMarks="true"
         Min="0"
         Max="10"
-        Class="skullking"
-        Color="Color.Dark">
-        Nombre de cartes"@Name" : @Value
-    </MudSlider>
-    <MudImage Class="card" Src="@("./cards/Escape.png")"/>
+        Color="Color.Dark"
+        ValueLabel="true"
+        Class="mb-6 mt-6"
+        TickMarkLabels="LabelsTickets"/>
+    <MudImage Class="card" Src="@($"./cards/{CardName}.png")"/>
 </div>
 
 
 @code {
+    private static readonly string[] LabelsTickets = { "0", "", "", "", "", "5", "", "", "", "", "10" };
+    private int _value;
 
     [Parameter]
-    public string? Name { get; set; }
+    public string? CardName { get; set; }
 
     [Parameter]
-    public Color Color { get; set; } = Color.Primary;
+    public int Value
+    {
+        get => _value;
+        set
+        {
+            if (_value == value) return;
+
+            _value = value;
+            ValueChanged.InvokeAsync(value);
+        }
+    }
 
     [Parameter]
-    public int Value { get; set; }
+    public EventCallback<int> ValueChanged { get; set; }
 
 }
