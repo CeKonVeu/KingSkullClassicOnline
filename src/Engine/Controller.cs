@@ -34,16 +34,16 @@ public class Controller
     /// <summary>
     ///     ajoute un joueur au controleur
     /// </summary>
-    /// <param name="p">joueur à ajouter</param>
-    public void AddPlayer(Player p)
+    /// <param name="player">joueur à ajouter</param>
+    public void AddPlayer(Player player)
     {
         if (Players.Count > Config.MaxPlayer)
             throw new Exception("Max player reached");
 
-        if (Players.Exists(player => player.Id == p.Id))
+        if (Players.Exists(p => p.Id == player.Id))
             throw new Exception("Player with this id already exists");
 
-        Players.Add(p);
+        Players.Add(player);
     }
 
     /// <summary>

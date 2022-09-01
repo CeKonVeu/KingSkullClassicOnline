@@ -26,10 +26,7 @@ public class LobbyHub : Hub
             throw new Exception("Cannot add room");
 
 
-        var task = Groups.AddToGroupAsync(Context.ConnectionId, roomName);
-        groups[roomName].AddPlayer(new Player(playerName, groups[roomName]), Context.ConnectionId);
-        await task;
-        await SendRoomJoined(roomName);
+        await JoinRoom(roomName, playerName);
         Console.WriteLine($"Room {roomName} created");
     }
 
@@ -53,11 +50,12 @@ public class LobbyHub : Hub
             throw new Exception("Room is full");
 
         var task = Groups.AddToGroupAsync(Context.ConnectionId, roomName);
-        groups[roomName].AddPlayer(new Player(playerName, groups[roomName]), Context.ConnectionId);
+        new Player(Context.ConnectionId, playerName, groups[roomName]);
         await task;
         await SendRoomJoined(roomName);
         Console.WriteLine($"Player {playerName} joined room {roomName}");
     }
+
 
     private Task SendRoomJoined(string roomName)
     {
