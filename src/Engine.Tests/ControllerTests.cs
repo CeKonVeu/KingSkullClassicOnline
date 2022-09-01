@@ -53,8 +53,10 @@ public class ControllerTests
         _cardsInDeck = Config.NumberEscapes + Config.NumberMermaids + Config.NumberPirates + Config.NumberSkullKing +
                        4 * Config.NumberNumCards + Config.NumberScaryM;
 
-        _p1 = new Player("1", "Loic", _controller);
-        _p2 = new Player("2", "Alex", _controller);
-        _p3 = new Player("3", "Loris", _controller);
+        _p1 = new Player("1", "Loic");
+        _p2 = new Player("2", "Alex");
+        _p3 = new Player("3", "Loris");
+
+        _controller.AddPlayers(_p1, _p2, _p3);
     }
 }

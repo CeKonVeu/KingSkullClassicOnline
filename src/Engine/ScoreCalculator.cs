@@ -1,6 +1,6 @@
-﻿using KingSkullClassicOnline.Engine.Game;
+﻿namespace KingSkullClassicOnline.Engine;
 
-namespace KingSkullClassicOnline.Engine;
+using Game;
 
 /// <summary>
 ///     Mets à disposition des méthodes statiques
@@ -41,6 +41,6 @@ public static class ScoreCalculator
         else
             score = Config.ScoreBadVote * Math.Abs(vote - wonFold);
 
-        p.AddScore(vote, score);
+        p.AddScore(turn, vote, score);
     }
 }

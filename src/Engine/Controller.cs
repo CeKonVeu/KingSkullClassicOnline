@@ -47,6 +47,15 @@ public class Controller
     }
 
     /// <summary>
+    ///     Ajoute des joueurs au contrôleur
+    /// </summary>
+    /// <param name="players">les joueurs à ajouter</param>
+    public void AddPlayers(params Player[] players)
+    {
+        foreach (var player in players) AddPlayer(player);
+    }
+
+    /// <summary>
     ///     Crée un deck de cartes selon les spécificités du fichier config
     /// </summary>
     private void CreateDeck()

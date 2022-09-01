@@ -40,9 +40,11 @@ public class RoundTests
     {
         _controller = new Controller();
 
-        _p1 = new Player("1", "Loic", _controller);
-        _p2 = new Player("2", "Alex", _controller);
-        _p3 = new Player("3", "Loris", _controller);
+        _p1 = new Player("1", "Loic");
+        _p2 = new Player("2", "Alex");
+        _p3 = new Player("3", "Loris");
+
+        _controller.AddPlayers(_p1, _p2, _p3);
 
         _controller.Turn = 2;
 

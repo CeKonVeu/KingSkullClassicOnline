@@ -7,7 +7,6 @@
 /// </summary>
 public class Player
 {
-    private readonly Controller _controller;
     private int _selectedCard;
     public int CurrentVote;
     public bool IsOwner;
@@ -17,17 +16,14 @@ public class Player
     /// </summary>
     /// <param name="id">id du joueur</param>
     /// <param name="name">nom du joueur</param>
-    /// <param name="controller">contrôleur associé au joueur</param>
-    public Player(string id, string name, Controller controller)
+    public Player(string id, string name)
     {
         _selectedCard = 0;
-        _controller = controller;
         CurrentVote = 0;
         Id = id;
         Name = name;
         Hand = new List<Card.Card>();
         Votes = new (int, int)[10];
-        controller.AddPlayer(this);
     }
 
     /// <summary>
@@ -59,12 +55,13 @@ public class Player
     /// <summary>
     ///     Ajoute des points au score du joueur
     /// </summary>
+    /// <param name="turn">le tour courant</param>
     /// <param name="vote">vote du tour</param>
     /// <param name="score">score à ajouter</param>
     /// <param name="turnNumber">numéro du tour</param>
-    public void AddScore(int vote, int score)
+    public void AddScore(int turn, int vote, int score)
     {
-        Votes[_controller.Turn - 1] = (vote, Votes[Math.Max(0, _controller.Turn - 2)].Item2 + score);
+        Votes[turn - 1] = (vote, Votes[Math.Max(0, turn - 2)].Item2 + score);
     }
 
     /// <summary>
