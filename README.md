@@ -60,4 +60,4 @@ Si lors de l'exécution, cette erreur apparaît :
 
 Cela indique que le port utilisé par ASP pour faire tourner le code en local est déjà utilisé par un autre processus sur votre machine. Il est nécessaire de libérer ce port.
 
-Ainsi, l'application devrait normalement être accessible sur [](https://localhost:7114/). Notez que le port peut varier.
+Ainsi, l'application devrait normalement être accessible sur [https://localhost:7114/](https://localhost:7114/). Notez que le port peut varier.
