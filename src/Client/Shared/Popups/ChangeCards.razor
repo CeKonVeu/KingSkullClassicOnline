@@ -1,0 +1,59 @@
+@using KingSkullClassicOnline.Client.Shared.Components
+@inject IDialogService DialogService
+
+<div>
+    <BaseDialog>
+        <MudContainer MaxWidth="MaxWidth.Medium">
+            <MudStack Class="ml-5">
+                <MudStack Spacing="3">
+                    @foreach (var cardOptions in _cardsOptions)
+                    {
+                        <CardSlider
+                            CardName="@cardOptions.Name"
+                            @bind-Value="@cardOptions.Value"/>
+                    }
+                </MudStack>
+                <MudButton
+                    OnClick="CloseCardsDialog"
+                    Variant="Variant.Filled"
+                    Color="Color.Primary">
+                    Valider
+                </MudButton>
+            </MudStack>
+        </MudContainer>
+    </BaseDialog>
+</div>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    void CloseCardsDialog()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    public class CardOption
+    {
+        public CardOption(string name, int value)
+        {
+            Name = name;
+            Value = value;
+        }
+
+        public string Name { get; }
+
+        public int Value { get; set; }
+    }
+
+    private readonly CardOption[] _cardsOptions =
+    {
+        new("SkullKing", 1),
+        new("Pirate_1", 5),
+        new("ScaryMary", 1),
+        new("Mermaid", 1),
+        new("Escape", 5)
+    };
+
+}

@@ -1,0 +1,38 @@
+<div class="relative">
+    <MudSlider
+        @bind-Value="@Value"
+        TickMarks="true"
+        Min="0"
+        Max="10"
+        Color="Color.Dark"
+        ValueLabel="true"
+        Class="mb-6 mt-6"
+        TickMarkLabels="LabelsTickets"/>
+    <MudImage Class="card" Src="@($"./cards/{CardName}.png")"/>
+</div>
+
+
+@code {
+    private static readonly string[] LabelsTickets = { "0", "", "", "", "", "5", "", "", "", "", "10" };
+    private int _value;
+
+    [Parameter]
+    public string? CardName { get; set; }
+
+    [Parameter]
+    public int Value
+    {
+        get => _value;
+        set
+        {
+            if (_value == value) return;
+
+            _value = value;
+            ValueChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<int> ValueChanged { get; set; }
+
+}

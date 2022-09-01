@@ -1,0 +1,54 @@
+﻿<div class="parchment-bg"></div>
+<MudDialog Class="relative">
+    <DialogActions>
+        @ChildContent
+    </DialogActions>
+</MudDialog>
+
+<svg style="height: 0">
+    <filter id="wavy2">
+        <feTurbulence x="0" y="0" baseFrequency="0.02" numOctaves="5" seed="2"/>
+        <feDisplacementMap in="SourceGraphic" scale="20"/>
+    </filter>
+</svg>
+
+<style>
+/* TODO a changer pour que l'isolation CSS fonctionne */
+.parchment {
+    position: relative;
+    z-index: 10;
+    height: 320px;
+    margin-left: 20px;
+    margin-top: 20px;
+    color: black;
+    font-size: 1.5rem
+}
+
+.mud-dialog-title .mud-icon-button {
+    color: var(--mud-palette-black);
+    background-color: var(--mud-palette-action-default-hover);
+}
+
+.mud-dialog-title .mud-icon-button:hover, .mud-dialog-title .mud-icon-button:focus-visible {
+  background-color: var(--mud-palette-black);
+  color: var(--mud-palette-white);
+}
+
+.mud-dialog-actions .mud-icon-button {
+  color: var(--mud-palette-black);
+}
+
+label.mud-checkbox {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+</style>
+
+
+@code {
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+}
