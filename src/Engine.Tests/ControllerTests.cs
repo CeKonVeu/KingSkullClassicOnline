@@ -7,7 +7,7 @@ public class ControllerTests
     private int _cardsInDeck;
     private Controller _controller = null!;
 
-    private Player p1, p2, p3;
+    private Player _p1 = null!, _p2 = null!, _p3 = null!;
 
     [SetUp]
     public void Setup()
@@ -16,9 +16,9 @@ public class ControllerTests
         _cardsInDeck = Config.NumberEscapes + Config.NumberMermaids + Config.NumberPirates + Config.NumberSkullKing +
                        4 * Config.NumberNumCards + Config.NumberScaryM;
 
-        p1 = new Player("Loic", _controller);
-        p2 = new Player("Alex", _controller);
-        p3 = new Player("Loris", _controller);
+        _p1 = new Player("Loic", _controller);
+        _p2 = new Player("Alex", _controller);
+        _p3 = new Player("Loris", _controller);
     }
 
     [Test]
@@ -30,25 +30,25 @@ public class ControllerTests
     [Test]
     public void ItShouldAddPlayers()
     {
-        Assert.Contains(p1, _controller.Players);
-        Assert.Contains(p2, _controller.Players);
-        Assert.Contains(p3, _controller.Players);
+        Assert.Contains(_p1, _controller.Players);
+        Assert.Contains(_p2, _controller.Players);
+        Assert.Contains(_p3, _controller.Players);
     }
 
     [Test]
     public void ItShouldRemovePlayers()
     {
-        Assert.Contains(p3, _controller.Players);
-        _controller.RemovePlayer(p3);
-        CollectionAssert.DoesNotContain(_controller.Players, p3);
+        Assert.Contains(_p3, _controller.Players);
+        _controller.RemovePlayer(_p3);
+        CollectionAssert.DoesNotContain(_controller.Players, _p3);
     }
-    
+
     [Test]
     public void ItShouldRemovePlayersByNames()
     {
-        Assert.Contains(p3, _controller.Players);
-        _controller.RemovePlayer(p3.Name);
-        CollectionAssert.DoesNotContain(_controller.Players, p3);
+        Assert.Contains(_p3, _controller.Players);
+        _controller.RemovePlayer(_p3.Name);
+        CollectionAssert.DoesNotContain(_controller.Players, _p3);
     }
 
     [Test]

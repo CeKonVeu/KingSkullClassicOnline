@@ -1,4 +1,5 @@
-﻿using KingSkullClassicOnline.Engine;
+﻿using System.Collections.Concurrent;
+using KingSkullClassicOnline.Engine;
 using KingSkullClassicOnline.Engine.Game;
 using Microsoft.AspNetCore.SignalR;
 
@@ -9,7 +10,7 @@ namespace KingSkullClassicOnline.Server.Hubs;
 /// </summary>
 public class LobbyHub : Hub
 {
-    private static readonly Dictionary<string, Controller> groups = new();
+    private static readonly ConcurrentDictionary<string, Controller> groups = new();
 
     /// <summary>
     ///     signale aux joueurs que la partie se lance
@@ -52,6 +53,8 @@ public class LobbyHub : Hub
             //Clients.Group(lobbyName).SendAsync("ReceiveStartingHand", res, groups[lobbyName].GetConnectionId(player.Name));
         }
 
+        Clients.Group(lobbyName).SendAsync("AskVote");
+
         // TODO gestion du pli
         controller.Turn++;
         //}
@@ -78,7 +81,7 @@ public class LobbyHub : Hub
         if (groups.ContainsKey(lobbyName))
             return;
         await Groups.AddToGroupAsync(Context.ConnectionId, lobbyName);
-        groups.Add(lobbyName, new Controller());
+        groups.TryAdd(lobbyName, new Controller());
         groups[lobbyName].AddPlayer(new Player(playerName, groups[lobbyName]), Context.ConnectionId);
         Clients.Caller.SendAsync("ReceiveLobbyName", lobbyName);
     }

@@ -38,6 +38,7 @@
 
         _hubConnection.On("ReceiveStartingHand", (string hand) =>
         {
+            Console.WriteLine("Hand : " + hand);
             cards = hand.Split(",");
             StateHasChanged();
         });
@@ -50,8 +51,9 @@
 
         _hubConnection.On("AskVote", () =>
         {
+            Console.WriteLine("Vote");
+
             VotePopup();
-            StateHasChanged();
             _hubConnection.SendAsync("SendVote", vote, Data.LobbyName, Data.Player);
         });
     }
@@ -64,5 +66,7 @@
 
         vote = Convert.ToInt32(result.Data);
     }
+
+
 
 }

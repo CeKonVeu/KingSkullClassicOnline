@@ -1,48 +1,50 @@
 ﻿@page "/startGame"
 @using Microsoft.AspNetCore.SignalR.Client
-@inject IJSRuntime JS
+@implements IAsyncDisposable
 @inject NavigationManager NavigationManager
-@inject IDialogService DialogService
 
-<h3>@lobbyName</h3>
+<h3>@_lobbyName</h3>
 <MudButton @onclick="Start" Variant="Variant.Filled" Color="Color.Primary">
-    @wow
+    @_wow
 </MudButton>
 
 @code {
-    private readonly List<string> messages = new();
 
-    private readonly string lobbyName = Data.LobbyName;
-    private readonly string wow = "Start";
-    private HubConnection? hubConnection;
+    private readonly string _lobbyName = Data.LobbyName ?? string.Empty;
+    private readonly string _wow = "Start";
+    private HubConnection _hubConnection = null!;
 
     async Task Start()
     {
-        await hubConnection.SendAsync("StartGame", Data.LobbyName);
+        await _hubConnection.SendAsync("StartGame", Data.LobbyName);
         StateHasChanged();
     //await Data.HubConnection.SendAsync("StartGame", Data.LobbyName);
     }
 
     protected override async Task OnInitializedAsync()
     {
-        hubConnection = new HubConnectionBuilder()
+        _hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
             .Build();
 
-        await hubConnection.StartAsync();
+        await _hubConnection.StartAsync();
 
-        if (hubConnection is not null)
-        {
-            await hubConnection.SendAsync("JoinGroup", Data.LobbyName, Data.Player);
-        }
+        await _hubConnection.SendAsync("JoinGroup", Data.LobbyName, Data.Player);
 
-        hubConnection.On("StartGame", () =>
+
+        _hubConnection.On("StartGame", () =>
         {
-            hubConnection.SendAsync("LeaveGroup", lobbyName, Data.Player);
+            _hubConnection.SendAsync("LeaveGroup", _lobbyName, Data.Player);
 
             NavigationManager.NavigateTo("/Game");
         });
         StateHasChanged();
+    }
+
+
+    public async ValueTask DisposeAsync()
+    {
+        await _hubConnection.DisposeAsync();
     }
 
 }

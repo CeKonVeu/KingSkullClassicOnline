@@ -7,8 +7,8 @@ public class RoundTests
 {
     private Controller _controller = null!;
 
-    private Player _p1, _p2, _p3;
-    private Round _round;
+    private Player _p1 = null!, _p2 = null!, _p3 = null!;
+    private Round _round = null!;
 
     [SetUp]
     public void Setup()
