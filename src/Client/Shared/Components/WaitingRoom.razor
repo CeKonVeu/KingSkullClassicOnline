@@ -1,0 +1,82 @@
+﻿@using KingSkullClassicOnline.Client.Shared.Popups
+@inherits ComponentBase
+@inject IDialogService DialogService
+
+@if (!IsVisible)
+{
+    return;
+}
+
+<PageTitle>Lobby</PageTitle>
+
+<h2 class="title">Equipage</h2>
+
+<MudContainer MaxWidth="MaxWidth.ExtraSmall">
+    <MudStack>
+        <div class="relative">
+            <div class="parchment-bg"></div>
+            <MudStack Class="parchment">
+                @foreach (var name in Names)
+                {
+                    <MudText
+                        Class="pa-1 ml-16 mr-16"
+                        Typo="Typo.h5">
+                        @name
+                    </MudText>
+                }
+            </MudStack>
+        </div>
+
+        <MudButton
+            Href="https://localhost:7114/startgame"
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            FullWidth="true">
+            Commencer la partie
+        </MudButton>
+
+        <MudButton
+            @onclick="OpenRulesDialog"
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            FullWidth="true">
+            Modifier les règles
+        </MudButton>
+
+        <MudTextField
+            Value="Url"
+            Variant="Variant.Filled"
+            ReadOnly="true"
+            Label="URL pour rejoindre cette room">
+        </MudTextField>
+    </MudStack>
+
+</MudContainer>
+
+<svg style="height: 0">
+    <filter id="wavy2">
+        <feTurbulence x="0" y="0" baseFrequency="0.02" numOctaves="5" seed="2"/>
+        <feDisplacementMap in="SourceGraphic" scale="20"/>
+    </filter>
+</svg>
+
+@code {
+
+    [Parameter]
+    public bool IsVisible { get; set; } = true;
+
+    [Parameter]
+    public ICollection<string> Names { get; set; } = new LinkedList<string>();
+
+    [Parameter]
+    public string Url { get; set; } = string.Empty;
+
+
+    // Pop-up des règles
+    private void OpenRulesDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<Rules>("Modifier les règles", options);
+    }
+
+}

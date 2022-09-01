@@ -1,82 +1,16 @@
 @page "/lobby"
-@using KingSkullClassicOnline.Client.Shared.Popups
+@using KingSkullClassicOnline.Client.Shared.Components
 
-@inject IDialogService DialogService
+<WaitingRoom Url="@_url" IsVisible="_isVisible" Names="_players"/>
 
-<PageTitle>Lobby</PageTitle>
-
-<h2 class="title">Equipage</h2>
-
-<MudContainer MaxWidth="MaxWidth.ExtraSmall">
-    <MudStack>
-        <div class="relative">
-            <div class="parchment-bg"></div>
-            <MudStack Class="parchment">
-                @{ var i = 0; }
-                @foreach (var name in Names)
-                {
-                    <MudText
-                        Class="pa-1 ml-16 mr-16"
-                        Typo="Typo.h5">
-                        @name
-                    </MudText>
-                    ++i;
-                }
-            </MudStack>
-        </div>
-
-        <MudButton
-            Href="https://localhost:7114/startgame"
-            Variant="Variant.Filled"
-            Color="Color.Primary"
-            FullWidth="true">
-            Commencer la partie
-        </MudButton>
-
-        <MudButton
-            @onclick="OpenRulesDialog"
-            Variant="Variant.Filled"
-            Color="Color.Primary"
-            FullWidth="true">
-            Modifier les règles
-        </MudButton>
-
-        <MudTextField
-            @bind-Value="ReadOnly"
-            Variant="Variant.Filled"
-            ReadOnly="true"
-            Label="URL pour rejoindre cette room">
-        </MudTextField>
-    </MudStack>
-
-</MudContainer>
-
-<svg style="height: 0">
-    <filter id="wavy2">
-        <feTurbulence x="0" y="0" baseFrequency="0.02" numOctaves="5" seed="2"/>
-        <feDisplacementMap in="SourceGraphic" scale="20"/>
-    </filter>
-</svg>
+<button @onclick="() => _isVisible = !_isVisible">test</button>
+<button @onclick="() => _url = string.Empty">clear</button>
+<button @onclick="() => _players.Add(Random.Shared.Next().ToString())">clear</button>
 
 @code {
-    // Liste des joueurs affichés
-    public string[] Names =
-    {
-        "Loïc",
-        "Stéphane",
-        "Géraud",
-        "Alex",
-        "Loris"
-    };
+    bool _isVisible = true;
 
-    // Zone de texte contenant l'URL pour rejoindre la room
-    public string ReadOnly { get; set; } = "https://localhost:7114/startgame/amogus";
+    private string _url = "http://localhost:5000/lobby";
 
-    // Pop-up des règles
-    private void OpenRulesDialog()
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<Rules>("Modifier les règles", options);
-    }
-
+    readonly List<string> _players = new();
 }
