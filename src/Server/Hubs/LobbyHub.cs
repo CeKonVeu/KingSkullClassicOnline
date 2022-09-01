@@ -38,7 +38,6 @@ public class LobbyHub : Hub
         return Guid.NewGuid().ToString("N");
     }
 
-
     /// <summary>
     ///     Rejoindre un lobby de jeu.
     /// </summary>

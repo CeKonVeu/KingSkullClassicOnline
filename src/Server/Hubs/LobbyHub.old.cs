@@ -70,7 +70,7 @@ public class LobbyHubOld : Hub
         foreach (var player in groups[lobbyName].Players)
         {
             var res = string.Join(",", player.Hand.Select(card => card.Name));
-            await Clients.Client(groups[lobbyName].GetConnectionId(player.Name))
+            await Clients.Client(groups[lobbyName].GetConnectionId(player.Id))
                 .SendAsync("ReceiveStartingHand", res);
             //Clients.Group(lobbyName).SendAsync("ReceiveStartingHand", res, groups[lobbyName].GetConnectionId(player.Name));
         }
@@ -140,6 +140,6 @@ public class LobbyHubOld : Hub
     {
         return Clients.Caller.SendAsync("RoomJoined",
             roomName,
-            groups[roomName].Players.Select(p => p.Name));
+            groups[roomName].Players.Select(p => p.Id));
     }
 }

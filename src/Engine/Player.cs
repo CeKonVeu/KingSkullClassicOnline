@@ -15,21 +15,31 @@ public class Player
     /// <summary>
     ///     constructeur
     /// </summary>
-    /// <param name="playerName">nom du joueur</param>
-    /// <param name="connectionId">id de connexion</param>
-    public Player(string playerName, Controller controller)
+    /// <param name="id">id du joueur</param>
+    /// <param name="name">nom du joueur</param>
+    /// <param name="controller">contrôleur associé au joueur</param>
+    public Player(string id, string name, Controller controller)
     {
         _selectedCard = 0;
         _controller = controller;
         CurrentVote = 0;
-        Name = playerName;
+        Id = id;
+        Name = name;
         Hand = new List<Card.Card>();
         Votes = new (int, int)[10];
+        controller.AddPlayer(this);
     }
+
+    /// <summary>
+    ///     getter sur la main du joueur
+    /// </summary>
+    public List<Card.Card> Hand { get; private set; }
 
     /// <summary>
     ///     permet de récupérer le nom
     /// </summary>
+    public string Id { get; }
+
     public string Name { get; }
 
     /// <summary>
@@ -38,9 +48,24 @@ public class Player
     public (int, int)[] Votes { get; }
 
     /// <summary>
-    ///     getter sur la main du joueur
+    ///     ajoute des cartes à la main du joueur
     /// </summary>
-    public List<Card.Card> Hand { get; private set; }
+    /// <param name="c">liste des cartes a ajouter</param>
+    public void AddCards(List<Card.Card> c)
+    {
+        Hand = c;
+    }
+
+    /// <summary>
+    ///     Ajoute des points au score du joueur
+    /// </summary>
+    /// <param name="vote">vote du tour</param>
+    /// <param name="score">score à ajouter</param>
+    /// <param name="turnNumber">numéro du tour</param>
+    public void AddScore(int vote, int score)
+    {
+        Votes[_controller.Turn - 1] = (vote, Votes[Math.Max(0, _controller.Turn - 2)].Item2 + score);
+    }
 
     /// <summary>
     ///     vérifie que la carte voulant être jouée respecte les règles
@@ -70,26 +95,6 @@ public class Player
                         playableCards.Add(i);
 
         return playableCards.Contains(_selectedCard);
-    }
-
-    /// <summary>
-    ///     Ajoute des points au score du joueur
-    /// </summary>
-    /// <param name="vote">vote du tour</param>
-    /// <param name="score">score à ajouter</param>
-    /// <param name="turnNumber">numéro du tour</param>
-    public void AddScore(int vote, int score)
-    {
-        Votes[_controller.Turn - 1] = (vote, Votes[Math.Max(0, _controller.Turn - 2)].Item2 + score);
-    }
-
-    /// <summary>
-    ///     ajoute des cartes à la main du joueur
-    /// </summary>
-    /// <param name="c">liste des cartes a ajouter</param>
-    public void AddCards(List<Card.Card> c)
-    {
-        Hand = c;
     }
 
     /// <summary>
