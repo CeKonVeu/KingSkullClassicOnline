@@ -26,7 +26,7 @@
 
 @code {
     private static readonly Controller _controller = new();
-    private readonly Player[] _score = { new("Richard", "", _controller), new("Penelope", "", _controller) };
+    private readonly Player[] _score = { new("Richard", ""), new("Penelope", "") };
 
     // TODO Peut-être que la partie de reformatage du score peut être factorisée
     private readonly (int, int)[][] _scoreReformat = new (int, int)[Config.TurnNumber][];
@@ -40,13 +40,13 @@
     {
     // TODO Utiliser le vrai score
 
-        _score[0].AddScore(1, 20);
-        _score[0].AddScore(2, 40);
-        _score[0].AddScore(0, -30);
-
-        _score[1].AddScore(1, -10);
-        _score[1].AddScore(0, 10);
-        _score[1].AddScore(2, 40);
+        // _score[0].AddScore(1, 20);
+        // _score[0].AddScore(2, 40);
+        // _score[0].AddScore(0, -30);
+        //
+        // _score[1].AddScore(1, -10);
+        // _score[1].AddScore(0, 10);
+        // _score[1].AddScore(2, 40);
 
         var playerNumber = _score.Length;
 

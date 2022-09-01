@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.SignalR;
 /// </summary>
 public class LobbyHub : Hub
 {
-    private static readonly ConcurrentDictionary<string, Controller> groups = new();
+    private static readonly ConcurrentDictionary<string, Controller> Controllers = new();
 
     /// <summary>
     ///     Permet de créer un lobby de jeu
@@ -18,11 +18,11 @@ public class LobbyHub : Hub
     public async Task CreateRoom(string playerName)
     {
         var roomName = CreateRoomName();
-        if (groups.ContainsKey(roomName))
+        if (Controllers.ContainsKey(roomName))
             //TODO à changer
             throw new Exception("Room already exists");
 
-        if (!groups.TryAdd(roomName, new Controller()))
+        if (!Controllers.TryAdd(roomName, new Controller()))
             throw new Exception("Cannot add room");
 
 
@@ -43,14 +43,14 @@ public class LobbyHub : Hub
     /// <returns>Renvoi le nom du lobby s'il existe en appelant la méthode ReceiveLobbyName, sinon ne renvoi rien</returns>
     public async Task JoinRoom(string roomName, string playerName)
     {
-        if (!groups.ContainsKey(roomName))
+        if (!Controllers.ContainsKey(roomName))
             throw new Exception("Room doesn't exist");
         //TODO changer le 6 par le nombre de joueur max
-        if (groups[roomName].Players.Count >= Config.MaxPlayer)
+        if (Controllers[roomName].Players.Count >= Config.MaxPlayer)
             throw new Exception("Room is full");
 
         var task = Groups.AddToGroupAsync(Context.ConnectionId, roomName);
-        new Player(Context.ConnectionId, playerName, groups[roomName]);
+        Controllers[roomName].AddPlayer(new Player(Context.ConnectionId, playerName));
         await task;
         await SendRoomJoined(roomName);
         Console.WriteLine($"Player {playerName} joined room {roomName}");
@@ -61,6 +61,6 @@ public class LobbyHub : Hub
     {
         return Clients.Group(roomName).SendAsync("RoomJoined",
             roomName,
-            groups[roomName].Players.Select(p => p.Name));
+            Controllers[roomName].Players.Select(p => p.Name));
     }
 }

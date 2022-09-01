@@ -24,7 +24,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _connection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("/connectRoom"))
+        _connection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/connectRoom"))
             .Build();
 
         SetHandlers();
