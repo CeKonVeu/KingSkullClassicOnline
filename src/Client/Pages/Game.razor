@@ -1,6 +1,7 @@
 @page "/game"
 @page "/game/{roomName}"
 @inject NavigationManager NavigationManager
+@inject Data Data
 @using Microsoft.AspNetCore.SignalR.Client
 @using KingSkullClassicOnline.Client.Shared.Components
 @implements IAsyncDisposable
@@ -10,7 +11,7 @@
 
 <GameBoard IsVisible="_isPlaying" Cards="_cards"/>
 
-<button @onclick="() => _isPlaying = !_isPlaying">test</button>
+<button @onclick="() => _isPlaying = !_isPlaying">@Data.Name</button>
 <button @onclick="() => _url = string.Empty">clear</button>
 <button @onclick="() => _players.Add(Random.Shared.Next().ToString())">clear</button>
 

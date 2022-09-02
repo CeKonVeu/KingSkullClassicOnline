@@ -1,4 +1,5 @@
 @page "/"
+@inject Data Data
 
 <PageTitle>King Skull Classic Online</PageTitle>
 
@@ -8,7 +9,7 @@
 <MudContainer Class="mt-16 bg" MaxWidth="MaxWidth.Small">
     <MudStack>
         <MudTextField
-            @bind-Value="TextValue"
+            @bind-Value="Data.Name"
             Variant="Variant.Filled"
             AutoFocus="true"
             Label="Votre nom">
@@ -35,7 +36,3 @@
       background-size: cover;
     }
 </style>
-
-@code {
-    public string TextValue { get; set; }
-}
