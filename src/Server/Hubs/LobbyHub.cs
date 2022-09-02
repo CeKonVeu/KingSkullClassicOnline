@@ -5,17 +5,19 @@ using Engine;
 using Microsoft.AspNetCore.SignalR;
 
 /// <summary>
-///     Hub qui gère les différents lobby de jeu
+///     Hub permettant de gérer la communication entre les clients et le serveur.
 /// </summary>
 public class LobbyHub : Hub
 {
     private static readonly ConcurrentDictionary<string, Controller> Controllers = new();
     private static readonly ConcurrentDictionary<string, string> ConnectedUsers = new();
 
+
     /// <summary>
-    ///     Permet de créer un lobby de jeu
+    ///     Créé une salle de jeu.
     /// </summary>
-    /// <param name="playerName">Nom du créateur du lobby</param>
+    /// <param name="playerName">le créateur de la salle</param>
+    /// <exception cref="Exception"></exception>
     public async Task CreateRoom(string playerName)
     {
         var roomName = CreateRoomName();
@@ -31,17 +33,21 @@ public class LobbyHub : Hub
         Console.WriteLine($"Room {roomName} created");
     }
 
+    /// <summary>
+    ///     Obtient un nom de salle unique.
+    /// </summary>
+    /// <returns>le nom</returns>
     private static string CreateRoomName()
     {
         return Guid.NewGuid().ToString("N");
     }
 
     /// <summary>
-    ///     Rejoindre un lobby de jeu.
+    ///     Rejoint la salle de nom donné.
     /// </summary>
-    /// <param name="roomName">Nom du lobby à rejoindre</param>
-    /// <param name="playerName">Nom du joueur qui rejoint le lobby</param>
-    /// <returns>Renvoi le nom du lobby s'il existe en appelant la méthode ReceiveLobbyName, sinon ne renvoi rien</returns>
+    /// <param name="roomName">la salle à rejoindre</param>
+    /// <param name="playerName">le nom du joueur rejoignant la salle</param>
+    /// <exception cref="Exception">si la salle n'existe pas ou qu'elle est pleine</exception>
     public async Task JoinRoom(string roomName, string playerName)
     {
         if (!Controllers.ContainsKey(roomName))
@@ -58,6 +64,10 @@ public class LobbyHub : Hub
         Console.WriteLine($"Player {playerName} joined room {roomName}");
     }
 
+    /// <summary>
+    ///     Quitte la salle donnée (et la supprime si nécessaire). Notifie les autres joueurs si nécessaire.
+    /// </summary>
+    /// <param name="roomName">la salle à quitter</param>
     private async Task LeaveRoom(string roomName)
     {
         var task = Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
@@ -77,6 +87,9 @@ public class LobbyHub : Hub
         }
     }
 
+    /// <summary>
+    ///     Met à jour les dictionnaires lors d'une déconnexion.
+    /// </summary>
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         ConnectedUsers.Remove(Context.ConnectionId, out var rooName);
@@ -86,6 +99,11 @@ public class LobbyHub : Hub
     }
 
 
+    /// <summary>
+    ///     Notifie les joueurs d'une salle d'un changement de joueur.
+    /// </summary>
+    /// <param name="roomName">la salle</param>
+    /// <returns>la tâche</returns>
     private Task SendRoomChanged(string roomName)
     {
         return Clients.Group(roomName).SendAsync("RoomChanged",
