@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.SignalR;
 public class LobbyHub : Hub
 {
     private static readonly ConcurrentDictionary<string, Controller> Controllers = new();
+    private static readonly ConcurrentDictionary<string, string> ConnectedUsers = new();
 
     /// <summary>
     ///     Permet de créer un lobby de jeu
@@ -51,15 +52,43 @@ public class LobbyHub : Hub
 
         var task = Groups.AddToGroupAsync(Context.ConnectionId, roomName);
         Controllers[roomName].AddPlayer(new Player(Context.ConnectionId, playerName));
+        ConnectedUsers.TryAdd(Context.ConnectionId, roomName);
         await task;
-        await SendRoomJoined(roomName);
+        await SendRoomChanged(roomName);
         Console.WriteLine($"Player {playerName} joined room {roomName}");
     }
 
-
-    private Task SendRoomJoined(string roomName)
+    private async Task LeaveRoom(string roomName)
     {
-        return Clients.Group(roomName).SendAsync("RoomJoined",
+        var task = Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
+        Controllers[roomName].RemovePlayer(Context.ConnectionId);
+
+        if (Controllers[roomName].Players.Count == 0)
+        {
+            Controllers.TryRemove(roomName, out _);
+            await task;
+            Console.WriteLine($"Room {roomName} deleted");
+        }
+        else
+        {
+            await task;
+            await SendRoomChanged(roomName);
+            Console.WriteLine($"Player {Context.ConnectionId} left room {roomName}");
+        }
+    }
+
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        ConnectedUsers.Remove(Context.ConnectionId, out var rooName);
+        if (rooName == null)
+            throw new Exception("Player not found");
+        await LeaveRoom(rooName);
+    }
+
+
+    private Task SendRoomChanged(string roomName)
+    {
+        return Clients.Group(roomName).SendAsync("RoomChanged",
             roomName,
             Controllers[roomName].Players.Select(p => p.Name));
     }

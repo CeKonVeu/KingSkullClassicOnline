@@ -1,8 +1,9 @@
 @page "/lobby"
 @page "/lobby/{roomName}"
+@inject NavigationManager NavigationManager
 @using Microsoft.AspNetCore.SignalR.Client
 @using KingSkullClassicOnline.Client.Shared.Components
-@inject NavigationManager NavigationManager
+@implements IAsyncDisposable
 
 <WaitingRoom Url="@_url" IsVisible="_isVisible" Names="_players"/>
 
@@ -55,13 +56,18 @@
     private void SetHandlers()
     {
         Console.WriteLine("SetHandlers");
-        _connection.On("RoomJoined", (string roomName, List<string> players) =>
+        _connection.On("RoomChanged", (string roomName, List<string> players) =>
         {
             _url = roomName;
             _players = players;
-            Console.WriteLine($"RoomJoined: {roomName}");
+            Console.WriteLine($"RoomChanged: {roomName}");
             StateHasChanged();
         });
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _connection.DisposeAsync();
     }
 
 }
