@@ -1,5 +1,7 @@
 ﻿namespace KingSkullClassicOnline.Engine.Game;
 
+using Card;
+
 /// <summary>
 ///     gère une manche de jeu
 /// </summary>
@@ -21,28 +23,32 @@ public class Round
         Plis = new Fold[controller.Turn];
     }
 
-    public int[] Votes { get; }
+    public int CurrentPlayer { get; set; }
 
     public Fold[] Plis { get; }
 
-    public int CurrentPlayer { get; set; }
+    public int[] Votes { get; }
 
     /// <summary>
-    ///     Mélange un array utilisant le "fisher yates shuffle"
+    ///     ajoute le vote d'un joueur
     /// </summary>
-    /// <param name="array">l'array à mélanger</param>
-    /// <typeparam name="T">type du contenu de l'array</typeparam>
-    /// <returns>l'array mélangé</returns>
-    public static T[] Shuffle<T>(T[] array)
+    /// <param name="playerName">nom du joueur</param>
+    /// <param name="vote">son vote</param>
+    public void AddVote(string playerName, int vote)
     {
-        var n = array.Length;
-        for (var i = 0; i < n - 1; i++)
-        {
-            var r = i + Random.Next(n - i);
-            (array[r], array[i]) = (array[i], array[r]);
-        }
+        for (var i = 0; i < _controller.Players.Count; ++i)
+            if (_controller.Players[i].Id == playerName)
+                Votes[i] = vote;
+    }
 
-        return array;
+    /// <summary>
+    ///     Change l'ordre des joueurs
+    /// </summary>
+    public void ChangePlayerOrder()
+    {
+        var temp = _controller.Players.First();
+        _controller.Players.RemoveAt(0);
+        _controller.Players.Add(temp);
     }
 
     /// <summary>
@@ -50,7 +56,7 @@ public class Round
     /// </summary>
     public void DealCards()
     {
-        var temp = new List<Card.Card>();
+        var temp = new List<Card>();
         temp.AddRange(Shuffle(_controller.Deck.ToArray()));
 
         for (var index = 0; index < _controller.Players.Count; index++)
@@ -98,24 +104,20 @@ public class Round
     }
 
     /// <summary>
-    ///     Change l'ordre des joueurs
+    ///     Mélange un array utilisant le "fisher yates shuffle"
     /// </summary>
-    public void ChangePlayerOrder()
+    /// <param name="array">l'array à mélanger</param>
+    /// <typeparam name="T">type du contenu de l'array</typeparam>
+    /// <returns>l'array mélangé</returns>
+    public static T[] Shuffle<T>(T[] array)
     {
-        var temp = _controller.Players.First();
-        _controller.Players.RemoveAt(0);
-        _controller.Players.Add(temp);
-    }
+        var n = array.Length;
+        for (var i = 0; i < n - 1; i++)
+        {
+            var r = i + Random.Next(n - i);
+            (array[r], array[i]) = (array[i], array[r]);
+        }
 
-    /// <summary>
-    ///     ajoute le vote d'un joueur
-    /// </summary>
-    /// <param name="playerName">nom du joueur</param>
-    /// <param name="vote">son vote</param>
-    public void AddVote(string playerName, int vote)
-    {
-        for (var i = 0; i < _controller.Players.Count; ++i)
-            if (_controller.Players[i].Name == playerName)
-                Votes[i] = vote;
+        return array;
     }
 }

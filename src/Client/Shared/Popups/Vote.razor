@@ -38,7 +38,7 @@
 @code {
 
     [CascadingParameter]
-    MudDialogInstance MudDialog { get; set; }
+    MudDialogInstance MudDialog { get; set; } = null!;
 
     readonly string[] votes = Enumerable.Range(0, 1).ToArray().Select(x => x.ToString()).ToArray();
 

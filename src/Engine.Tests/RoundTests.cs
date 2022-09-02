@@ -1,7 +1,7 @@
-﻿using KingSkullClassicOnline.Engine.Game;
-using NUnit.Framework;
+﻿namespace KingSkullClassicOnline.Engine.Tests;
 
-namespace KingSkullClassicOnline.Engine.Tests;
+using Game;
+using NUnit.Framework;
 
 public class RoundTests
 {
@@ -9,20 +9,6 @@ public class RoundTests
 
     private Player _p1 = null!, _p2 = null!, _p3 = null!;
     private Round _round = null!;
-
-    [SetUp]
-    public void Setup()
-    {
-        _controller = new Controller();
-
-        _p1 = new Player("Loic", _controller);
-        _p2 = new Player("Alex", _controller);
-        _p3 = new Player("Loris", _controller);
-
-        _controller.Turn = 2;
-
-        _round = new Round(_controller);
-    }
 
     [Test]
     public void ItShouldCreateTheCorrectRound()
@@ -44,8 +30,24 @@ public class RoundTests
     public void ItShouldPlayCorrectly()
     {
         _round.Play();
-        CollectionAssert.AreEqual(new[] {0, 0, 0}, _round.Votes);
+        CollectionAssert.AreEqual(new[] { 0, 0, 0 }, _round.Votes);
 
         foreach (var pli in _round.Plis) Assert.AreEqual(_controller.Players.Count, pli.CardsPlayed.Count);
+    }
+
+    [SetUp]
+    public void Setup()
+    {
+        _controller = new Controller();
+
+        _p1 = new Player("1", "Loic");
+        _p2 = new Player("2", "Alex");
+        _p3 = new Player("3", "Loris");
+
+        _controller.AddPlayers(_p1, _p2, _p3);
+
+        _controller.Turn = 2;
+
+        _round = new Round(_controller);
     }
 }

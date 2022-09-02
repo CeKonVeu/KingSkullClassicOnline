@@ -1,5 +1,5 @@
 @page "/"
-@inject NavigationManager Nav
+@inject NavigationManager NavigationManager
 @inject Data Data
 
 <PageTitle>King Skull Classic Online</PageTitle>
@@ -17,8 +17,7 @@
         </MudTextField>
 
         <MudButton
-            OnClick="TransfertName"
-            Href="lobby"
+            OnClick="RedirectToGame"
             Variant="Variant.Filled"
             Color="Color.Primary"
             Size="Size.Large"
@@ -42,11 +41,11 @@
 @code {
     public string TextValue { get; set; }
 
-    private void TransfertName()
+    private void RedirectToGame()
     {
         Data.Name = TextValue;
 
-        Nav.NavigateTo("/lobby");
+        NavigationManager.NavigateTo("/lobby");
     }
 
 }

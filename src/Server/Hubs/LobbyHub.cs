@@ -1,134 +1,150 @@
-﻿using System.Collections.Concurrent;
-using KingSkullClassicOnline.Engine;
-using KingSkullClassicOnline.Engine.Game;
+﻿namespace KingSkullClassicOnline.Server.Hubs;
+
+using System.Collections.Concurrent;
+using Engine;
+using Engine.Game;
 using Microsoft.AspNetCore.SignalR;
 
-namespace KingSkullClassicOnline.Server.Hubs;
-
 /// <summary>
-///     Hub qui gère les différents lobby de jeu
+///     Hub permettant de gérer la communication entre les clients et le serveur.
 /// </summary>
 public class LobbyHub : Hub
 {
-    private static readonly ConcurrentDictionary<string, Controller> groups = new();
+    private static readonly ConcurrentDictionary<string, Controller> Controllers = new();
+    private static readonly ConcurrentDictionary<string, string> ConnectedUsers = new();
+
 
     /// <summary>
-    ///     signale aux joueurs que la partie se lance
+    ///     Créé une salle de jeu.
     /// </summary>
-    /// <param name="lobbyName"></param>
-    public async Task StartGame(string lobbyName)
+    /// <param name="playerName">le créateur de la salle</param>
+    /// <exception cref="Exception"></exception>
+    public async Task CreateRoom(string playerName)
     {
-        //await Clients.Group(lobbyName).SendAsync("StartGame");
-        await Clients.Group(lobbyName).SendAsync("StartGame");
+        var roomName = CreateRoomName();
+        if (Controllers.ContainsKey(roomName))
+            //TODO à changer
+            throw new Exception("Room already exists");
+
+        if (!Controllers.TryAdd(roomName, new Controller()))
+            throw new Exception("Cannot add room");
+
+
+        await JoinRoom(roomName, playerName);
+        Console.WriteLine($"Room {roomName} created");
     }
 
     /// <summary>
-    ///     Attend que les joueurs soient prets
+    ///     Obtient un nom de salle unique.
     /// </summary>
-    /// <param name="lobbyName">nom du groupe auquel appartient le joueur</param>
-    public async Task ReadyGame(string lobbyName, string playerName)
+    /// <returns>le nom</returns>
+    private static string CreateRoomName()
     {
-        groups[lobbyName].SetConnectionId(playerName, Context.ConnectionId);
-        if (++groups[lobbyName].areReady == groups[lobbyName].Players.Count)
-            Game(lobbyName);
+        return Guid.NewGuid().ToString("N");
     }
 
     /// <summary>
-    ///     boucle de jeu
+    ///     Rejoint la salle de nom donné.
     /// </summary>
-    /// <param name="lobbyName">lobby que gère la boucle de jeu</param>
-    private async Task Game(string lobbyName)
+    /// <param name="roomName">la salle à rejoindre</param>
+    /// <param name="playerName">le nom du joueur rejoignant la salle</param>
+    /// <exception cref="Exception">si la salle n'existe pas ou qu'elle est pleine</exception>
+    public async Task JoinRoom(string roomName, string playerName)
     {
-        var controller = groups[lobbyName];
+        if (!Controllers.ContainsKey(roomName))
+            throw new Exception("Room doesn't exist");
+        //TODO changer le 6 par le nombre de joueur max
+        if (Controllers[roomName].Players.Count >= Config.MaxPlayer)
+            throw new Exception("Room is full");
+
+        var task = Groups.AddToGroupAsync(Context.ConnectionId, roomName);
+        Controllers[roomName].AddPlayer(new Player(Context.ConnectionId, playerName));
+        ConnectedUsers.TryAdd(Context.ConnectionId, roomName);
+        await task;
+        await SendRoomChanged(roomName);
+        Console.WriteLine($"Player {playerName} joined room {roomName}");
+    }
+
+    /// <summary>
+    ///     Quitte la salle donnée (et la supprime si nécessaire). Notifie les autres joueurs si nécessaire.
+    /// </summary>
+    /// <param name="roomName">la salle à quitter</param>
+    private async Task LeaveRoom(string roomName)
+    {
+        var task = Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
+        Controllers[roomName].RemovePlayer(Context.ConnectionId);
+
+        if (Controllers[roomName].Players.Count == 0)
+        {
+            Controllers.TryRemove(roomName, out _);
+            await task;
+            Console.WriteLine($"Room {roomName} deleted");
+        }
+        else
+        {
+            await task;
+            await SendRoomChanged(roomName);
+            Console.WriteLine($"Player {Context.ConnectionId} left room {roomName}");
+        }
+    }
+
+    /// <summary>
+    ///     Met à jour les dictionnaires lors d'une déconnexion.
+    /// </summary>
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        ConnectedUsers.Remove(Context.ConnectionId, out var rooName);
+        if (rooName == null)
+            throw new Exception("Player not found");
+        await LeaveRoom(rooName);
+    }
+
+
+    /// <summary>
+    ///     Notifie les joueurs d'une salle d'un changement de joueur.
+    /// </summary>
+    /// <param name="roomName">la salle</param>
+    /// <returns>la tâche</returns>
+    private Task SendRoomChanged(string roomName)
+    {
+        return Clients.Group(roomName).SendAsync("RoomChanged",
+            roomName,
+            Controllers[roomName].Players.Select(p => p.Name));
+    }
+
+    public async Task StartGame(string roomName)
+    {
+        var controller = Controllers[roomName];
+
         //while (controller.Turn <= Config.TurnNumber)
         //{
         controller.CurrentRound = new Round(controller);
         controller.Turn = 4;
         controller.CurrentRound.DealCards();
-        foreach (var player in groups[lobbyName].Players)
+        var tasks = new Task[controller.Players.Count];
+        for (var i = 0; i < controller.Players.Count; ++i)
         {
-            var res = string.Join(",", player.Hand.Select(card => card.Name));
-            await Clients.Client(groups[lobbyName].GetConnectionId(player.Name))
-                .SendAsync("ReceiveStartingHand", res);
-            //Clients.Group(lobbyName).SendAsync("ReceiveStartingHand", res, groups[lobbyName].GetConnectionId(player.Name));
+            var player = controller.Players[i];
+            var hand = player.Hand.Select(card => card.Name);
+
+            tasks[i] = Clients.Client(player.Id).SendAsync("HandChanged", hand);
         }
 
-        Clients.Group(lobbyName).SendAsync("AskVote");
+        await Task.WhenAll(tasks);
+
+        await Clients.Group(roomName).SendAsync("VoteAsked");
 
         // TODO gestion du pli
         controller.Turn++;
-        //}
+        // }
     }
 
-    /// <summary>
-    ///     TODO : A supprimer ou faire un chat
-    /// </summary>
-    /// <param name="user"></param>
-    /// <param name="message"></param>
-    /// <param name="group"></param>
-    public async Task SendMessage(string user, string message, string group)
+    public async Task Vote(string rooName, int vote)
     {
-        await Clients.Group(group).SendAsync("ReceiveMessage", user, message);
-    }
+        var currentRound = Controllers[rooName].CurrentRound;
+        if (currentRound == null)
+            throw new Exception("Controller not found");
 
-    /// <summary>
-    ///     Permet de créer un lobby de jeu
-    /// </summary>
-    /// <param name="lobbyName">Nom du lobby à créer</param>
-    /// <param name="playerName">Nom du créateur du lobby</param>
-    public async Task CreateGroup(string lobbyName, string playerName)
-    {
-        if (groups.ContainsKey(lobbyName))
-            return;
-        await Groups.AddToGroupAsync(Context.ConnectionId, lobbyName);
-        groups.TryAdd(lobbyName, new Controller());
-        groups[lobbyName].AddPlayer(new Player(playerName, groups[lobbyName]), Context.ConnectionId);
-        Clients.Caller.SendAsync("ReceiveLobbyName", lobbyName);
-    }
-
-    /// <summary>
-    ///     Rejoindre un lobby de jeu.
-    /// </summary>
-    /// <param name="lobbyName">Nom du lobby à rejoindre</param>
-    /// <param name="playerName">Nom du joueur qui rejoint le lobby</param>
-    /// <returns>Renvoi le nom du lobby s'il existe en appelant la méthode ReceiveLobbyName, sinon ne renvoi rien</returns>
-    public async Task JoinGroup(string lobbyName, string playerName)
-    {
-        if (!groups.ContainsKey(lobbyName) || groups[lobbyName].Players.Count >= 6)
-            return;
-
-        await Groups.AddToGroupAsync(Context.ConnectionId, lobbyName);
-        Clients.Caller.SendAsync("ReceiveLobbyName", lobbyName);
-        groups[lobbyName].AddPlayer(new Player(playerName, groups[lobbyName]), Context.ConnectionId);
-    }
-
-    /// <summary>
-    ///     Permet de savoir si un lobby existe ou non.
-    /// </summary>
-    /// <param name="lobbyName">Nom du lobby</param>
-    /// <returns>
-    ///     Le nom du lobby si ce dernier existe via la méthode DoesLobbyExist de l'utilisateur, string vide dans le cas
-    ///     contraire
-    /// </returns>
-    public async Task DoesLobbyExist(string lobbyName)
-    {
-        var result = "";
-        if (groups.ContainsKey(lobbyName))
-            result = lobbyName;
-        Clients.Caller.SendAsync("DoesLobbyExist", result);
-    }
-
-    /// <summary>
-    ///     Quitte le lobby de jeu
-    /// </summary>
-    /// <param name="lobbyName">Nom du lobby à quitter</param>
-    /// <param name="playerName">Nom du joueur</param>
-    public void LeaveGroup(string lobbyName, string playerName)
-    {
-        if (groups.ContainsKey(lobbyName)) groups[lobbyName].RemovePlayer(playerName);
-    }
-
-    public async Task SendVote(int vote, string lobbyName, string playerName)
-    {
+        currentRound.AddVote(Context.ConnectionId, vote);
     }
 }

@@ -1,36 +1,56 @@
-﻿using KingSkullClassicOnline.Engine.Card;
-using KingSkullClassicOnline.Engine.Game;
+﻿namespace KingSkullClassicOnline.Engine;
 
-namespace KingSkullClassicOnline.Engine;
+using Card;
+using Game;
 
 /// <summary>
 ///     Gère le déroulement d'une partie
 /// </summary>
 public class Controller
 {
-    public int areReady;
-    public Dictionary<string, string?> playerId;
-
     /// <summary>
     ///     Constructeur
     /// </summary>
     public Controller()
     {
-        areReady = 0;
-        playerId = new Dictionary<string, string?>();
         Players = new List<Player>();
         Turn = 1;
         Deck = new List<Card.Card>();
         CreateDeck();
     }
 
-    public Round CurrentRound { get; set; }
+    public Round? CurrentRound { get; set; }
 
     public List<Card.Card> Deck { get; }
 
     public List<Player> Players { get; }
 
     public int Turn { get; set; }
+
+
+    /// <summary>
+    ///     ajoute un joueur au controleur
+    /// </summary>
+    /// <param name="player">joueur à ajouter</param>
+    public void AddPlayer(Player player)
+    {
+        if (Players.Count > Config.MaxPlayer)
+            throw new Exception("Max player reached");
+
+        if (Players.Exists(p => p.Id == player.Id))
+            throw new Exception("Player with this id already exists");
+
+        Players.Add(player);
+    }
+
+    /// <summary>
+    ///     Ajoute des joueurs au contrôleur
+    /// </summary>
+    /// <param name="players">les joueurs à ajouter</param>
+    public void AddPlayers(params Player[] players)
+    {
+        foreach (var player in players) AddPlayer(player);
+    }
 
     /// <summary>
     ///     Crée un deck de cartes selon les spécificités du fichier config
@@ -61,19 +81,6 @@ public class Controller
             Deck.Add(new SpecialCard(Config.SkullKingValue, "SkullKing")); // Skull king
     }
 
-
-    /// <summary>
-    ///     ajoute un joueur au controleur
-    /// </summary>
-    /// <param name="p">joueur à ajouter</param>
-    /// <param name="connetionId">id de connexion du joueur</param>
-    public void AddPlayer(Player p, string? connetionId)
-    {
-        if (Players.Count < Config.MaxPlayer)
-            Players.Add(p);
-        playerId.Add(p.Name, connetionId);
-    }
-
     /// <summary>
     ///     enlève un joueur au controleur
     /// </summary>
@@ -90,7 +97,7 @@ public class Controller
     public void RemovePlayer(string p)
     {
         // remove the player from the list with the name p
-        var player = Players.Find(x => x.Name == p);
+        var player = Players.Find(x => x.Id == p);
         if (player != null)
             Players.Remove(player);
     }
@@ -106,25 +113,5 @@ public class Controller
             CurrentRound.Play();
             Turn++;
         }
-    }
-
-    /// <summary>
-    ///     récupère l'id de connexion d'un joueur
-    /// </summary>
-    /// <param name="playerName">nom du joueur</param>
-    /// <returns>son id</returns>
-    public string? GetConnectionId(string playerName)
-    {
-        return playerId[playerName];
-    }
-
-    /// <summary>
-    ///     set un nouvel id de connection au joueur
-    /// </summary>
-    /// <param name="playerName">nom du joueur a changer</param>
-    /// <param name="connec">nouvel id</param>
-    public void SetConnectionId(string playerName, string connec)
-    {
-        playerId[playerName] = connec;
     }
 }

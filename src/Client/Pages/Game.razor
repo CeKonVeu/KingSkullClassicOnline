@@ -1,72 +1,95 @@
-﻿@page "/game"
-@using Microsoft.AspNetCore.SignalR.Client
-@inject IJSRuntime JS
+@page "/game"
+@page "/game/{roomName}"
 @inject NavigationManager NavigationManager
-@inject IDialogService DialogService
+@using Microsoft.AspNetCore.SignalR.Client
+@using KingSkullClassicOnline.Client.Shared.Components
+@implements IAsyncDisposable
 
-<h3>@lobbyName</h3>
-<MudButton @onclick="VotePopup" Variant="Variant.Filled" Color="Color.Primary">
-    @test
-</MudButton>
-<HandGame Cards="@cards"/>
+<WaitingRoom Url="@_url" IsVisible="!_isPlaying" Names="_players" IsOwner="_isOwner"
+             OnGameStart="StartGame"/>
+
+<GameBoard IsVisible="_isPlaying" Cards="_cards"/>
+
+<button @onclick="() => _isPlaying = !_isPlaying">test</button>
+<button @onclick="() => _url = string.Empty">clear</button>
+<button @onclick="() => _players.Add(Random.Shared.Next().ToString())">clear</button>
 
 @code {
-    private HubConnection? _hubConnection;
-    private int vote;
-    private string[] cards = Array.Empty<string>();
-    private string test = "Send";
-    private string lobbyName = "a";
+    private bool _isPlaying;
 
+    private bool _isOwner;
+
+    private string _url = "http://localhost:5000/lobby";
+
+    private List<string> _players = new();
+
+    private List<string> _cards = new();
+
+    private HubConnection _connection = null!;
+
+    [Parameter]
+    public string? RoomName { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        _hubConnection = new HubConnectionBuilder()
-            .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
+        _connection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/connectRoom"))
             .Build();
 
-        await _hubConnection.StartAsync();
+        SetHandlers();
 
-        if (_hubConnection is not null)
+        await _connection.StartAsync();
+
+        if (RoomName is not null)
         {
-            await _hubConnection.SendAsync("JoinGroup", Data.LobbyName, Data.Player);
+            await JoinRoom(RoomName);
         }
-
-        lobbyName = Data.LobbyName;
-        StateHasChanged();
-
-        await _hubConnection.SendAsync("ReadyGame", Data.LobbyName, Data.Player);
-
-        _hubConnection.On("ReceiveStartingHand", (string hand) =>
+        else
         {
-            Console.WriteLine("Hand : " + hand);
-            cards = hand.Split(",");
-            StateHasChanged();
-        });
-
-        _hubConnection.On("ReceiveMessage", (int t) =>
-        {
-            test = t + "";
-            StateHasChanged();
-        });
-
-        _hubConnection.On("AskVote", () =>
-        {
-            Console.WriteLine("Vote");
-
-            VotePopup();
-            _hubConnection.SendAsync("SendVote", vote, Data.LobbyName, Data.Player);
-        });
+            _isOwner = true;
+            await CreateRoom();
+        }
     }
 
-    async Task VotePopup()
+    private async Task JoinRoom(string roomName)
     {
-        var options = new DialogOptions {MaxWidth = MaxWidth.Medium, FullWidth = true};
-        var dialog = DialogService.Show<VotePopup>("Votez !", options);
-        var result = await dialog.Result;
-
-        vote = Convert.ToInt32(result.Data);
+        await _connection.SendAsync("JoinRoom", roomName, "alice GRUNDER");
     }
 
+    private async Task CreateRoom()
+    {
+        await _connection.SendAsync("CreateRoom", "bob");
+    }
 
+    private void SetHandlers()
+    {
+        Console.WriteLine("SetHandlers");
+        _connection.On("RoomChanged", (string roomName, List<string> players) =>
+        {
+            _url = roomName;
+            _players = players;
+            RoomName = roomName;
+            Console.WriteLine($"RoomChanged: {roomName}");
+            StateHasChanged();
+        });
+
+        _connection.On("HandChanged", (List<string> newHand) =>
+        {
+            _isPlaying = true;
+            _cards = newHand;
+            Console.WriteLine($"HandChanged: {newHand}");
+            StateHasChanged();
+        });
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _connection.DisposeAsync();
+    }
+
+    private async void StartGame()
+    {
+        await _connection.SendAsync("StartGame", RoomName);
+    }
 
 }
