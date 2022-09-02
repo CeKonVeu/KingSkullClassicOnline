@@ -1,4 +1,5 @@
-﻿@using KingSkullClassicOnline.Client.Shared.Popups
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@using KingSkullClassicOnline.Client.Shared.Popups
 @inherits ComponentBase
 @inject IDialogService DialogService
 
@@ -14,18 +15,30 @@
 @code {
 
     [Parameter]
+    public HubConnection Connection { get; set; } = null!;
+
+    [Parameter]
     public ICollection<string> Cards { get; set; } = new List<string>();
 
     [Parameter]
     public bool IsVisible { get; set; }
 
-    async Task VotePopup()
+    private async Task<int> AskVote()
     {
-        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true };
-        var dialog = DialogService.Show<Vote>("Votez !", options);
+        var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, DisableBackdropClick = true };
+        var parameters = new DialogParameters { ["MaxValue"] = 5 };
+        var dialog = DialogService.Show<Vote>("Votez !", parameters, options);
         var result = await dialog.Result;
+        return (int)result.Data;
+    }
 
-    //vote = Convert.ToInt32(result.Data);
+    protected override async Task OnInitializedAsync()
+    {
+        Connection.On("VoteAsked", async () =>
+        {
+            var t = await AskVote();
+            Console.WriteLine(t.ToString());
+        });
     }
 
 }

@@ -9,7 +9,7 @@
 <WaitingRoom Url="@_url" IsVisible="!_isPlaying" Names="_players" IsOwner="_isOwner"
              OnGameStart="StartGame"/>
 
-<GameBoard IsVisible="_isPlaying" Cards="_cards"/>
+<GameBoard IsVisible="_isPlaying" Cards="_cards" Connection="_connection"/>
 
 <button @onclick="() => _isPlaying = !_isPlaying">@Data.Name</button>
 <button @onclick="() => _url = string.Empty">clear</button>
