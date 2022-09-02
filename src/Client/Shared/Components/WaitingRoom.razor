@@ -30,7 +30,7 @@
         @if (IsOwner)
         {
             <MudButton
-                Href="https://localhost:7114/startgame"
+                OnClick="OnGameStart"
                 Variant="Variant.Filled"
                 Color="Color.Primary"
                 FullWidth="true">
@@ -38,7 +38,7 @@
             </MudButton>
 
             <MudButton
-                @onclick="OpenRulesDialog"
+                OnClick="OpenRulesDialog"
                 Variant="Variant.Filled"
                 Color="Color.Primary"
                 FullWidth="true">
@@ -77,8 +77,14 @@
     [Parameter]
     public bool IsOwner { get; set; }
 
+    [Parameter]
+    public EventCallback OnGameStart { get; set; }
 
-    // Pop-up des règles
+    private async Task StartGame()
+    {
+        await OnGameStart.InvokeAsync();
+    }
+
     private void OpenRulesDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
