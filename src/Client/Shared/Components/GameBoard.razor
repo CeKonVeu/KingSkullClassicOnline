@@ -23,10 +23,13 @@
     [Parameter]
     public bool IsVisible { get; set; }
 
-    private async Task<int> AskVote()
+    [Parameter]
+    public bool IsMyTurn { get; set; }
+
+    private async Task<int> AskVote(int maxVote)
     {
         var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, DisableBackdropClick = true };
-        var parameters = new DialogParameters { ["MaxValue"] = 5 };
+        var parameters = new DialogParameters { ["MaxValue"] = maxVote };
         var dialog = DialogService.Show<Vote>("Votez !", parameters, options);
         var result = await dialog.Result;
         return (int)result.Data;
@@ -34,10 +37,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Connection.On("VoteAsked", async () =>
+        Connection.On("VoteAsked", async (int maxVote) =>
         {
-            var t = await AskVote();
-            Console.WriteLine(t.ToString());
+            var vote = await AskVote(maxVote);
+            await Connection.SendAsync("SendVote", vote);
+        });
+        Connection.On("MustPlay", () =>
+        {
+            Console.WriteLine("Must play");
+            IsMyTurn = true;
         });
     }
 

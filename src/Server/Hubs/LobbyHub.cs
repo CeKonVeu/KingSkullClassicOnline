@@ -2,7 +2,6 @@
 
 using System.Collections.Concurrent;
 using Engine;
-using Engine.Game;
 using Microsoft.AspNetCore.SignalR;
 
 /// <summary>
@@ -112,15 +111,23 @@ public class LobbyHub : Hub
             Controllers[roomName].Players.Select(p => p.Name));
     }
 
+    public async Task SendVote(int vote)
+    {
+        var roomName = ConnectedUsers[Context.ConnectionId];
+        var controller = Controllers[roomName];
+
+        if (!controller.SetVote(Context.ConnectionId, vote))
+            return;
+
+        Console.WriteLine($"Player {Context.ConnectionId} must play");
+        var player = controller.GetCurrentPlayer();
+        await Clients.Client(player).SendAsync("MustPlay");
+    }
+
     public async Task StartGame(string roomName)
     {
         var controller = Controllers[roomName];
-
-        //while (controller.Turn <= Config.TurnNumber)
-        //{
-        controller.CurrentRound = new Round(controller);
-        controller.Turn = 4;
-        controller.CurrentRound.DealCards();
+        controller.NewTurn();
         var tasks = new Task[controller.Players.Count];
         for (var i = 0; i < controller.Players.Count; ++i)
         {
@@ -131,12 +138,7 @@ public class LobbyHub : Hub
         }
 
         await Task.WhenAll(tasks);
-
-        await Clients.Group(roomName).SendAsync("VoteAsked");
-
-        // TODO gestion du pli
-        controller.Turn++;
-        // }
+        await Clients.Group(roomName).SendAsync("VoteAsked", controller.Turn);
     }
 
     public async Task Vote(string rooName, int vote)

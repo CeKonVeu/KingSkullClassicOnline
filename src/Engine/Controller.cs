@@ -81,6 +81,22 @@ public class Controller
             Deck.Add(new SpecialCard(Config.SkullKingValue, "SkullKing")); // Skull king
     }
 
+    public void EndTurn()
+    {
+        ++Turn;
+    }
+
+    public string GetCurrentPlayer()
+    {
+        return Players[CurrentRound.CurrentPlayer].Id;
+    }
+
+    public void NewTurn()
+    {
+        CurrentRound = new Round(this);
+        CurrentRound.DealCards();
+    }
+
     /// <summary>
     ///     enlève un joueur au controleur
     /// </summary>
@@ -100,6 +116,13 @@ public class Controller
         var player = Players.Find(x => x.Id == p);
         if (player != null)
             Players.Remove(player);
+    }
+
+    public bool SetVote(string playerId, int vote)
+    {
+        CurrentRound?.AddVote(playerId, vote);
+
+        return CurrentRound.Votes.All(i => i != -1);
     }
 
     /// <summary>

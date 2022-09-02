@@ -19,7 +19,7 @@ public class Round
     {
         CurrentPlayer = 0;
         _controller = controller;
-        Votes = new int[controller.Players.Count];
+        Votes = Enumerable.Repeat(-1, controller.Players.Count).ToArray();
         Plis = new Fold[controller.Turn];
     }
 
