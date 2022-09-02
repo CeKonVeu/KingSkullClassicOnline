@@ -1,5 +1,6 @@
 @page "/"
-@inject NavigationManager nav
+@inject NavigationManager Nav
+@inject Data Data
 
 <PageTitle>King Skull Classic Online</PageTitle>
 
@@ -43,11 +44,9 @@
 
     private void TransfertName()
     {
-        Data.Player = TextValue;
-        var collection = new ServiceCollection();
-        collection.AddScoped<Data>();
+        Data.Name = TextValue;
 
-        nav.NavigateTo("/lobby");
+        Nav.NavigateTo("/lobby");
     }
 
 }
