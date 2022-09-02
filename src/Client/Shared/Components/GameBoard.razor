@@ -1,4 +1,4 @@
-﻿@using KingSkullClassicOnline.Client.Pages
+﻿@using KingSkullClassicOnline.Client.Shared.Popups
 @inherits ComponentBase
 @inject IDialogService DialogService
 
@@ -22,7 +22,7 @@
     async Task VotePopup()
     {
         var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true };
-        var dialog = DialogService.Show<VotePopup>("Votez !", options);
+        var dialog = DialogService.Show<Vote>("Votez !", options);
         var result = await dialog.Result;
 
     //vote = Convert.ToInt32(result.Data);
