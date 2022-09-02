@@ -13,7 +13,6 @@ public class LobbyHub : Hub
     private static readonly ConcurrentDictionary<string, Controller> Controllers = new();
     private static readonly ConcurrentDictionary<string, string> ConnectedUsers = new();
 
-
     /// <summary>
     ///     Créé une salle de jeu.
     /// </summary>
@@ -23,11 +22,11 @@ public class LobbyHub : Hub
     {
         var roomName = CreateRoomName();
         if (Controllers.ContainsKey(roomName))
-            //TODO à changer
-            throw new Exception("Room already exists");
+            //TODO à modifier pour ne pas avoir d'erreur dég dans la console
+            throw new HubException("Room already exists");
 
         if (!Controllers.TryAdd(roomName, new Controller()))
-            throw new Exception("Cannot add room");
+            throw new HubException("Cannot add room");
 
 
         await JoinRoom(roomName, playerName);
@@ -52,10 +51,10 @@ public class LobbyHub : Hub
     public async Task JoinRoom(string roomName, string playerName)
     {
         if (!Controllers.ContainsKey(roomName))
-            throw new Exception("Room doesn't exist");
+            throw new HubException("Room doesn't exist");
         //TODO changer le 6 par le nombre de joueur max
         if (Controllers[roomName].Players.Count >= Config.MaxPlayer)
-            throw new Exception("Room is full");
+            throw new HubException("Room is full");
 
         var task = Groups.AddToGroupAsync(Context.ConnectionId, roomName);
         Controllers[roomName].AddPlayer(new Player(Context.ConnectionId, playerName));
@@ -93,10 +92,10 @@ public class LobbyHub : Hub
     /// </summary>
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        ConnectedUsers.Remove(Context.ConnectionId, out var rooName);
-        if (rooName == null)
-            throw new Exception("Player not found");
-        await LeaveRoom(rooName);
+        ConnectedUsers.Remove(Context.ConnectionId, out var roomName);
+        if (roomName == null)
+            return;
+        await LeaveRoom(roomName);
     }
 
 
@@ -143,7 +142,7 @@ public class LobbyHub : Hub
     {
         var currentRound = Controllers[rooName].CurrentRound;
         if (currentRound == null)
-            throw new Exception("Controller not found");
+            throw new HubException("Controller not found");
 
         currentRound.AddVote(Context.ConnectionId, vote);
     }
