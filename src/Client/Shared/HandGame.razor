@@ -10,7 +10,7 @@
 @code {
 
     [Parameter]
-    public string[] Cards { get; set; } = Array.Empty<string>();
+    public ICollection<string> Cards { get; set; } = new List<string>();
 
     private readonly Dictionary<string, object> _imgCustomAttr = new()
     {

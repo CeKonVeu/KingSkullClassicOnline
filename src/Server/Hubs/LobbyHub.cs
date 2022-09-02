@@ -125,7 +125,8 @@ public class LobbyHub : Hub
         for (var i = 0; i < controller.Players.Count; ++i)
         {
             var player = controller.Players[i];
-            var hand = string.Join(",", player.Hand.Select(card => card.Name));
+            var hand = player.Hand.Select(card => card.Name);
+
             tasks[i] = Clients.Client(player.Id).SendAsync("HandChanged", hand);
         }
 
