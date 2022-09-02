@@ -5,7 +5,7 @@
 @using KingSkullClassicOnline.Client.Shared.Components
 @implements IAsyncDisposable
 
-<WaitingRoom Url="@_url" IsVisible="_isVisible" Names="_players"/>
+<WaitingRoom Url="@_url" IsVisible="_isVisible" Names="_players" IsOwner="_isOwner"/>
 
 <button @onclick="() => _isVisible = !_isVisible">test</button>
 <button @onclick="() => _url = string.Empty">clear</button>
@@ -13,6 +13,8 @@
 
 @code {
     private bool _isVisible = true;
+
+    private bool _isOwner;
 
     private string _url = "http://localhost:5000/lobby";
 
@@ -39,6 +41,7 @@
         }
         else
         {
+            _isOwner = true;
             await CreateRoom();
         }
     }

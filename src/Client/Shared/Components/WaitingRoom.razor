@@ -27,21 +27,24 @@
             </MudStack>
         </div>
 
-        <MudButton
-            Href="https://localhost:7114/startgame"
-            Variant="Variant.Filled"
-            Color="Color.Primary"
-            FullWidth="true">
-            Commencer la partie
-        </MudButton>
+        @if (IsOwner)
+        {
+            <MudButton
+                Href="https://localhost:7114/startgame"
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                FullWidth="true">
+                Commencer la partie
+            </MudButton>
 
-        <MudButton
-            @onclick="OpenRulesDialog"
-            Variant="Variant.Filled"
-            Color="Color.Primary"
-            FullWidth="true">
-            Modifier les règles
-        </MudButton>
+            <MudButton
+                @onclick="OpenRulesDialog"
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                FullWidth="true">
+                Modifier les règles
+            </MudButton>
+        }
 
         <MudTextField
             Value="Url"
@@ -70,6 +73,9 @@
 
     [Parameter]
     public string Url { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool IsOwner { get; set; }
 
 
     // Pop-up des règles
