@@ -8,21 +8,18 @@ using Game;
 /// </summary>
 public class Controller
 {
-    public int areReady;
-
     /// <summary>
     ///     Constructeur
     /// </summary>
     public Controller()
     {
-        areReady = 0;
         Players = new List<Player>();
         Turn = 1;
         Deck = new List<Card.Card>();
         CreateDeck();
     }
 
-    public Round CurrentRound { get; set; }
+    public Round? CurrentRound { get; set; }
 
     public List<Card.Card> Deck { get; }
 

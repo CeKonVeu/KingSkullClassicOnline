@@ -2,6 +2,7 @@
 
 using System.Collections.Concurrent;
 using Engine;
+using Engine.Game;
 using Microsoft.AspNetCore.SignalR;
 
 /// <summary>
@@ -109,5 +110,40 @@ public class LobbyHub : Hub
         return Clients.Group(roomName).SendAsync("RoomChanged",
             roomName,
             Controllers[roomName].Players.Select(p => p.Name));
+    }
+
+    public async Task StartGame(string roomName)
+    {
+        var controller = Controllers[roomName];
+
+        //while (controller.Turn <= Config.TurnNumber)
+        //{
+        controller.CurrentRound = new Round(controller);
+        controller.Turn = 4;
+        controller.CurrentRound.DealCards();
+        var tasks = new Task[controller.Players.Count];
+        for (var i = 0; i < controller.Players.Count; ++i)
+        {
+            var player = controller.Players[i];
+            var hand = string.Join(",", player.Hand.Select(card => card.Name));
+            tasks[i] = Clients.Client(player.Id).SendAsync("HandChanged", hand);
+        }
+
+        await Task.WhenAll(tasks);
+
+        await Clients.Group(roomName).SendAsync("VoteAsked");
+
+        // TODO gestion du pli
+        controller.Turn++;
+        // }
+    }
+
+    public async Task Vote(string rooName, int vote)
+    {
+        var currentRound = Controllers[rooName].CurrentRound;
+        if (currentRound == null)
+            throw new Exception("Controller not found");
+
+        currentRound.AddVote(Context.ConnectionId, vote);
     }
 }
