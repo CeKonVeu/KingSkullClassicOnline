@@ -10,7 +10,7 @@
 
 <PageTitle>Jeu</PageTitle>
 
-<HandGame Cards="Cards"/>
+<HandGame Cards="Cards" OnCardClick="CardClicked"/>
 
 @code {
 
@@ -47,6 +47,11 @@
             Console.WriteLine("Must play");
             IsMyTurn = true;
         });
+    }
+
+    private async void CardClicked(string card)
+    {
+        await Connection.SendAsync("PlayCard", card);
     }
 
 }

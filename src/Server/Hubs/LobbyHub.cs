@@ -119,9 +119,20 @@ public class LobbyHub : Hub
         if (!controller.SetVote(Context.ConnectionId, vote))
             return;
 
-        Console.WriteLine($"Player {Context.ConnectionId} must play");
         var player = controller.GetCurrentPlayer();
         await Clients.Client(player).SendAsync("MustPlay");
+    }
+
+    public async Task PlayCard(string card)
+    {
+        var roomName = ConnectedUsers[Context.ConnectionId];
+        var controller = Controllers[roomName];
+        
+        var player = controller.GetCurrentPlayer();
+        if (Context.ConnectionId != player)
+            return;
+        
+        controller.CurrentRound.Play();
     }
 
     public async Task StartGame(string roomName)
