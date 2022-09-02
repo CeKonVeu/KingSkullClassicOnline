@@ -1,0 +1,31 @@
+﻿@using KingSkullClassicOnline.Client.Pages
+@inherits ComponentBase
+@inject IDialogService DialogService
+
+@if (!IsVisible)
+{
+    return;
+}
+
+<PageTitle>Jeu</PageTitle>
+
+<HandGame Cards="Cards"/>
+
+@code {
+
+    [Parameter]
+    public ICollection<string> Cards { get; set; } = new List<string>();
+
+    [Parameter]
+    public bool IsVisible { get; set; }
+
+    async Task VotePopup()
+    {
+        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true };
+        var dialog = DialogService.Show<VotePopup>("Votez !", options);
+        var result = await dialog.Result;
+
+    //vote = Convert.ToInt32(result.Data);
+    }
+
+}
