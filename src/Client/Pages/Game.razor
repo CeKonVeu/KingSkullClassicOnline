@@ -13,7 +13,6 @@
 
 <button @onclick="() => _isPlaying = !_isPlaying">@Data.Name</button>
 <button @onclick="() => _url = string.Empty">clear</button>
-<button @onclick="() => _players.Add(Random.Shared.Next().ToString())">clear</button>
 
 @code {
     private bool _isPlaying;
@@ -22,7 +21,7 @@
 
     private string _url = "http://localhost:5000/lobby";
 
-    private List<string> _players = new();
+    private IEnumerable<string> _players = Enumerable.Empty<string>();
 
     private List<string> _cards = new();
 
@@ -65,7 +64,7 @@
     private void SetHandlers()
     {
         Console.WriteLine("SetHandlers");
-        _connection.On("RoomChanged", (string roomName, List<string> players) =>
+        _connection.On("RoomChanged", (string roomName, IEnumerable<string> players) =>
         {
             _url = roomName;
             _players = players;

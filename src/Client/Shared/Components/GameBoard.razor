@@ -37,14 +37,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Connection.On("VoteAsked", async (int maxVote) =>
+        Connection.On("VoteAsked", async (int _, int maxVote) =>
         {
             var vote = await AskVote(maxVote);
             await Connection.SendAsync("SendVote", vote);
         });
-        Connection.On("MustPlay", () =>
+        Connection.On("MustPlay", (IEnumerable<string> playableCards) =>
         {
-            Console.WriteLine("Must play");
+            Console.WriteLine("Must play with available cards : " + string.Join(", ", playableCards));
             IsMyTurn = true;
         });
     }
