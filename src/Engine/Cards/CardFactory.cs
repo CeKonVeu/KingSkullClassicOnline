@@ -7,7 +7,7 @@ public partial class Card
         return new Card(Config.SkullKingValue, "SkullKing");
     }
 
-    public static Card Pirate(int variant)
+    public static Card Pirate(int variant = 1)
     {
         if (variant <= 0 || variant > Config.PirateVariants)
             throw new ArgumentOutOfRangeException("Variante de la carte n'existe pas");
