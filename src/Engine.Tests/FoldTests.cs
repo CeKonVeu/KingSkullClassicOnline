@@ -51,6 +51,15 @@ public class FoldTests
         
         playTestCards(c1, c2, c2);
     }
+    
+    [Test]
+    public void TheBlackCardWithTheHighestValueShouldWinIfTheTurnColorIsBlack()
+    {
+        var c1 = Card.NumberedCard(13, Colors.Black);
+        var c2 = Card.NumberedCard(1, Colors.Black);
+        
+        playTestCards(c1, c2, c1);
+    }
 
     // Tests d'égalités //
     
