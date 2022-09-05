@@ -124,6 +124,15 @@ public class FoldTests
     }
 
     [Test]
+    public void ASkullKingShouldWinAgainstAnEscape()
+    {
+        var c1 = Card.SkullKing();
+        var c2 = Card.Escape();
+
+        PlayTestCards(c1, c2);
+    }
+    
+    [Test]
     public void AMermaidShouldWinAgainstColoredCards()
     {
         var c1 = Card.Mermaid();
