@@ -8,8 +8,10 @@ using Game;
 /// </summary>
 public class Controller
 {
-    private readonly Round[] _rounds;
+    private readonly Round?[] _rounds;
     private readonly IView _view;
+
+    private bool _hasStarted;
 
     /// <summary>
     ///     Constructeur
@@ -23,10 +25,10 @@ public class Controller
         Deck = CreateDeck();
         _view.RoomCreated(roomName, player.Data);
         _rounds = new Round[Config.RoundsPerGame];
-        CurrentRound = new Round(Turn, Players, Deck);
+        _hasStarted = false;
     }
 
-    private Round CurrentRound
+    private Round? CurrentRound
     {
         get => _rounds[Turn];
         set => _rounds[Turn] = value;
@@ -79,6 +81,8 @@ public class Controller
     /// <returns>vrai si l'ajout s'est effectué, faux sinon</returns>
     public void JoinGame(string playerId, string name)
     {
+        if (_hasStarted) return;
+
         var playerData = new PlayerData(playerId, name);
         if (Players.Count >= Config.MaxPlayers || Players.Exists(p => p.Data.Name == playerId))
             _view.NotifyError(playerData, "La partie est complète");
@@ -105,6 +109,8 @@ public class Controller
 
     private void NotifyNextPlayer()
     {
+        if (!_hasStarted || CurrentRound == null || CurrentRound.IsOver) return;
+
         var nextPlayer = CurrentRound.NextPlayer;
 
         //TODO ajouter la liste de carte jouable
@@ -113,7 +119,7 @@ public class Controller
 
     public void PlayCard(string playerId, string card)
     {
-        if (CurrentRound.IsOver) return;
+        if (!_hasStarted || CurrentRound == null || CurrentRound.IsOver) return;
 
         var player = Players.Single(p => p.Data.Id == playerId);
 
@@ -140,7 +146,7 @@ public class Controller
             //TODO mettre à jour et envoyer les scores
             _view.RoundEnded(new[] { "" });
             ++Turn;
-            CurrentRound = new Round(Turn, Players, Deck); // TODO
+            StartNextRound();
         }
         else
         {
@@ -150,7 +156,7 @@ public class Controller
 
     public void SetVote(string playerId, int vote)
     {
-        if (CurrentRound.AreAllVotesIn()) return;
+        if (!_hasStarted || CurrentRound == null || CurrentRound.AreAllVotesIn()) return;
 
         var player = Players.Single(p => p.Data.Id == playerId);
         CurrentRound.AddVote(player, vote);
@@ -160,9 +166,23 @@ public class Controller
         NotifyNextPlayer();
     }
 
+    public void StartGame()
+    {
+        if (_hasStarted) return;
+
+        _hasStarted = true;
+        _view.GameStarted();
+
+        StartNextRound();
+    }
+
     public void StartNextRound()
     {
-        if (!CurrentRound.IsOver) return; // TODO
+        if (!_hasStarted || CurrentRound is { IsOver: false }) return;
+
+        Console.WriteLine("Starting next round");
+
+        CurrentRound = new Round(Turn, Players, Deck);
 
         foreach (var player in Players)
         {

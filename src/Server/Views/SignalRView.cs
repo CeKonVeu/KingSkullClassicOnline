@@ -38,7 +38,7 @@ public class SignalRView : IView
 
     public async Task GameStarted()
     {
-        throw new NotImplementedException();
+        Console.WriteLine("Game started");
     }
 
     public async Task HandReceived(PlayerData player, List<Card> cards)

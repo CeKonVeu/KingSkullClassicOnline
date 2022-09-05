@@ -102,6 +102,6 @@ public class GameHub : Hub
 
     public async Task StartGame(string roomName)
     {
-        Controllers[roomName].StartNextRound();
+        Controllers[roomName].StartGame();
     }
 }
