@@ -12,6 +12,23 @@ public class FoldTests
     
     // TODO : Tester la ScaryMary
     
+    // Tests d'atouts
+    
+    [Test]
+    public void OnlyNumberedCardsOfTheTurnColorShouldWin()
+    {
+        var c1 = Card.NumberedCard(1, Colors.Red);
+        var c2 = Card.NumberedCard(13, Colors.Blue);
+        
+        _p1.Hand.Add(c1);
+        _p2.Hand.Add(c2);
+
+        _fold.PlayCard(_p1, _p1.Hand.First());
+        _fold.PlayCard(_p2, _p2.Hand.First());
+
+        Assert.AreEqual(_fold.GetWinner().Card, c1);
+    }
+    
     // Tests d'égalités
     
     [Test]
