@@ -15,26 +15,27 @@ public class FoldTests
     ///     Simule 2 cartes jouées et teste si la carte gagnante est correcte.
     ///     Le pli est simulé 2 fois pour tester l'ordre des cartes.
     /// </summary>
-    /// <param name="c1">La carte du joueur 1</param>
-    /// <param name="c2">La carte du joueur 2</param>
     /// <param name="winningCard">La carte qui devrait gagner</param>
-    private void PlayTestCards(Card c1, Card c2, Card winningCard)
+    /// <param name="losingCard">La carte qui devrait perdre</param>
+    private void PlayTestCards(Card winningCard, Card losingCard)
     {
-        _p1.Hand.Add(c1);
-        _p2.Hand.Add(c2);
+        _p1.Hand.Add(winningCard);
+        _p2.Hand.Add(losingCard);
 
-        _fold.PlayCard(_p1, c1);
-        _fold.PlayCard(_p2, c2);
+        _fold.PlayCard(_p1, winningCard);
+        _fold.PlayCard(_p2, losingCard);
 
-        Assert.AreEqual(_fold.GetWinner().Card, winningCard);
+        Assert.AreSame(_fold.GetWinner().Card, winningCard);
+        Assert.AreNotSame(_fold.GetWinner().Card, losingCard);
 
-        _p2.Hand.Add(c2);
-        _p1.Hand.Add(c1);
+        _p2.Hand.Add(losingCard);
+        _p1.Hand.Add(winningCard);
 
-        _fold.PlayCard(_p2, c2);
-        _fold.PlayCard(_p1, c1);
+        _fold.PlayCard(_p2, losingCard);
+        _fold.PlayCard(_p1, winningCard);
 
-        Assert.AreEqual(_fold.GetWinner().Card, winningCard);
+        Assert.AreSame(_fold.GetWinner().Card, winningCard);
+        Assert.AreNotSame(_fold.GetWinner().Card, losingCard);
     }
 
     // Tests d'atouts //
@@ -42,10 +43,10 @@ public class FoldTests
     [Test]
     public void TheCardWithTheHighestValueShouldWin()
     {
-        var c1 = Card.NumberedCard(1, Colors.Red);
-        var c2 = Card.NumberedCard(13, Colors.Red);
+        var c1 = Card.NumberedCard(13, Colors.Red);
+        var c2 = Card.NumberedCard(1, Colors.Red);
 
-        PlayTestCards(c1, c2, c2);
+        PlayTestCards(c1, c2);
     }
 
     [Test]
@@ -54,7 +55,7 @@ public class FoldTests
         var c1 = Card.NumberedCard(1, Colors.Red);
         var c2 = Card.NumberedCard(13, Colors.Blue);
 
-        PlayTestCards(c1, c2, c1);
+        PlayTestCards(c1, c2);
     }
 
     [Test]
@@ -81,10 +82,10 @@ public class FoldTests
         var c1 = Card.NumberedCard(13, Colors.Black);
         var c2 = Card.NumberedCard(1, Colors.Black);
 
-        PlayTestCards(c1, c2, c1);
+        PlayTestCards(c1, c2);
     }
 
-    // Tests de puissances //
+    // Tests des escapes //
 
     [Test]
     public void AColoredCardShouldWinAgainstAnEscape()
@@ -92,7 +93,25 @@ public class FoldTests
         var c1 = Card.NumberedCard(1, Colors.Red);
         var c2 = Card.Escape();
 
-        PlayTestCards(c1, c2, c1);
+        PlayTestCards(c1, c2);
+    }
+
+    [Test]
+    public void ABlackCardShouldWinAgainstAnEscape()
+    {
+        var c1 = Card.NumberedCard(1, Colors.Black);
+        var c2 = Card.Escape();
+
+        PlayTestCards(c1, c2);
+    }
+    
+    [Test]
+    public void AMermaidShouldWinAgainstAnEscape()
+    {
+        var c1 = Card.Mermaid();
+        var c2 = Card.Escape();
+
+        PlayTestCards(c1, c2);
     }
 
     [Test]
@@ -101,7 +120,7 @@ public class FoldTests
         var c1 = Card.Mermaid();
         var c2 = Card.NumberedCard(13, Colors.Red);
 
-        PlayTestCards(c1, c2, c1);
+        PlayTestCards(c1, c2);
     }
 
     [Test]
@@ -110,7 +129,7 @@ public class FoldTests
         var c1 = Card.Pirate();
         var c2 = Card.Mermaid();
 
-        PlayTestCards(c1, c2, c1);
+        PlayTestCards(c1, c2);
     }
 
     [Test]
@@ -119,7 +138,7 @@ public class FoldTests
         var c1 = Card.SkullKing();
         var c2 = Card.Pirate();
 
-        PlayTestCards(c1, c2, c1);
+        PlayTestCards(c1, c2);
     }
 
     [Test]
@@ -128,7 +147,7 @@ public class FoldTests
         var c1 = Card.Mermaid();
         var c2 = Card.SkullKing();
 
-        PlayTestCards(c1, c2, c1);
+        PlayTestCards(c1, c2);
     }
 
     // Tests d'égalités //
@@ -139,7 +158,7 @@ public class FoldTests
         var c1 = Card.Escape();
         var c2 = Card.Escape();
 
-        PlayTestCards(c1, c2, c1);
+        PlayTestCards(c1, c2);
     }
 
     [Test]
@@ -148,7 +167,7 @@ public class FoldTests
         var c1 = Card.Mermaid();
         var c2 = Card.Mermaid();
 
-        PlayTestCards(c1, c2, c1);
+        PlayTestCards(c1, c2);
     }
 
     [Test]
@@ -157,7 +176,7 @@ public class FoldTests
         var c1 = Card.Pirate();
         var c2 = Card.Pirate();
 
-        PlayTestCards(c1, c2, c1);
+        PlayTestCards(c1, c2);
     }
 
     [Test]
@@ -166,7 +185,7 @@ public class FoldTests
         var c1 = Card.SkullKing();
         var c2 = Card.SkullKing();
 
-        PlayTestCards(c1, c2, c1);
+        PlayTestCards(c1, c2);
     }
 
     // Setup //
