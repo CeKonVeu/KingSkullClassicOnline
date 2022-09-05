@@ -1,7 +1,7 @@
-﻿namespace KingSkullClassicOnline.Engine;
+﻿using KingSkullClassicOnline.Engine.Cards;
+using KingSkullClassicOnline.Engine.Game;
 
-using Cards;
-using Game;
+namespace KingSkullClassicOnline.Engine;
 
 /// <summary>
 ///     Gère le déroulement d'une partie
@@ -49,26 +49,26 @@ public class Controller
 
         for (var i = 1; i <= Config.NumberNumCards; ++i)
         {
-            deck.Add(new NumberedCard(i, "Red_" + i, Colors.Red));
-            deck.Add(new NumberedCard(i, "Blue_" + i, Colors.Blue));
-            deck.Add(new NumberedCard(i, "Yellow_" + i, Colors.Yellow));
-            deck.Add(new NumberedCard(i, "Black_" + i, Colors.Black));
+            deck.Add(Card.NumberedCard(i, Colors.Red));
+            deck.Add(Card.NumberedCard(i, Colors.Blue));
+            deck.Add(Card.NumberedCard(i, Colors.Yellow));
+            deck.Add(Card.NumberedCard(i, Colors.Black));
         }
 
-        for (var i = 0; i < Config.NumberEscapes; ++i)
-            deck.Add(new SpecialCard(Config.EscapeValue, "Escape")); // escape
-
-        for (var i = 0; i < Config.NumberMermaids; ++i)
-            deck.Add(new SpecialCard(Config.MermaidValue, "Mermaid")); // mermaids
+        for (var i = 0; i < Config.NumberSkullKing; ++i)
+            deck.Add(Card.SkullKing());
 
         for (var i = 1; i <= Config.NumberPirates; ++i)
-            deck.Add(new SpecialCard(Config.PirateValue, "Pirate_" + i)); // pirates
+            deck.Add(Card.Pirate((i % Config.PirateVariants) + 1));
 
         for (var i = 0; i < Config.NumberScaryM; ++i)
-            deck.Add(new SpecialCard(Config.PirateValue, "ScaryMary")); // scary Mary
+            deck.Add(Card.ScaryMary());
 
-        for (var i = 0; i < Config.NumberSkullKing; ++i)
-            deck.Add(new SpecialCard(Config.SkullKingValue, "SkullKing")); // Skull king
+        for (var i = 0; i < Config.NumberMermaids; ++i)
+            deck.Add(Card.Mermaid());
+
+        for (var i = 0; i < Config.NumberEscapes; ++i)
+            deck.Add(Card.Escape());
 
         return deck;
     }
