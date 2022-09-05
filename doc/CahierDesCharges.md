@@ -15,7 +15,7 @@ Dans les grandes lignes, le jeu se présente comme suit : il y a 10 manches, et 
 
 Une fois la partie finie, le nom du gagnant est affiché et le créateur peut directement relancer une partie s’il le souhaite.
 
-## Proessus de travail
+## Processus de travail
 A faire
 
 ## Besoins fonctionnels

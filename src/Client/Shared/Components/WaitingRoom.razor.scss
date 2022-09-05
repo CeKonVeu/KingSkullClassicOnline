@@ -1,4 +1,4 @@
-﻿.parchment-bg {
+﻿::deep .parchment-bg {
   position: absolute;
   display: flex;
   width: 75%;
@@ -25,7 +25,7 @@
   font-size: 1.5rem;
 }
 
-.relative {
+::deep .relative {
   position: relative;
   min-height: 300px;
   margin-bottom: 40px;

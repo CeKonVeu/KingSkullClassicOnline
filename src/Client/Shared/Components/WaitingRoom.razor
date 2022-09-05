@@ -1,0 +1,114 @@
+﻿@using KingSkullClassicOnline.Client.Shared.Popups
+@using KingSkullClassicOnline.Shared
+@using Microsoft.AspNetCore.SignalR.Client
+@inherits ComponentBase
+@inject IDialogService DialogService
+
+@if (!IsVisible)
+{
+    return;
+}
+
+<PageTitle>Lobby</PageTitle>
+
+<h2 class="title">Equipage</h2>
+
+<MudContainer MaxWidth="MaxWidth.ExtraSmall">
+    <MudStack>
+        <div class="relative">
+            <div class="parchment-bg"></div>
+            <MudStack Class="parchment">
+                @foreach (var name in Names)
+                {
+                    <MudText
+                        Class="pa-1 ml-16 mr-16"
+                        Typo="Typo.h5">
+                        @name
+                    </MudText>
+                }
+            </MudStack>
+        </div>
+
+        @if (IsOwner)
+        {
+            <MudButton
+                OnClick="StartGame"
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                FullWidth="true">
+                Commencer la partie
+            </MudButton>
+
+            <MudButton
+                OnClick="OpenRulesDialog"
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                FullWidth="true">
+                Modifier les règles
+            </MudButton>
+        }
+
+        <MudTextField
+            Value="Url"
+            Variant="Variant.Filled"
+            ReadOnly="true"
+            Label="URL pour rejoindre cette room">
+        </MudTextField>
+    </MudStack>
+
+</MudContainer>
+
+<svg style="height: 0">
+    <filter id="wavy2">
+        <feTurbulence x="0" y="0" baseFrequency="0.02" numOctaves="5" seed="2"/>
+        <feDisplacementMap in="SourceGraphic" scale="20"/>
+    </filter>
+</svg>
+
+@code {
+
+    [Parameter]
+    public bool IsVisible { get; set; } = true;
+
+    [Parameter]
+    public bool IsOwner { get; set; }
+    
+    [Parameter]
+    public string RoomName { get; set; }
+
+    [Parameter]
+    public HubConnection Connection { get; set; } = null!;
+
+    private IEnumerable<string> Names { get; set; } = Enumerable.Empty<string>();
+
+    private string Url { get; set; } = string.Empty;
+    
+    private void OpenRulesDialog()
+    {
+    // print names in cw
+        foreach (var name in Names)
+        {
+            Console.WriteLine(name);
+        }
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<Rules>("Modifier les règles", options);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Connection.On(Events.RoomChanged, (string roomName, IEnumerable<string> players) =>
+        {
+            Url = roomName;
+            Names = players;
+            RoomName = roomName;
+            Console.WriteLine($"{Events.RoomChanged}: {roomName}");
+            StateHasChanged();
+        });
+    }
+
+    private async void StartGame()
+    {
+        await Connection.SendAsync(Events.StartGame, RoomName);
+    }
+}
