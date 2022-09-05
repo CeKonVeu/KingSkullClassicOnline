@@ -121,7 +121,10 @@ public class Controller
     {
         if (!_hasStarted || CurrentRound == null || CurrentRound.IsOver) return;
 
-        var player = Players.Single(p => p.Data.Id == playerId);
+        var player = Players.Find(p => p.Data.Id == playerId);
+
+        if (player == null)
+            return;
 
         if (CurrentRound.NextPlayer.Data.Id != playerId)
         {
