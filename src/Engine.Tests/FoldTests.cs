@@ -89,10 +89,10 @@ public class FoldTests
     [Test]
     public void AColoredCardWinAgainstAnEscape()
     {
-        var c1 = Card.Escape();
-        var c2 = Card.NumberedCard(1, Colors.Red);
+        var c1 = Card.NumberedCard(1, Colors.Red);
+        var c2 = Card.Escape();
 
-        PlayTestCards(c1, c2, c2);
+        PlayTestCards(c1, c2, c1);
     }
     
     [Test]
@@ -118,6 +118,15 @@ public class FoldTests
     {
         var c1 = Card.SkullKing();
         var c2 = Card.Pirate();
+
+        PlayTestCards(c1, c2, c1);
+    }
+    
+    [Test]
+    public void AMermaidWinAgainstASkullKing()
+    {
+        var c1 = Card.Mermaid();
+        var c2 = Card.SkullKing();
 
         PlayTestCards(c1, c2, c1);
     }
