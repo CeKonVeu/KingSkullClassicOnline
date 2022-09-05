@@ -30,8 +30,8 @@ public class Controller
 
     private Round? CurrentRound
     {
-        get => _rounds[Turn];
-        set => _rounds[Turn] = value;
+        get => _rounds[Turn-1];
+        set => _rounds[Turn-1] = value;
     }
 
     public IEnumerable<Card> Deck { get; }
