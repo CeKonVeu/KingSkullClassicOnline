@@ -9,7 +9,7 @@ public partial class Card
 
     public static Card Pirate(int variant)
     {
-        if (variant < 0 || variant > Config.PirateVariants)
+        if (variant <= 0 || variant > Config.PirateVariants)
             throw new ArgumentOutOfRangeException("Variante de la carte n'existe pas");
 
         return new Card(Config.PirateValue, "Pirate_" + variant);
@@ -32,7 +32,7 @@ public partial class Card
 
     public static Card NumberedCard(int value, Colors color)
     {
-        if (value < 0 || value > Config.NumberNumCards)
+        if (value <= 0 || value > Config.NumberNumCards)
             throw new ArgumentOutOfRangeException("Valeur de la carte n'existe pas");
 
         string? name;
