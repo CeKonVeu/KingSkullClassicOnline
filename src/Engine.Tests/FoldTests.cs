@@ -31,7 +31,7 @@ public class FoldTests
         var c1 = Card.NumberedCard(1, Colors.Red);
         var c2 = Card.NumberedCard(13, Colors.Red);
 
-        playTestCards(c1, c2, c1);
+        playTestCards(c1, c2, c2);
     }
     
     [Test]
@@ -39,6 +39,15 @@ public class FoldTests
     {
         var c1 = Card.NumberedCard(1, Colors.Red);
         var c2 = Card.NumberedCard(13, Colors.Blue);
+        
+        playTestCards(c1, c2, c1);
+    }
+    
+    [Test]
+    public void BlackCardsShouldWinEvenIfTheTurnColorIsNotBlack()
+    {
+        var c1 = Card.NumberedCard(13, Colors.Red);
+        var c2 = Card.NumberedCard(1, Colors.Black);
         
         playTestCards(c1, c2, c2);
     }
