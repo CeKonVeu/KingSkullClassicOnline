@@ -13,7 +13,10 @@
             Variant="Variant.Filled"
             AutoFocus="true"
             Required="true"
-            Label="Votre nom">
+            Label="Votre nom"
+            RequiredError=""
+            Error="false"
+            Immediate="true">
         </MudTextField>
 
         <MudButton
@@ -21,6 +24,7 @@
             Variant="Variant.Filled"
             Color="Color.Primary"
             Size="Size.Large"
+            Disabled="string.IsNullOrEmpty(Data.Name)"
             FullWidth="true">
             Créer la partie
         </MudButton>

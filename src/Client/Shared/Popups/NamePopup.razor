@@ -7,10 +7,14 @@
                     Variant="Variant.Filled"
                     AutoFocus="true"
                     Required="true"
+                    Immediate="true"
+                    RequiredError=""
+                    Error="false"
                     Label="Votre nom">
                 </MudTextField>
                 <MudButton
                     OnClick="Confirm"
+                    Disabled="string.IsNullOrEmpty(_name)"
                     Variant="Variant.Filled"
                     Color="Color.Primary">
                     Valider
