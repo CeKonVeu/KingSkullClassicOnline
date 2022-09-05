@@ -1,6 +1,4 @@
 @using KingSkullClassicOnline.Client.Shared.Components
-@inject IDialogService DialogService
-
 <div>
     <BaseDialog>
         <MudContainer MaxWidth="MaxWidth.Medium">
@@ -27,14 +25,14 @@
 @code {
 
     [CascadingParameter]
-    MudDialogInstance MudDialog { get; set; }
+    MudDialogInstance MudDialog { get; set; } = null!;
 
     void CloseCardsDialog()
     {
         MudDialog.Close(DialogResult.Ok(true));
     }
 
-    public class CardOption
+    private class CardOption
     {
         public CardOption(string name, int value)
         {

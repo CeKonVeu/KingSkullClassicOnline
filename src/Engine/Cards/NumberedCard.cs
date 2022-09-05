@@ -1,4 +1,4 @@
-﻿namespace KingSkullClassicOnline.Engine.Card;
+﻿namespace KingSkullClassicOnline.Engine.Cards;
 
 /// <summary>
 ///     gère les cartes numérotées
