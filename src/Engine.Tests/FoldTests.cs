@@ -107,8 +107,17 @@ public class FoldTests
     [Test]
     public void APirateWinAgainstAMermaid()
     {
-        var c1 = Card.Pirate(1);
+        var c1 = Card.Pirate();
         var c2 = Card.Mermaid();
+
+        PlayTestCards(c1, c2, c1);
+    }
+    
+    [Test]
+    public void ASkullKingWinAgainstAPirate()
+    {
+        var c1 = Card.SkullKing();
+        var c2 = Card.Pirate();
 
         PlayTestCards(c1, c2, c1);
     }
@@ -118,8 +127,8 @@ public class FoldTests
     [Test]
     public void TheFirstCardPlayedShouldWinIfTheyHaveTheSameValue()
     {
-        var c1 = Card.Pirate(1);
-        var c2 = Card.Pirate(2);
+        var c1 = Card.Pirate();
+        var c2 = Card.Pirate();
 
         PlayTestCards(c1, c2, c1);
     }
