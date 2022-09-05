@@ -1,59 +1,77 @@
-﻿<MudDialog>
-    <DialogContent>
-        <h1>@Value1</h1>
-        <h1>@Count</h1>
-    </DialogContent>
-    <DialogActions>
-        <MudSlider TickMarks="true" TickMarkLabels="@votes" Min="0" Max="0" Step="1" @bind-Value="@Value1" Immediate="true"/>
-        <MudButton Color="Color.Primary" OnClick="Submit">Vote</MudButton>
-    </DialogActions>
-</MudDialog>
+﻿@implements IAsyncDisposable
 
-
-@functions {
-    private int Count { get; set; } = 10;
-
-    public double? Value1 { get; set; } = 5;
-
-    void StartCountdown()
-    {
-        var timer = new Timer(_ =>
-        {
-            if (Count > 0)
-            {
-                Count--;
-
-                InvokeAsync(() => { StateHasChanged(); });
-            }
-            else
-            {
-    // TODO Transmettre la valeur du slider dans le submit
-                Submit();
-            }
-        }, null, 1000, 1000);
-    }
-
-}
+<div>
+    <BaseDialog>
+        <MudContainer MaxWidth="MaxWidth.Medium">
+            <MudStack>
+                <MudSlider TickMarks="true"
+                           TickMarkLabels="_votes"
+                           Min="0"
+                           Max="MaxValue"
+                           Color="Color.Dark"
+                           ValueLabel="true"
+                           Class="mb-6"
+                           @bind-Value="_value"/>
+                <MudButton
+                    OnClick="ConfirmVote"
+                    Variant="Variant.Filled"
+                    Color="Color.Primary">
+                    Voter @_timeLeft
+                </MudButton>
+            </MudStack>
+        </MudContainer>
+    </BaseDialog>
+</div>
 
 @code {
 
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; } = null!;
 
-    readonly string[] votes = Enumerable.Range(0, 1).ToArray().Select(x => x.ToString()).ToArray();
+    [Parameter]
+    public int MaxValue { get; set; }
 
-    // TODO Enregistrer le vote
-    void Submit()
+    private int _value;
+
+    private int _timeLeft = 10;
+
+    private string[] _votes = { "0" };
+
+    private Timer _timer = null!;
+
+    protected override Task OnInitializedAsync()
     {
-        MudDialog.Close(DialogResult.Ok(Value1));
+        _votes = Enumerable.Range(0, MaxValue + 1).Select(i => i.ToString()).ToArray();
+
+        return Task.CompletedTask;
+    }
+
+    void ConfirmVote()
+    {
+        MudDialog.Close(DialogResult.Ok(_value));
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _timer.DisposeAsync();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (!firstRender)
         {
-            StartCountdown();
+            return;
         }
+        _timer = new Timer(async _ =>
+        {
+            if (_timeLeft <= 0)
+            {
+                ConfirmVote();
+                return;
+            }
+            _timeLeft--;
+            await InvokeAsync(StateHasChanged);
+        }, null, 1000, 1000);
     }
 
 }

@@ -1,7 +1,7 @@
 ﻿<MudContainer Class="d-flex justify-center gap-1">
     @foreach (var card in Cards)
     {
-        <div class="card-container">
+        <div class="card-container" @onclick="() => CardClicked(card)">
             <MudImage Class="card" Src="@($"./cards/{card}.png")" Elevation="1" UserAttributes="_imgCustomAttr"/>
         </div>
     }
@@ -10,11 +10,19 @@
 @code {
 
     [Parameter]
+    public EventCallback<string> OnCardClick { get; set; }
+
+    [Parameter]
     public ICollection<string> Cards { get; set; } = new List<string>();
 
     private readonly Dictionary<string, object> _imgCustomAttr = new()
     {
         { "draggable", "false" }
     };
+
+    private async void CardClicked(string card)
+    {
+        await OnCardClick.InvokeAsync(card);
+    }
 
 }

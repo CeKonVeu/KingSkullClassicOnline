@@ -1,4 +1,5 @@
-﻿@using KingSkullClassicOnline.Client.Shared.Popups
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@using KingSkullClassicOnline.Client.Shared.Popups
 @inherits ComponentBase
 @inject IDialogService DialogService
 
@@ -9,9 +10,12 @@
 
 <PageTitle>Jeu</PageTitle>
 
-<HandGame Cards="Cards"/>
+<HandGame Cards="Cards" OnCardClick="CardClicked"/>
 
 @code {
+
+    [Parameter]
+    public HubConnection Connection { get; set; } = null!;
 
     [Parameter]
     public ICollection<string> Cards { get; set; } = new List<string>();
@@ -19,13 +23,35 @@
     [Parameter]
     public bool IsVisible { get; set; }
 
-    async Task VotePopup()
-    {
-        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true };
-        var dialog = DialogService.Show<Vote>("Votez !", options);
-        var result = await dialog.Result;
+    [Parameter]
+    public bool IsMyTurn { get; set; }
 
-    //vote = Convert.ToInt32(result.Data);
+    private async Task<int> AskVote(int maxVote)
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, DisableBackdropClick = true };
+        var parameters = new DialogParameters { ["MaxValue"] = maxVote };
+        var dialog = DialogService.Show<Vote>("Votez !", parameters, options);
+        var result = await dialog.Result;
+        return (int)result.Data;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Connection.On("VoteAsked", async (int _, int maxVote) =>
+        {
+            var vote = await AskVote(maxVote);
+            await Connection.SendAsync("SendVote", vote);
+        });
+        Connection.On("MustPlay", (IEnumerable<string> playableCards) =>
+        {
+            Console.WriteLine("Must play with available cards : " + string.Join(", ", playableCards));
+            IsMyTurn = true;
+        });
+    }
+
+    private async void CardClicked(string card)
+    {
+        await Connection.SendAsync("PlayCard", card);
     }
 
 }

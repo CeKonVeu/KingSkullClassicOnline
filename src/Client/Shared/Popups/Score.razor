@@ -1,4 +1,5 @@
-﻿@using KingSkullClassicOnline.Engine
+﻿@using KingSkullClassicOnline.Engine.Game
+@using KingSkullClassicOnline.Engine
 <MudDialog>
     <DialogContent>
         <MudTable Items="_scoreReformat" Hover="true" Breakpoint="Breakpoint.Sm">
@@ -6,7 +7,7 @@
                 <MudTh>N°</MudTh>
                 @foreach (var player in _score)
                 {
-                    <MudTh>@player.Id</MudTh>
+                    <MudTh>@player.Data.Id</MudTh>
                 }
             </HeaderContent>
             <RowTemplate>
@@ -25,11 +26,11 @@
 </MudDialog>
 
 @code {
-    private static readonly Controller _controller = new();
+    // private static readonly Controller _controller = new();
     private readonly Player[] _score = { new("Richard", ""), new("Penelope", "") };
 
     // TODO Peut-être que la partie de reformatage du score peut être factorisée
-    private readonly (int, int)[][] _scoreReformat = new (int, int)[Config.TurnNumber][];
+    private readonly (int, int)[][] _scoreReformat = new (int, int)[Config.RoundsPerGame][];
 
     public int? GetRowNumber(object element)
     {
@@ -40,23 +41,23 @@
     {
     // TODO Utiliser le vrai score
 
-        // _score[0].AddScore(1, 20);
-        // _score[0].AddScore(2, 40);
-        // _score[0].AddScore(0, -30);
-        //
-        // _score[1].AddScore(1, -10);
-        // _score[1].AddScore(0, 10);
-        // _score[1].AddScore(2, 40);
+    // _score[0].AddScore(1, 20);
+    // _score[0].AddScore(2, 40);
+    // _score[0].AddScore(0, -30);
+    //
+    // _score[1].AddScore(1, -10);
+    // _score[1].AddScore(0, 10);
+    // _score[1].AddScore(2, 40);
 
         var playerNumber = _score.Length;
 
-        for (var i = 0; i < Config.TurnNumber; i++)
+        for (var i = 0; i < Config.RoundsPerGame; i++)
         {
             _scoreReformat[i] = new (int, int)[playerNumber];
 
             for (var x = 0; x < _score.Length; x++)
             {
-                _scoreReformat[i][x] = _score[x].Votes[i];
+    // _scoreReformat[i][x] = _score[x].Votes[i];
             }
         }
     }

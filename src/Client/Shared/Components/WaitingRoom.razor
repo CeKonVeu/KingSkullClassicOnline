@@ -69,7 +69,7 @@
     public bool IsVisible { get; set; } = true;
 
     [Parameter]
-    public ICollection<string> Names { get; set; } = new LinkedList<string>();
+    public IEnumerable<string> Names { get; set; } = Enumerable.Empty<string>();
 
     [Parameter]
     public string Url { get; set; } = string.Empty;
@@ -87,6 +87,12 @@
 
     private void OpenRulesDialog()
     {
+    // print names in cw
+        foreach (var name in Names)
+        {
+            Console.WriteLine(name);
+        }
+
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<Rules>("Modifier les règles", options);
     }
