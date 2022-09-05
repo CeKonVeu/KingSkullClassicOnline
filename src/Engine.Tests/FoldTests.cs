@@ -94,6 +94,15 @@ public class FoldTests
 
         PlayTestCards(c1, c2, c2);
     }
+    
+    [Test]
+    public void AMermaidWinAgainstColoredCards()
+    {
+        var c1 = Card.Mermaid();
+        var c2 = Card.NumberedCard(13, Colors.Red);
+
+        PlayTestCards(c1, c2, c1);
+    }
 
     // Tests d'égalités //
 
