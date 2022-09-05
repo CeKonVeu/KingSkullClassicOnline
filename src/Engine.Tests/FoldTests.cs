@@ -8,25 +8,30 @@ namespace KingSkullClassicOnline.Engine.Tests;
 public class FoldTests
 {
     private Fold _fold;
-    private Player _p1, _p2, _p3;
+    private Player _p1, _p2;
     
     // TODO : Tester la ScaryMary
+
+    private void playTestCards(Card c1, Card c2, Card winningCard)
+    {
+        _p1.Hand.Add(c1);
+        _p2.Hand.Add(c2);
+
+        _fold.PlayCard(_p1, c1);
+        _fold.PlayCard(_p2, c2);
+
+        Assert.AreEqual(_fold.GetWinner().Card, winningCard);
+    }
     
-    // Tests d'atouts
+    // Tests d'atouts //
     
     [Test]
     public void TheCardWithTheHighestValueShouldWin()
     {
         var c1 = Card.NumberedCard(1, Colors.Red);
         var c2 = Card.NumberedCard(13, Colors.Red);
-        
-        _p1.Hand.Add(c1);
-        _p2.Hand.Add(c2);
 
-        _fold.PlayCard(_p1, _p1.Hand.First());
-        _fold.PlayCard(_p2, _p2.Hand.First());
-
-        Assert.AreEqual(_fold.GetWinner().Card, c2);
+        playTestCards(c1, c2, c1);
     }
     
     [Test]
@@ -35,16 +40,10 @@ public class FoldTests
         var c1 = Card.NumberedCard(1, Colors.Red);
         var c2 = Card.NumberedCard(13, Colors.Blue);
         
-        _p1.Hand.Add(c1);
-        _p2.Hand.Add(c2);
-
-        _fold.PlayCard(_p1, _p1.Hand.First());
-        _fold.PlayCard(_p2, _p2.Hand.First());
-
-        Assert.AreEqual(_fold.GetWinner().Card, c1);
+        playTestCards(c1, c2, c2);
     }
-    
-    // Tests d'égalités
+
+    // Tests d'égalités //
     
     [Test]
     public void TheFirstCardPlayedShouldWinIfTheyHaveTheSameValue()
@@ -52,13 +51,7 @@ public class FoldTests
         var c1 = Card.Pirate(1);
         var c2 = Card.Pirate(2);
         
-        _p1.Hand.Add(c1);
-        _p2.Hand.Add(c2);
-
-        _fold.PlayCard(_p1, _p1.Hand.First());
-        _fold.PlayCard(_p2, _p2.Hand.First());
-
-        Assert.AreEqual(_fold.GetWinner().Card, c1);
+        playTestCards(c1, c2, c1);
     }
     
     [Test]
@@ -67,14 +60,10 @@ public class FoldTests
         var c1 = Card.Escape();
         var c2 = Card.Escape();
 
-        _p1.Hand.Add(c1);
-        _p2.Hand.Add(c2);
-
-        _fold.PlayCard(_p1, _p1.Hand.First());
-        _fold.PlayCard(_p2, _p2.Hand.First());
-
-        Assert.AreEqual(_fold.GetWinner().Card, c1);
+        playTestCards(c1, c2, c1);
     }
+    
+    // Setup //
 
     [SetUp]
     public void Setup()
@@ -82,6 +71,5 @@ public class FoldTests
         _fold = new Fold();
         _p1 = new Player("1", "");
         _p2 = new Player("2", "");
-        _p3 = new Player("3", "");
     }
 }
