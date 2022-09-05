@@ -57,11 +57,15 @@ public class Round
 
         if (_startingPlayer != _currentPlayer) return;
 
-        _currentFold = nextIndexInCollection(_currentFold, _folds.Length);
+        ++_currentFold;
+        if (_currentFold == _turn)
+        {
+            IsOver = true;
+            --_currentFold;
+        }
 
         var (winner, _) = CurrentFold.GetWinner();
         _currentPlayer = _startingPlayer = _players.IndexOf(winner);
-        if (_currentFold == _turn) IsOver = true;
     }
     
     private static int nextIndexInCollection(int index, int count) => (index + 1) % count;
