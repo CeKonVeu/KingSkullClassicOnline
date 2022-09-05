@@ -38,7 +38,7 @@ public class FoldTests
         Assert.AreNotSame(_fold.GetWinner().Card, losingCard);
     }
 
-    // Tests d'atouts //
+    // Tests des cartes de couleur //
 
     [Test]
     public void TheCardWithTheHighestValueShouldWin()
@@ -132,6 +132,8 @@ public class FoldTests
         PlayTestCards(c1, c2);
     }
     
+    // Test des sirènes //
+
     [Test]
     public void AMermaidShouldWinAgainstColoredCards()
     {
@@ -140,6 +142,8 @@ public class FoldTests
 
         PlayTestCards(c1, c2);
     }
+    
+    // Test des pirates //
 
     [Test]
     public void APirateShouldWinAgainstAMermaid()
@@ -149,6 +153,8 @@ public class FoldTests
 
         PlayTestCards(c1, c2);
     }
+    
+    // Test du Skull King //
 
     [Test]
     public void ASkullKingShouldWinAgainstAPirate()
