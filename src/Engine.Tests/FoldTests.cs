@@ -8,7 +8,7 @@ namespace KingSkullClassicOnline.Engine.Tests;
 public class FoldTests
 {
     private Fold _fold;
-    private Player _p1, _p2;
+    private Player _p1, _p2, _p3;
     
     // TODO : Tester la ScaryMary
 
@@ -44,12 +44,21 @@ public class FoldTests
     }
     
     [Test]
-    public void BlackCardsShouldWinEvenIfTheTurnColorIsNotBlack()
+    public void HighestBlackCardShouldWinEvenIfTheTurnColorIsNotBlack()
     {
         var c1 = Card.NumberedCard(13, Colors.Red);
         var c2 = Card.NumberedCard(1, Colors.Black);
+        var c3 = Card.NumberedCard(2, Colors.Black);
         
-        playTestCards(c1, c2, c2);
+        _p1.Hand.Add(c1);
+        _p2.Hand.Add(c2);
+        _p3.Hand.Add(c3);
+
+        _fold.PlayCard(_p1, c1);
+        _fold.PlayCard(_p2, c2);
+        _fold.PlayCard(_p3, c3);
+
+        Assert.AreEqual(_fold.GetWinner().Card, c3);
     }
     
     [Test]
@@ -89,5 +98,6 @@ public class FoldTests
         _fold = new Fold();
         _p1 = new Player("1", "");
         _p2 = new Player("2", "");
+        _p3 = new Player("3", "");
     }
 }
