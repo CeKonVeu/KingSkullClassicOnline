@@ -18,10 +18,10 @@ Le sujet du projet était libre dans son contenu, nous avons donc décidé de r�
 
 Ce projet est composé de 4 sous-programmes :
 
-- /src/Client qui gère les interactions avec l'utilisateur.
-- /src/Server qui sert de WebAPI. Cette partie va résoudre la communication entre les différents utilisateurs d'un room.
-- /src/Engine qui est une librairie contenant toute la logique du jeu SkullKing.
-- /src/Engine.Tests contenant les tests unitaires.
+- Client qui gère les interactions avec l'utilisateur et contient le design des pages
+- Server qui sert de WebAPI. Cette partie va résoudre la communication entre les différents utilisateurs d'une room.
+- Engine qui est une librairie contenant toute la logique du jeu SkullKing.
+- Engine.Tests contenant les tests unitaires.
 
 ### Prérequis
 
@@ -46,17 +46,11 @@ Depuis la racine du projet, lancez la commande :
 
 Normalement, les packages NuGet devraient s'installer automatiquement, cependant si ce n'est pas le cas, voici une liste des packages explicitement installés.
 
-- coverlet.collector
-- Microsoft.AspNetCore.Components.WebAssembly
-- Microsoft.AspNetCore.Components.WebAssembly.DevServer
-- Microsoft.AspNetCore.Components.WebAssembly.Server
 - Microsoft.AspNetCore.SignalR.Client
-- Microsoft.NET.Test.Sdk
 - MudBlazor
 - NUnit
 - NUnit3TestAdapter
 - LibSassBuilder
-- Swashbuckle.AspNetCore
 
 Si lors de l'exécution, cette erreur apparaît :
 
