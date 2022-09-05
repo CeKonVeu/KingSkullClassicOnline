@@ -38,20 +38,23 @@ public class SignalRView : IView
 
     public async Task GameStarted()
     {
-        Console.WriteLine("Game started");
+        Console.WriteLine($"Game has started");
+        await _hubContext.Clients.Group(_group).SendAsync(Events.GameStarted);
+
+        throw new NotImplementedException();
     }
 
     public async Task HandReceived(PlayerData player, List<Card> cards)
     {
         Console.WriteLine($"Player {player.Name} received: {string.Join(", ", cards.Select(c => c.Name))}");
-        await _hubContext.Clients.Client(player.Id).SendAsync("HandChanged", cards.Select(c => c.Name));
+        await _hubContext.Clients.Client(player.Id).SendAsync(Events.HandChanged, cards.Select(c => c.Name));
     }
 
     public async Task MustPlay(PlayerData player, IEnumerable<Card> availableCards)
     {
         var cards = availableCards.Select(c => c.Name);
         Console.WriteLine($"Player {player.Name} must play with {string.Join(", ", cards)}");
-        await _hubContext.Clients.Client(player.Id).SendAsync("MustPlay", cards);
+        await _hubContext.Clients.Client(player.Id).SendAsync(Events.MustPlay, cards);
     }
 
     public async Task PlayerJoined(PlayerData player)
@@ -76,13 +79,13 @@ public class SignalRView : IView
     public async Task NotifyError(PlayerData player, string message)
     {
         //TODO créer l'event
-        await _hubContext.Clients.Client(player.Id).SendAsync("OnError", message);
+        await _hubContext.Clients.Client(player.Id).SendAsync(Events.OnError, message);
     }
 
     public async Task MustVote(int min, int max)
     {
         Console.WriteLine($"Must vote between {min} and {max}");
-        await _hubContext.Clients.Group(_group).SendAsync("VoteAsked", min, max);
+        await _hubContext.Clients.Group(_group).SendAsync(Events.VoteAsked, min, max);
     }
 
     private async Task AddToGroup(PlayerData player)
@@ -101,7 +104,7 @@ public class SignalRView : IView
 
     private async Task SendPlayers()
     {
-        await _hubContext.Clients.Group(_group).SendAsync("RoomChanged", _group, _players.Select(p => p.Name));
+        await _hubContext.Clients.Group(_group).SendAsync(Events.RoomChanged, _group, _players.Select(p => p.Name));
     }
 
     private async Task SendToGroup(string method, params object?[] args)

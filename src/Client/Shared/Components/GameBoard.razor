@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.SignalR.Client
 @using KingSkullClassicOnline.Client.Shared.Popups
+@using KingSkullClassicOnline.Shared
 @inherits ComponentBase
 @inject IDialogService DialogService
 
@@ -37,12 +38,18 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Connection.On("VoteAsked", async (int _, int maxVote) =>
+        Connection.On(Events.HandChanged, (List<string> newHand) =>
+        {
+            Cards = newHand;
+            Console.WriteLine($"{Events.HandChanged}: {newHand}");
+            StateHasChanged();
+        });
+        Connection.On(Events.VoteAsked, async (int _, int maxVote) =>
         {
             var vote = await AskVote(maxVote);
-            await Connection.SendAsync("SendVote", vote);
+            await Connection.SendAsync(Events.SendVote, vote);
         });
-        Connection.On("MustPlay", (IEnumerable<string> playableCards) =>
+        Connection.On(Events.MustPlay, (IEnumerable<string> playableCards) =>
         {
             Console.WriteLine("Must play with available cards : " + string.Join(", ", playableCards));
             IsMyTurn = true;
@@ -51,7 +58,7 @@
 
     private async void CardClicked(string card)
     {
-        await Connection.SendAsync("PlayCard", card);
+        await Connection.SendAsync(Events.PlayCard, card);
     }
 
 }

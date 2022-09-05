@@ -4,10 +4,11 @@
 @inject Data Data
 @using Microsoft.AspNetCore.SignalR.Client
 @using KingSkullClassicOnline.Client.Shared.Components
+@using KingSkullClassicOnline.Shared
 @implements IAsyncDisposable
 
-<WaitingRoom Url="@_url" IsVisible="!_isPlaying" Names="_players" IsOwner="_isOwner"
-             OnGameStart="StartGame"/>
+<WaitingRoom IsVisible="!_isPlaying" IsOwner="_isOwner"
+             Connection="_connection" RoomName="@RoomName"/>
 
 <GameBoard IsVisible="_isPlaying" Cards="_cards" Connection="_connection"/>
 
@@ -18,10 +19,8 @@
     private bool _isPlaying;
 
     private bool _isOwner;
-
+    
     private string _url = "http://localhost:5000/lobby";
-
-    private IEnumerable<string> _players = Enumerable.Empty<string>();
 
     private List<string> _cards = new();
 
@@ -53,31 +52,22 @@
 
     private async Task JoinRoom(string roomName)
     {
-        await _connection.SendAsync("JoinRoom", roomName, "alice GRUNDER");
+        await _connection.SendAsync(Events.JoinRoom, roomName, "alice GRUNDER");
     }
 
     private async Task CreateRoom()
     {
-        await _connection.SendAsync("CreateRoom", "bob");
+        await _connection.SendAsync(Events.CreateRoom, "bob");
     }
 
     private void SetHandlers()
     {
         Console.WriteLine("SetHandlers");
-        _connection.On("RoomChanged", (string roomName, IEnumerable<string> players) =>
-        {
-            _url = roomName;
-            _players = players;
-            RoomName = roomName;
-            Console.WriteLine($"RoomChanged: {roomName}");
-            StateHasChanged();
-        });
-
-        _connection.On("HandChanged", (List<string> newHand) =>
+        
+        _connection.On(Events.GameStarted, () =>
         {
             _isPlaying = true;
-            _cards = newHand;
-            Console.WriteLine($"HandChanged: {newHand}");
+            Console.WriteLine($"{Events.GameStarted}");
             StateHasChanged();
         });
     }
@@ -86,10 +76,4 @@
     {
         await _connection.DisposeAsync();
     }
-
-    private async void StartGame()
-    {
-        await _connection.SendAsync("StartGame", RoomName);
-    }
-
 }

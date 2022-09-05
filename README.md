@@ -18,15 +18,20 @@ Le sujet du projet était libre dans son contenu, nous avons donc décidé de r�
 
 Ce projet est composé de 4 sous-programmes :
 
-- /src/Client qui gère les interactions avec l'utilisateur.
-- /src/Server qui sert de WebAPI. Cette partie va résoudre la communication entre les différents utilisateurs d'un room.
-- /src/Engine qui est une librairie contenant toute la logique du jeu SkullKing.
-- /src/Engine.Tests contenant les tests unitaires.
+- Client qui gère les interactions avec l'utilisateur et contient le design des pages
+- Server qui sert de WebAPI. Cette partie va résoudre la communication entre les différents utilisateurs d'une room.
+- Engine qui est une librairie contenant toute la logique du jeu SkullKing.
+- Engine.Tests contenant les tests unitaires.
 
 ### Prérequis
 
-- [.NET 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
-- Pas obligatoire : IDE ([Rider](https://www.jetbrains.com/fr-fr/rider/))
+[.NET 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0). Il faut installer le SDK. Un redémarrage est nécessaire après l'installation.
+
+Selon la machine, il est nécessaire d'ajouter dotnet dans la variable système Path.
+
+Pour cela, vous devez aller dans "Modifier les variables d'environnement système" -> "variables d'environnement" -> Dans variable système, sélectionner Path -> modifier ->  Nouveau. Il faut ajouter le chemin où se situt l'éxecutable dotnet, par défaut il se situe sur **C:\Program Files\dotnet**.
+
+Pas obligatoire : IDE ([Rider](https://www.jetbrains.com/fr-fr/rider/))
 
 ### Marche à suivre
 
@@ -46,17 +51,11 @@ Depuis la racine du projet, lancez la commande :
 
 Normalement, les packages NuGet devraient s'installer automatiquement, cependant si ce n'est pas le cas, voici une liste des packages explicitement installés.
 
-- coverlet.collector
-- Microsoft.AspNetCore.Components.WebAssembly
-- Microsoft.AspNetCore.Components.WebAssembly.DevServer
-- Microsoft.AspNetCore.Components.WebAssembly.Server
 - Microsoft.AspNetCore.SignalR.Client
-- Microsoft.NET.Test.Sdk
 - MudBlazor
 - NUnit
 - NUnit3TestAdapter
 - LibSassBuilder
-- Swashbuckle.AspNetCore
 
 Si lors de l'exécution, cette erreur apparaît :
 
