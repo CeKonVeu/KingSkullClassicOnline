@@ -17,6 +17,7 @@ public partial class Card
 
     public static Card ScaryMary()
     {
+        // TODO : Permettre à la ScaryMary de valoir soit Pirate soit Escape
         return new Card(Config.PirateValue, "ScaryMary");
     }
 
