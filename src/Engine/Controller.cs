@@ -49,10 +49,10 @@ public class Controller
 
         for (var i = 1; i <= Config.NumberNumCards; ++i)
         {
-            deck.Add(Card.NumberedCard(i, Colors.Red));
-            deck.Add(Card.NumberedCard(i, Colors.Blue));
-            deck.Add(Card.NumberedCard(i, Colors.Yellow));
-            deck.Add(Card.NumberedCard(i, Colors.Black));
+            deck.Add(Card.NumberedCard(i, Color.Red));
+            deck.Add(Card.NumberedCard(i, Color.Blue));
+            deck.Add(Card.NumberedCard(i, Color.Yellow));
+            deck.Add(Card.NumberedCard(i, Color.Black));
         }
 
         for (var i = 0; i < Config.NumberSkullKing; ++i)
@@ -114,7 +114,20 @@ public class Controller
         var nextPlayer = CurrentRound.NextPlayer;
 
         //TODO ajouter la liste de carte jouable
-        _view.MustPlay(nextPlayer.Data, nextPlayer.Hand);
+        List<Card> playableCards = new List<Card>();
+        
+        if (CurrentRound.CurrentColor != Color.None && nextPlayer.Hand.Exists(card => card.Color == CurrentRound.CurrentColor))
+        {
+            playableCards.AddRange(
+                nextPlayer.Hand.
+                    Where(card => card.Color == CurrentRound.CurrentColor 
+                                  || card.IsSpecial()));
+        }else
+        {
+          playableCards = nextPlayer.Hand;   
+        }
+
+        _view.MustPlay(nextPlayer.Data, playableCards);
     }
 
     public void PlayCard(string playerId, string card)

@@ -42,8 +42,8 @@ public class FoldTests
     [Test]
     public void TheCardWithTheHighestValueShouldWin()
     {
-        var c1 = Card.NumberedCard(1, Colors.Red);
-        var c2 = Card.NumberedCard(13, Colors.Red);
+        var c1 = Card.NumberedCard(1, Color.Red);
+        var c2 = Card.NumberedCard(13, Color.Red);
 
         PlayTestCards(c1, c2, c2);
     }
@@ -51,8 +51,8 @@ public class FoldTests
     [Test]
     public void OnlyNumberedCardsOfTheTurnColorShouldWin()
     {
-        var c1 = Card.NumberedCard(1, Colors.Red);
-        var c2 = Card.NumberedCard(13, Colors.Blue);
+        var c1 = Card.NumberedCard(1, Color.Red);
+        var c2 = Card.NumberedCard(13, Color.Blue);
 
         PlayTestCards(c1, c2, c1);
     }
@@ -60,9 +60,9 @@ public class FoldTests
     [Test]
     public void HighestBlackCardShouldWinEvenIfTheTurnColorIsNotBlack()
     {
-        var c1 = Card.NumberedCard(13, Colors.Red);
-        var c2 = Card.NumberedCard(1, Colors.Black);
-        var c3 = Card.NumberedCard(2, Colors.Black);
+        var c1 = Card.NumberedCard(13, Color.Red);
+        var c2 = Card.NumberedCard(1, Color.Black);
+        var c3 = Card.NumberedCard(2, Color.Black);
 
         _p1.Hand.Add(c1);
         _p2.Hand.Add(c2);
@@ -78,8 +78,8 @@ public class FoldTests
     [Test]
     public void TheBlackCardWithTheHighestValueShouldWinIfTheTurnColorIsBlack()
     {
-        var c1 = Card.NumberedCard(13, Colors.Black);
-        var c2 = Card.NumberedCard(1, Colors.Black);
+        var c1 = Card.NumberedCard(13, Color.Black);
+        var c2 = Card.NumberedCard(1, Color.Black);
 
         PlayTestCards(c1, c2, c1);
     }
@@ -89,7 +89,7 @@ public class FoldTests
     [Test]
     public void AColoredCardShouldWinAgainstAnEscape()
     {
-        var c1 = Card.NumberedCard(1, Colors.Red);
+        var c1 = Card.NumberedCard(1, Color.Red);
         var c2 = Card.Escape();
 
         PlayTestCards(c1, c2, c1);
@@ -99,7 +99,7 @@ public class FoldTests
     public void AMermaidShouldWinAgainstColoredCards()
     {
         var c1 = Card.Mermaid();
-        var c2 = Card.NumberedCard(13, Colors.Red);
+        var c2 = Card.NumberedCard(13, Color.Red);
 
         PlayTestCards(c1, c2, c1);
     }

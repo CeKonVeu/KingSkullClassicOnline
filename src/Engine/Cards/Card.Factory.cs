@@ -31,7 +31,7 @@ public partial class Card
         return new Card(Config.EscapeValue, "Escape");
     }
 
-    public static Card NumberedCard(int value, Colors color)
+    public static Card NumberedCard(int value, Color color)
     {
         if (value <= 0 || value > Config.NumberNumCards)
             throw new ArgumentOutOfRangeException("Valeur de la carte n'existe pas");
@@ -39,16 +39,16 @@ public partial class Card
         string? name;
         switch (color)
         {
-            case Colors.Red:
+            case Engine.Color.Red:
                 name = "Red_";
                 break;
-            case Colors.Blue:
+            case Engine.Color.Blue:
                 name = "Blue_";
                 break;
-            case Colors.Yellow:
+            case Engine.Color.Yellow:
                 name = "Yellow_";
                 break;
-            case Colors.Black:
+            case Engine.Color.Black:
                 name = "Black_";
                 break;
             default:

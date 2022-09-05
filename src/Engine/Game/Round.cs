@@ -28,7 +28,7 @@ public class Round
         _deck = Shuffle(deck);
         IsOver = false;
     }
-
+    public Color CurrentColor => _folds[_currentFold].TurnColor; 
     private Fold CurrentFold => _folds[_currentFold];
     public bool IsOver { get; private set; }
 
