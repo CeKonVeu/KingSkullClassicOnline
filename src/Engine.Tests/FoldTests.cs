@@ -113,6 +113,15 @@ public class FoldTests
 
         PlayTestCards(c1, c2);
     }
+    
+    [Test]
+    public void APirateShouldWinAgainstAnEscape()
+    {
+        var c1 = Card.Pirate();
+        var c2 = Card.Escape();
+
+        PlayTestCards(c1, c2);
+    }
 
     [Test]
     public void AMermaidShouldWinAgainstColoredCards()
