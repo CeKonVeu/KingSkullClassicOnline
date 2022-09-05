@@ -12,8 +12,8 @@ public class FoldTests
     // TODO : Tester la ScaryMary
 
     /// <summary>
-    /// Simule 2 cartes jouées et teste si la carte gagnante est correcte.
-    /// Le pli est simulé 2 fois pour tester l'ordre des cartes.
+    ///     Simule 2 cartes jouées et teste si la carte gagnante est correcte.
+    ///     Le pli est simulé 2 fois pour tester l'ordre des cartes.
     /// </summary>
     /// <param name="c1">La carte du joueur 1</param>
     /// <param name="c2">La carte du joueur 2</param>
@@ -27,7 +27,7 @@ public class FoldTests
         _fold.PlayCard(_p2, c2);
 
         Assert.AreEqual(_fold.GetWinner().Card, winningCard);
-        
+
         _p2.Hand.Add(c2);
         _p1.Hand.Add(c1);
 
@@ -87,43 +87,43 @@ public class FoldTests
     // Tests de puissances //
 
     [Test]
-    public void AColoredCardWinAgainstAnEscape()
+    public void AColoredCardShouldWinAgainstAnEscape()
     {
         var c1 = Card.NumberedCard(1, Colors.Red);
         var c2 = Card.Escape();
 
         PlayTestCards(c1, c2, c1);
     }
-    
+
     [Test]
-    public void AMermaidWinAgainstColoredCards()
+    public void AMermaidShouldWinAgainstColoredCards()
     {
         var c1 = Card.Mermaid();
         var c2 = Card.NumberedCard(13, Colors.Red);
 
         PlayTestCards(c1, c2, c1);
     }
-    
+
     [Test]
-    public void APirateWinAgainstAMermaid()
+    public void APirateShouldWinAgainstAMermaid()
     {
         var c1 = Card.Pirate();
         var c2 = Card.Mermaid();
 
         PlayTestCards(c1, c2, c1);
     }
-    
+
     [Test]
-    public void ASkullKingWinAgainstAPirate()
+    public void ASkullKingShouldWinAgainstAPirate()
     {
         var c1 = Card.SkullKing();
         var c2 = Card.Pirate();
 
         PlayTestCards(c1, c2, c1);
     }
-    
+
     [Test]
-    public void AMermaidWinAgainstASkullKing()
+    public void AMermaidShouldWinAgainstASkullKing()
     {
         var c1 = Card.Mermaid();
         var c2 = Card.SkullKing();
@@ -132,21 +132,21 @@ public class FoldTests
     }
 
     // Tests d'égalités //
-
-    [Test]
-    public void TheFirstCardPlayedShouldWinIfTheyHaveTheSameValue()
-    {
-        var c1 = Card.Pirate();
-        var c2 = Card.Pirate();
-
-        PlayTestCards(c1, c2, c1);
-    }
-
+    
     [Test]
     public void TheFirstEscapePlayedShouldWinIfThereAreOnlyEscapes()
     {
         var c1 = Card.Escape();
         var c2 = Card.Escape();
+
+        PlayTestCards(c1, c2, c1);
+    }
+    
+    [Test]
+    public void TheFirstPiratePlayedShouldWin()
+    {
+        var c1 = Card.Pirate();
+        var c2 = Card.Pirate();
 
         PlayTestCards(c1, c2, c1);
     }
