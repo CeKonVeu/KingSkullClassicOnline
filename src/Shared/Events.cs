@@ -2,14 +2,14 @@
 
 public static class Events
 {
-    public static string StartGame = "StartGame";
-    public static string CreateRoom = "CreateRoom";
-    public static string JoinRoom = "JoinRoom";
-    public static string HandChanged = "HandChanged";
-    public static string RoomChanged = "RoomChanged";
-    public static string MustPlay = "MustPlay";
-    public static string OnError = "OnError";
-    public static string VoteAsked = "VoteAsked";
-    public static string SendVote = "SendVote";
-    public static string PlayCard = "PlayCard";
+    public const string StartGame = "StartGame";
+    public const string CreateRoom = "CreateRoom";
+    public const string JoinRoom = "JoinRoom";
+    public const string HandChanged = "HandChanged";
+    public const string RoomChanged = "RoomChanged";
+    public const string MustPlay = "MustPlay";
+    public const string OnError = "OnError";
+    public const string VoteAsked = "VoteAsked";
+    public const string SendVote = "SendVote";
+    public const string PlayCard = "PlayCard";
 }
