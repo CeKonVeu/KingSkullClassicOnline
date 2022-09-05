@@ -47,7 +47,7 @@ public class FoldTests
     // Tests d'égalités
     
     [Test]
-    public void TheFirstCardPlayedWinIfTheyHaveTheSameValue()
+    public void TheFirstCardPlayedShouldWinIfTheyHaveTheSameValue()
     {
         var c1 = Card.Pirate(1);
         var c2 = Card.Pirate(2);
@@ -62,7 +62,7 @@ public class FoldTests
     }
     
     [Test]
-    public void TheFirstEscapePlayedWinIfThereAreOnlyEscapes()
+    public void TheFirstEscapePlayedShouldWinIfThereAreOnlyEscapes()
     {
         var c1 = Card.Escape();
         var c2 = Card.Escape();
