@@ -176,7 +176,7 @@ public class Controller
         StartNextRound();
     }
 
-    public void StartNextRound()
+    private void StartNextRound()
     {
         if (!_hasStarted || CurrentRound is { IsOver: false }) return;
 
