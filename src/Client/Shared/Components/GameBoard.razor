@@ -51,6 +51,7 @@
         });
         Connection.On(Events.MustPlay, (IEnumerable<string> playableCards) =>
         {
+            //TODO : sucess
             Console.WriteLine("Must play with available cards : " + string.Join(", ", playableCards));
             
             IsMyTurn = true;
