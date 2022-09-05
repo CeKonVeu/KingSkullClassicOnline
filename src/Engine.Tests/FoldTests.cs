@@ -103,6 +103,15 @@ public class FoldTests
 
         PlayTestCards(c1, c2, c1);
     }
+    
+    [Test]
+    public void APirateWinAgainstAMermaid()
+    {
+        var c1 = Card.Pirate(1);
+        var c2 = Card.Mermaid();
+
+        PlayTestCards(c1, c2, c1);
+    }
 
     // Tests d'égalités //
 
