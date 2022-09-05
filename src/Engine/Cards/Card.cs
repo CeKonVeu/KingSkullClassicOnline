@@ -3,7 +3,7 @@
 /// <summary>
 ///     Carte de jeu
 /// </summary>
-public abstract class Card
+public partial class Card
 {
     /// <summary>
     ///     constructeur
@@ -11,7 +11,7 @@ public abstract class Card
     /// <param name="value">valeur de la carte</param>
     /// <param name="name"></param>
     /// <param name="color"></param>
-    protected Card(int value, string name, Colors color)
+    private Card(int value, string name, Colors color = Colors.None)
     {
         Color = color;
         Name = name;

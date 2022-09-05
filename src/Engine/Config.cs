@@ -21,5 +21,6 @@ public static class Config
     public const int ScoreBadVote = -10;
     public const int BonusMermaid = 50;
     public const int BonusSkullKing = 30;
+    public const int PirateVariants = 5;
     public const int RoundsPerGame = 10;
 }
