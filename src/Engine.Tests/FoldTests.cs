@@ -154,8 +154,8 @@ public class FoldTests
     [Test]
     public void TheFirstPiratePlayedShouldWin()
     {
-        var c1 = Card.Pirate();
-        var c2 = Card.Pirate();
+        var c1 = Card.Mermaid();
+        var c2 = Card.Mermaid();
 
         PlayTestCards(c1, c2, c1);
     }
