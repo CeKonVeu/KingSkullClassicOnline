@@ -1,4 +1,6 @@
 ﻿@using KingSkullClassicOnline.Client.Shared.Popups
+@using KingSkullClassicOnline.Shared
+@using Microsoft.AspNetCore.SignalR.Client
 @inherits ComponentBase
 @inject IDialogService DialogService
 
@@ -30,7 +32,7 @@
         @if (IsOwner)
         {
             <MudButton
-                OnClick="OnGameStart"
+                OnClick="StartGame"
                 Variant="Variant.Filled"
                 Color="Color.Primary"
                 FullWidth="true">
@@ -69,22 +71,18 @@
     public bool IsVisible { get; set; } = true;
 
     [Parameter]
-    public IEnumerable<string> Names { get; set; } = Enumerable.Empty<string>();
-
-    [Parameter]
-    public string Url { get; set; } = string.Empty;
-
-    [Parameter]
     public bool IsOwner { get; set; }
+    
+    [Parameter]
+    public string RoomName { get; set; }
 
     [Parameter]
-    public EventCallback OnGameStart { get; set; }
+    public HubConnection Connection { get; set; } = null!;
 
-    private async Task StartGame()
-    {
-        await OnGameStart.InvokeAsync();
-    }
+    private IEnumerable<string> Names { get; set; } = Enumerable.Empty<string>();
 
+    private string Url { get; set; } = string.Empty;
+    
     private void OpenRulesDialog()
     {
     // print names in cw
@@ -97,4 +95,20 @@
         DialogService.Show<Rules>("Modifier les règles", options);
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        Connection.On(Events.RoomChanged, (string roomName, IEnumerable<string> players) =>
+        {
+            Url = roomName;
+            Names = players;
+            RoomName = roomName;
+            Console.WriteLine($"{Events.RoomChanged}: {roomName}");
+            StateHasChanged();
+        });
+    }
+
+    private async void StartGame()
+    {
+        await Connection.SendAsync(Events.StartGame, RoomName);
+    }
 }

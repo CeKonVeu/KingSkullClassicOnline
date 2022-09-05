@@ -40,6 +40,9 @@ public class SignalRView : IView
 
     public async Task GameStarted()
     {
+        Console.WriteLine($"Game has started");
+        await _hubContext.Clients.Group(_group).SendAsync(Events.GameStarted);
+
         throw new NotImplementedException();
     }
 

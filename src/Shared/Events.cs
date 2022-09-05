@@ -3,6 +3,7 @@
 public static class Events
 {
     public const string StartGame = "StartGame";
+    public const string GameStarted = "GameStarted";
     public const string CreateRoom = "CreateRoom";
     public const string JoinRoom = "JoinRoom";
     public const string HandChanged = "HandChanged";
@@ -12,4 +13,7 @@ public static class Events
     public const string VoteAsked = "VoteAsked";
     public const string SendVote = "SendVote";
     public const string PlayCard = "PlayCard";
+    
+    //TODO popup
+    public const string ScaryMary = "ScaryMary";
 }

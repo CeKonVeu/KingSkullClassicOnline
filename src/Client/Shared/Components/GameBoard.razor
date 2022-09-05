@@ -38,6 +38,12 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Connection.On(Events.HandChanged, (List<string> newHand) =>
+        {
+            Cards = newHand;
+            Console.WriteLine($"{Events.HandChanged}: {newHand}");
+            StateHasChanged();
+        });
         Connection.On(Events.VoteAsked, async (int _, int maxVote) =>
         {
             var vote = await AskVote(maxVote);

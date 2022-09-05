@@ -162,7 +162,8 @@ public class Controller
 
     public void StartNextRound()
     {
-        if (!CurrentRound.IsOver) return; // TODO
+        _view.GameStarted();
+        //if (!CurrentRound.IsOver) return; // TODO
 
         foreach (var player in Players)
         {
