@@ -1,4 +1,5 @@
 using KingSkullClassicOnline.Client;
+using KingSkullClassicOnline.Client.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
@@ -11,7 +12,6 @@ builder.Services.AddMudServices();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<IClipboardService, ClipboardService>();
-
 builder.Services.AddScoped<Data>();
 
 await builder.Build().RunAsync();

@@ -1,3 +1,5 @@
+namespace KingSkullClassicOnline.Client.Services;
+
 using Microsoft.JSInterop;
 
 public class ClipboardService : IClipboardService
