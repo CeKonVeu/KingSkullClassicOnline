@@ -1,4 +1,6 @@
-﻿namespace KingSkullClassicOnline.Server.Hubs;
+﻿using KingSkullClassicOnline.Shared;
+
+namespace KingSkullClassicOnline.Server.Hubs;
 
 using System.Collections.Concurrent;
 using Engine;
