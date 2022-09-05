@@ -15,6 +15,21 @@ public class FoldTests
     // Tests d'atouts
     
     [Test]
+    public void TheCardWithTheHighestValueShouldWin()
+    {
+        var c1 = Card.NumberedCard(1, Colors.Red);
+        var c2 = Card.NumberedCard(13, Colors.Red);
+        
+        _p1.Hand.Add(c1);
+        _p2.Hand.Add(c2);
+
+        _fold.PlayCard(_p1, _p1.Hand.First());
+        _fold.PlayCard(_p2, _p2.Hand.First());
+
+        Assert.AreEqual(_fold.GetWinner().Card, c2);
+    }
+    
+    [Test]
     public void OnlyNumberedCardsOfTheTurnColorShouldWin()
     {
         var c1 = Card.NumberedCard(1, Colors.Red);
