@@ -25,7 +25,7 @@ Ce projet est composé de 4 sous-programmes :
 
 ### Prérequis
 
-- [.NET 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+- [.NET 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0). Un redémarrage est nécessaire après l'installation.
 - Pas obligatoire : IDE ([Rider](https://www.jetbrains.com/fr-fr/rider/))
 
 ### Marche à suivre
