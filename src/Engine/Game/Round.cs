@@ -53,16 +53,18 @@ public class Round
     public void Play(Player player, Card card)
     {
         CurrentFold.PlayCard(player, card);
-        _currentPlayer += 1 % _players.Count;
+        _currentPlayer = nextIndexInCollection(_currentPlayer, _players.Count);
 
         if (_startingPlayer != _currentPlayer) return;
 
-        ++_currentFold;
+        _currentFold = nextIndexInCollection(_currentFold, _folds.Length);
 
         var (winner, _) = CurrentFold.GetWinner();
         _currentPlayer = _startingPlayer = _players.IndexOf(winner);
         if (_currentFold == _turn) IsOver = true;
     }
+    
+    private static int nextIndexInCollection(int index, int count) => (index + 1) % count;
 
     private static List<T> Shuffle<T>(IEnumerable<T> array)
     {
