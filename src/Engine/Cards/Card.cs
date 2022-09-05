@@ -5,6 +5,11 @@
 /// </summary>
 public partial class Card
 {
+    private bool Equals(Card other)
+    {
+        return Color == other.Color && Name == other.Name && Value == other.Value;
+    }
+
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj)) return false;
