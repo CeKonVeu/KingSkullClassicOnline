@@ -119,7 +119,7 @@ public class Controller
 
     public void PlayCard(string playerId, string card)
     {
-        if (!_hasStarted || CurrentRound == null || CurrentRound.IsOver) return;
+        if (!_hasStarted || CurrentRound == null || CurrentRound.IsOver || !CurrentRound.AreAllVotesIn()) return;
 
         var player = Players.Find(p => p.Data.Id == playerId);
 
