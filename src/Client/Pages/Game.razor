@@ -7,8 +7,8 @@
 @using KingSkullClassicOnline.Shared
 @implements IAsyncDisposable
 
-<WaitingRoom Url="@_url" IsVisible="!_isPlaying" Names="_players" IsOwner="_isOwner"
-             OnGameStart="StartGame"/>
+<WaitingRoom IsVisible="!_isPlaying" IsOwner="_isOwner"
+             Connection="_connection" RoomName="@RoomName"/>
 
 <GameBoard IsVisible="_isPlaying" Cards="_cards" Connection="_connection"/>
 
@@ -19,10 +19,8 @@
     private bool _isPlaying;
 
     private bool _isOwner;
-
+    
     private string _url = "http://localhost:5000/lobby";
-
-    private IEnumerable<string> _players = Enumerable.Empty<string>();
 
     private List<string> _cards = new();
 
@@ -65,20 +63,11 @@
     private void SetHandlers()
     {
         Console.WriteLine("SetHandlers");
-        _connection.On(Events.RoomChanged, (string roomName, IEnumerable<string> players) =>
-        {
-            _url = roomName;
-            _players = players;
-            RoomName = roomName;
-            Console.WriteLine($"{Events.RoomChanged}: {roomName}");
-            StateHasChanged();
-        });
-
-        _connection.On(Events.HandChanged, (List<string> newHand) =>
+        
+        _connection.On(Events.GameStarted, () =>
         {
             _isPlaying = true;
-            _cards = newHand;
-            Console.WriteLine($"{Events.HandChanged}: {newHand}");
+            Console.WriteLine($"{Events.GameStarted}");
             StateHasChanged();
         });
     }
@@ -87,10 +76,4 @@
     {
         await _connection.DisposeAsync();
     }
-
-    private async void StartGame()
-    {
-        await _connection.SendAsync(Events.StartGame, RoomName);
-    }
-
 }
