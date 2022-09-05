@@ -132,7 +132,7 @@ public class FoldTests
     }
 
     // Tests d'égalités //
-    
+
     [Test]
     public void TheFirstEscapePlayedShouldWinIfThereAreOnlyEscapes()
     {
@@ -141,7 +141,7 @@ public class FoldTests
 
         PlayTestCards(c1, c2, c1);
     }
-    
+
     [Test]
     public void TheFirstMermaidPlayedShouldWin()
     {
@@ -150,12 +150,21 @@ public class FoldTests
 
         PlayTestCards(c1, c2, c1);
     }
-    
+
     [Test]
     public void TheFirstPiratePlayedShouldWin()
     {
         var c1 = Card.Pirate();
         var c2 = Card.Pirate();
+
+        PlayTestCards(c1, c2, c1);
+    }
+
+    [Test]
+    public void TheFirstSkullKingPlayedShouldWin()
+    {
+        var c1 = Card.SkullKing();
+        var c2 = Card.SkullKing();
 
         PlayTestCards(c1, c2, c1);
     }
