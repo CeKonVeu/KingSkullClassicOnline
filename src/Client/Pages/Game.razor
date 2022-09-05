@@ -4,6 +4,7 @@
 @inject Data Data
 @using Microsoft.AspNetCore.SignalR.Client
 @using KingSkullClassicOnline.Client.Shared.Components
+@using Microsoft.AspNetCore.SignalR
 @implements IAsyncDisposable
 
 <WaitingRoom Url="@_url" IsVisible="!_isPlaying" Names="_players" IsOwner="_isOwner"
@@ -39,26 +40,34 @@
         SetHandlers();
 
         await _connection.StartAsync();
-
-        if (RoomName is not null)
+        try
         {
-            await JoinRoom(RoomName);
+            if (RoomName is not null)
+            {
+                await JoinRoom(RoomName);
+            }
+            else
+            {
+                _isOwner = true;
+                await CreateRoom();
+            }
         }
-        else
+        catch (HubException e)
         {
-            _isOwner = true;
-            await CreateRoom();
+            //TODO Rediriger sur la page d'erreur et voir pour passer le message d'erreur
+            //NavigationManager.NavigateTo("/error");
+            Console.WriteLine(e.Message);
         }
     }
 
     private async Task JoinRoom(string roomName)
     {
-        await _connection.SendAsync("JoinRoom", roomName, "alice GRUNDER");
+        await _connection.InvokeAsync("JoinRoom",roomName,"Alice GRUNDER");
     }
 
     private async Task CreateRoom()
     {
-        await _connection.SendAsync("CreateRoom", "bob");
+        await _connection.InvokeAsync("CreateRoom", "bob");
     }
 
     private void SetHandlers()
@@ -89,7 +98,7 @@
 
     private async void StartGame()
     {
-        await _connection.SendAsync("StartGame", RoomName);
+        await _connection.InvokeAsync("StartGame", RoomName);
     }
 
 }
