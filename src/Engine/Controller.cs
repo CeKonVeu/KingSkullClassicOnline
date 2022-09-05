@@ -168,6 +168,7 @@ public class Controller
 
     public void StartGame()
     {
+        // TODO nb joueurs
         if (_hasStarted) return;
 
         _hasStarted = true;
