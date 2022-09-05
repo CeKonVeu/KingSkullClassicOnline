@@ -5,6 +5,13 @@
 /// </summary>
 public partial class Card
 {
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        return obj.GetType() == GetType() && Equals((Card)obj);
+    }
+
     /// <summary>
     ///     constructeur
     /// </summary>
@@ -32,18 +39,6 @@ public partial class Card
     ///     valeur de la carte
     /// </summary>
     public int Value { get; }
-
-    private bool Equals(Card other)
-    {
-        return Color == other.Color && Value == other.Value && Name == other.Name;
-    }
-
-    public override bool Equals(object? obj)
-    {
-        if (ReferenceEquals(null, obj)) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        return obj.GetType() == GetType() && Equals((Card)obj);
-    }
 
     public override int GetHashCode()
     {
