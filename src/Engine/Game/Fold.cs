@@ -1,6 +1,6 @@
 ﻿namespace KingSkullClassicOnline.Engine.Game;
 
-using Card;
+using Cards;
 
 /// <summary>
 ///     Gère le déroulement d'un pli.
@@ -28,7 +28,7 @@ public class Fold
     /// <returns>le nombre de pirates</returns>
     public int CountPirates()
     {
-        return CardsPlayed.Count(card => card.isPirate());
+        return CardsPlayed.Count(card => card.IsPirate());
     }
 
     /// <summary>
@@ -100,6 +100,7 @@ public class Fold
 
         if (!play.IsSpecial() && TurnColor == Colors.None) TurnColor = card.Color;
 
+        player.Hand.Remove(card);
         CardsPlayed.Add(play);
     }
 }

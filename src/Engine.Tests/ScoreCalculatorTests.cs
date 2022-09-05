@@ -1,7 +1,7 @@
 namespace KingSkullClassicOnline.Engine.Tests;
 
 using System;
-using Card;
+using Cards;
 using Game;
 using NUnit.Framework;
 
