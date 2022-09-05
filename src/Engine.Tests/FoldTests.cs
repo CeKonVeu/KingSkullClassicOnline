@@ -69,6 +69,17 @@ public class FoldTests
         
         playTestCards(c1, c2, c1);
     }
+    
+    // Tests de puissances //
+
+    [Test]
+    public void AColoredCardWinAgainstAnEscape()
+    {
+        var c1 = Card.Escape();
+        var c2 = Card.NumberedCard(1, Colors.Red);
+        
+        playTestCards(c1, c2, c1);
+    }
 
     // Tests d'égalités //
     
