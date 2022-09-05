@@ -1,5 +1,5 @@
 using KingSkullClassicOnline.Server.Hubs;
-using Microsoft.AspNetCore.ResponseCompression;
+using KingSkullClassicOnline.Server.Views;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +9,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<SignalRView>();
 // builder.Services.AddResponseCompression(opts =>
 // {
 //     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
@@ -45,6 +47,6 @@ app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 
-app.MapHub<LobbyHub>("/chathub");
+app.MapHub<GameHub>("/connectRoom");
 
 app.Run();

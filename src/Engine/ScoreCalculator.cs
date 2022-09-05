@@ -1,6 +1,6 @@
-﻿using KingSkullClassicOnline.Engine.Game;
+﻿namespace KingSkullClassicOnline.Engine;
 
-namespace KingSkullClassicOnline.Engine;
+using Game;
 
 /// <summary>
 ///     Mets à disposition des méthodes statiques
@@ -27,7 +27,7 @@ public static class ScoreCalculator
                 if (winner.Card == Config.MermaidValue && fold.HasSkullKing)
                     bonusPoints += Config.BonusMermaid;
                 else if (winner.Card == Config.SkullKingValue)
-                    bonusPoints += fold.GetNumberPirate() * Config.BonusSkullKing;
+                    bonusPoints += fold.CountPirates() * Config.BonusSkullKing;
             }
         }
 
@@ -41,6 +41,6 @@ public static class ScoreCalculator
         else
             score = Config.ScoreBadVote * Math.Abs(vote - wonFold);
 
-        p.AddScore(vote, score);
+        //p.SetVote(turn, vote, score);
     }
 }

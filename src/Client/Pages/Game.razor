@@ -1,0 +1,82 @@
+@page "/game"
+@page "/game/{roomName}"
+@inject NavigationManager NavigationManager
+@inject Data Data
+@inject IDialogService DialogService
+@using Microsoft.AspNetCore.SignalR.Client
+@using KingSkullClassicOnline.Shared
+@using KingSkullClassicOnline.Client.Shared.Popups
+@using KingSkullClassicOnline.Client.Shared.Components
+@implements IAsyncDisposable
+
+<WaitingRoom IsVisible="!_isPlaying" IsOwner="_isOwner"
+             Connection="_connection" RoomName="@RoomName"/>
+
+<GameBoard IsVisible="_isPlaying" Connection="_connection"/>
+
+@code {
+    private bool _isPlaying;
+
+    private bool _isOwner;
+
+    private string _name = null!;
+
+    private HubConnection _connection = null!;
+
+    [Parameter]
+    public string? RoomName { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _connection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/connectRoom"))
+            .Build();
+
+        _connection.On(Events.GameStarted, () =>
+        {
+            _isPlaying = true;
+            Console.WriteLine($"{Events.GameStarted}");
+            StateHasChanged();
+        });
+
+        _name = await GetName();
+
+        await _connection.StartAsync();
+
+        if (RoomName is not null)
+        {
+            await JoinRoom(RoomName);
+        }
+        else
+        {
+            _isOwner = true;
+            await CreateRoom();
+        }
+    }
+
+    private async Task JoinRoom(string roomName)
+    {
+        await _connection.SendAsync(Events.JoinRoom, roomName, _name);
+    }
+
+    private async Task CreateRoom()
+    {
+        await _connection.SendAsync(Events.CreateRoom, _name);
+    }
+
+    private async Task<string> GetName()
+    {
+        if (!string.IsNullOrEmpty(Data.Name)) return Data.Name;
+
+        var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, DisableBackdropClick = true };
+        var dialog = DialogService.Show<NamePopup>("Indiquez votre nom", options);
+        var result = await dialog.Result;
+        return (string)result.Data;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _connection.DisposeAsync();
+    }
+
+}

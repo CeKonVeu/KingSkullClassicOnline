@@ -1,30 +1,43 @@
 @page "/"
+@inject Data Data
 
 <PageTitle>King Skull Classic Online</PageTitle>
 
 <h1 class="title">King Skull</h1>
 <h2 class="title">Classic Online</h2>
 
-<MudContainer Class="mt-16" MaxWidth="MaxWidth.Small">
+<MudContainer Class="mt-16 bg" MaxWidth="MaxWidth.Small">
     <MudStack>
         <MudTextField
-            @bind-Value="TextValue"
+            @bind-Value="Data.Name"
             Variant="Variant.Filled"
             AutoFocus="true"
-            Label="Votre nom">
+            Required="true"
+            Label="Votre nom"
+            RequiredError=""
+            Error="false"
+            Immediate="true">
         </MudTextField>
 
         <MudButton
-            Href="https://localhost:7114/startgame"
+            Href="game"
             Variant="Variant.Filled"
             Color="Color.Primary"
             Size="Size.Large"
+            Disabled="string.IsNullOrEmpty(Data.Name)"
             FullWidth="true">
             Créer la partie
         </MudButton>
     </MudStack>
 </MudContainer>
 
-@code {
-    public string TextValue { get; set; }
-}
+<style>
+/* TODO trouver une solution*/
+    #app {
+      background: linear-gradient(
+                      rgba(0, 0, 0, 0.4),
+                      rgba(0, 0, 0, 0.6)
+      ), url(./images/boat.jfif) no-repeat center;
+      background-size: cover;
+    }
+</style>

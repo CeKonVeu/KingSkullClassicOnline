@@ -8,12 +8,11 @@
     MaxWidth="MaxWidth.ExtraSmall"
     CloseButton="true"
     DisableBackdropClick="false"
-    Position="DialogPosition.Center"
-/>
+    Position="DialogPosition.Center"/>
 
 <MudLayout>
-    <MudMainContent Class="py-8">
-        <MudContainer Class="mx-auto" Style="height:100vh">
+    <MudMainContent Class="pt-0">
+        <MudContainer Class="mx-auto py-8" Style="height:100vh">
             @Body
         </MudContainer>
     </MudMainContent>
@@ -25,17 +24,16 @@
     {
         Palette = new Palette
         {
-            Primary = Colors.Yellow.Darken1,
-            Secondary = Colors.Green.Accent4,
+            Primary = Colors.Amber.Default,
             PrimaryContrastText = Colors.Shades.Black,
+            TextPrimary = Colors.Shades.Black,
+    // Secondary = Colors.Green.Accent4,
+    // PrimaryContrastText = Colors.Shades.Black,
             TextSecondary = Colors.Yellow.Darken1,
-            TextPrimary = Colors.Shades.White,
+    // TextPrimary = Colors.Shades.White,
             LinesInputs = Colors.Yellow.Darken1,
-            ActionDefault = Colors.Yellow.Lighten3
-        },
-        LayoutProperties = new LayoutProperties
-        {
-            AppbarHeight = "0"
+            ActionDefault = Colors.Yellow.Darken3,
+            Surface = Colors.Amber.Lighten3
         }
     };
 }
