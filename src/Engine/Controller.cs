@@ -113,8 +113,8 @@ public class Controller
 
         var nextPlayer = CurrentRound.NextPlayer;
 
-        //TODO ajouter la liste de carte jouable
-        List<Card> playableCards = new List<Card>();
+        //Send only the playable cards to the player
+        var playableCards = new List<Card>();
         
         if (CurrentRound.CurrentColor != Color.None && nextPlayer.Hand.Exists(card => card.Color == CurrentRound.CurrentColor))
         {
