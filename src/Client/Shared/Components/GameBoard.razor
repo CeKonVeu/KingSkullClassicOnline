@@ -12,14 +12,15 @@
 <PageTitle>Jeu</PageTitle>
 
 <div class="relative">
-    <MudPaper
-        Class="pa-4 d-inline-flex rounds">
+    <div class="d-inline-flex parchment">
+        <div class="parchment-bg"></div>
         <MudText
+            Class="pa-4 rounds"
             Typo="Typo.h3"
             Align="Align.Left">
-            0 / 5
+            10 / 10
         </MudText>
-    </MudPaper>
+    </div>
     <MudStack Class="buttons">
         <MudTooltip
             Text="Règles"
@@ -30,7 +31,7 @@
                 Target="_blank"
                 Icon="@Icons.Filled.Help"
                 Variant="Variant.Filled"
-                Color="Color.Warning"
+                Color="Color.Secondary"
                 Size="Size.Large"/>
         </MudTooltip>
 
@@ -42,37 +43,38 @@
                 Icon="@Icons.Filled.GridOn"
                 Variant="Variant.Filled"
                 OnClick="OpenScores"
-                Color="Color.Warning"
+                Color="Color.Secondary"
                 Size="Size.Large"/>
         </MudTooltip>
     </MudStack>
-    <div class="d-flex justify-center gap-4 flex-wrap">
+
+    <div class="d-flex justify-space-around flex-wrap mt-15 gap-4 pl-6 pr-6 parchment pt-4">
+        <div class="parchment-bg board"></div>
+
         @{ var i = 0; }
         @foreach (var player in _players)
         {
             <div>
-                <MudText Align="Align.Center">@player.Item3.Item1 / @player.Item3.Item2</MudText>
+
 
                 @{
                     var i1 = i;
                 }
-                <MudPaper Class="pl-3 pr-3 pt-2 pb-1 rounds center" Outlined="true">
-                    <MudText Typo="Typo.h5" Class="mb-2">
-                        @player.Item1
-                    </MudText>
-                    @{
-                        if (i1 % 2 == 0)
-                        {
-                            <Card CardName="@player.Item2.Item1" Class="@($"oui {(player.Item2.Item2 ? "winning" : "")}")" OnCardClick="@(_ => Test(i1))"/>
-                        }
-                        else
-                        {
-                            <Card CardName="Back" Class="@($"oui back {(player.Item2.Item2 ? "winning" : "")}")" OnCardClick="@(_ => Test(i1))"/>
-                        }
-
+                <MudText Typo="Typo.h5" Align="Align.Center">@player.Item3.Item1 / @player.Item3.Item2</MudText>
+                <MudText Typo="Typo.h5" Class="@($"mb-2 pseudo {(i1 == 0 ? "self" : "")}")" Align="Align.Center">
+                    @player.Item1
+                </MudText>
+                @{
+                    if (i1 % 2 == 0)
+                    {
+                        <Card CardName="@player.Item2.Item1" Class="@($"oui {(player.Item2.Item2 ? "winning" : "")}")" OnCardClick="@(_ => Test(i1))"/>
                     }
-                </MudPaper>
+                    else
+                    {
+                        <Card CardName="Back" Class="@($"oui back {(player.Item2.Item2 ? "winning" : "")}")" OnCardClick="@(_ => Test(i1))"/>
+                    }
 
+                }
             </div>
             {
                 i++;
@@ -81,6 +83,19 @@
     </div>
     <HandGame Class="hand" Cards="Cards" OnCardClick="CardClicked"/>
 </div>
+
+<svg style="height: 0">
+    <filter id="wavy2">
+        <feTurbulence x="0" y="0" baseFrequency="0.01" numOctaves="10" seed="1"/>
+        <feDisplacementMap in="SourceGraphic" scale="20"/>
+    </filter>
+</svg>
+<svg style="height: 0">
+    <filter id="wavy3">
+        <feTurbulence x="0" y="0" baseFrequency="0.01" numOctaves="6" seed="3"/>
+        <feDisplacementMap in="SourceGraphic" scale="20"/>
+    </filter>
+</svg>
 
 @code {
     private string _testStr = "oui";
