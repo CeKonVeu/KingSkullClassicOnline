@@ -1,0 +1,23 @@
+﻿@inherits ComponentBase
+
+<span class="@Class">
+    <MudTooltip
+        Text="Règles"
+        Duration="1000"
+        Placement="Placement.Left">
+        <MudIconButton
+            Href="https://www.schmidtspiele.de/files/Produkte/7/75024%20-%20Skull%20King/75024_Skull_King_DE_FR_IT_GB.pdf#page=3"
+            Target="_blank"
+            Icon="@Icons.Filled.Help"
+            Variant="Variant.Filled"
+            Color="Color.Secondary"
+            Size="Size.Large"/>
+    </MudTooltip>
+</span>
+
+@code {
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+}
