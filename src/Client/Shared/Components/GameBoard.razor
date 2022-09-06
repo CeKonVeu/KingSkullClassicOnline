@@ -11,15 +11,12 @@
 
 <PageTitle>Jeu</PageTitle>
 
-<HandGame Cards="Cards" OnCardClick="CardClicked"/>
+<HandGame Cards="_cards" OnCardClick="CardClicked"/>
 
 @code {
 
     [Parameter]
     public HubConnection Connection { get; set; } = null!;
-
-    [Parameter]
-    public ICollection<string> Cards { get; set; } = new List<string>();
 
     [Parameter]
     public bool IsVisible { get; set; }
@@ -40,7 +37,7 @@
     {
         Connection.On(Events.HandChanged, (List<string> newHand) =>
         {
-            Cards = newHand;
+            _cards = newHand;
             Console.WriteLine($"{Events.HandChanged}: {newHand}");
             StateHasChanged();
         });
@@ -63,4 +60,5 @@
         await Connection.SendAsync(Events.PlayCard, card);
     }
 
+    private ICollection<string> _cards = new List<string>();
 }

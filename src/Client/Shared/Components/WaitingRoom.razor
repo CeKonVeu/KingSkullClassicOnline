@@ -1,15 +1,18 @@
-﻿@using KingSkullClassicOnline.Client.Shared.Popups
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@using KingSkullClassicOnline.Client.Shared.Popups
 @using KingSkullClassicOnline.Shared
-@using Microsoft.AspNetCore.SignalR.Client
 @inherits ComponentBase
 @inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject IClipboardService ClipboardService
+@inject NavigationManager NavigationManager
 
 @if (!IsVisible)
 {
     return;
 }
 
-<PageTitle>Lobby</PageTitle>
+<PageTitle>Port</PageTitle>
 
 <h2 class="title">Equipage</h2>
 
@@ -49,10 +52,13 @@
         }
 
         <MudTextField
-            Value="Url"
+            Value="_url"
             Variant="Variant.Filled"
             ReadOnly="true"
-            Label="URL pour rejoindre cette room">
+            Label="URL pour rejoindre cette room"
+            Adornment="Adornment.End"
+            AdornmentIcon="@Icons.Filled.ContentCopy"
+            @onclick="CopyRoomLink">
         </MudTextField>
     </MudStack>
 
@@ -72,25 +78,19 @@
 
     [Parameter]
     public bool IsOwner { get; set; }
-    
+
     [Parameter]
-    public string RoomName { get; set; }
+    public string RoomName { get; set; } = null!;
 
     [Parameter]
     public HubConnection Connection { get; set; } = null!;
 
     private IEnumerable<string> Names { get; set; } = Enumerable.Empty<string>();
 
-    private string Url { get; set; } = string.Empty;
-    
+    private string _url = string.Empty;
+
     private void OpenRulesDialog()
     {
-    // print names in cw
-        foreach (var name in Names)
-        {
-            Console.WriteLine(name);
-        }
-
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<Rules>("Modifier les règles", options);
     }
@@ -99,7 +99,7 @@
     {
         Connection.On(Events.RoomChanged, (string roomName, IEnumerable<string> players) =>
         {
-            Url = roomName;
+            _url = $"{NavigationManager.Uri}/{roomName}";
             Names = players;
             RoomName = roomName;
             Console.WriteLine($"{Events.RoomChanged}: {roomName}");
@@ -111,4 +111,19 @@
     {
         await Connection.SendAsync(Events.StartGame, RoomName);
     }
+
+    private async Task CopyRoomLink()
+    {
+        Snackbar.Add(
+            "Lien copié !", Severity.Normal, config =>
+            {
+                config.VisibleStateDuration = 500;
+                config.ShowTransitionDuration = 200;
+                config.Icon = Icons.Filled.Link;
+            });
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+
+        await ClipboardService.CopyToClipboard(_url);
+    }
+
 }
