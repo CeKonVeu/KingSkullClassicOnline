@@ -18,7 +18,7 @@
 
 <MudContainer MaxWidth="MaxWidth.ExtraSmall">
     <MudStack>
-        <div class="relative">
+        <div class="relative mb-6">
             <div class="parchment-bg"></div>
             <MudStack Class="parchment">
                 @foreach (var name in Names)
@@ -58,6 +58,7 @@
             Label="URL pour rejoindre cette room"
             Adornment="Adornment.End"
             AdornmentIcon="@Icons.Filled.ContentCopy"
+            OnAdornmentClick="CopyRoomLink"
             @onclick="CopyRoomLink">
         </MudTextField>
     </MudStack>
