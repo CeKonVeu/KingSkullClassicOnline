@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.SignalR.Client
 @using KingSkullClassicOnline.Client.Shared.Popups
+@using KingSkullClassicOnline.Shared
 @inherits ComponentBase
 @inject IDialogService DialogService
 
@@ -10,48 +11,165 @@
 
 <PageTitle>Jeu</PageTitle>
 
-<HandGame Cards="Cards" OnCardClick="CardClicked"/>
+<div class="relative">
+    <div class="d-inline-flex parchment-game">
+        <div class="parchment-bg-game"></div>
+        <MudText
+            Class="pa-4 rounds"
+            Typo="Typo.h3"
+            Align="Align.Left">
+            10 / 10
+        </MudText>
+    </div>
+    <MudStack Class="buttons">
+        <RulesButton/>
+
+        <MudTooltip
+            Text="Scores"
+            Duration="1000"
+            Placement="Placement.Left">
+            <MudIconButton
+                Icon="@Icons.Filled.GridOn"
+                Variant="Variant.Filled"
+                OnClick="OpenScores"
+                Color="Color.Secondary"
+                Size="Size.Large"/>
+        </MudTooltip>
+    </MudStack>
+
+    <div class="d-flex justify-space-around flex-wrap mt-15 gap-4 pl-6 pr-6 parchment-game pt-4">
+        <div class="parchment-bg-game board"></div>
+
+        @{ var i = 0; }
+        @foreach (var player in _players)
+        {
+            <div>
+
+
+                @{
+                    var i1 = i;
+                }
+                <MudText Typo="Typo.h5" Align="Align.Center">@player.Item3.Item1 / @player.Item3.Item2</MudText>
+                <MudText Typo="Typo.h5" Class="@($"mb-2 pseudo {(i1 == 0 ? "self" : "")}")" Align="Align.Center">
+                    @player.Item1
+                </MudText>
+                @{
+                    if (i1 % 2 == 0)
+                    {
+                        <Card CardName="@player.Item2.Item1" Class="@($"player-card {(player.Item2.Item2 ? "winning" : "")}")" OnCardClick="@(_ => Test(i1))"/>
+                    }
+                    else
+                    {
+                        <Card CardName="Back" Class="@($"player-card back {(player.Item2.Item2 ? "winning" : "")}")" OnCardClick="@(_ => Test(i1))"/>
+                    }
+
+                }
+            </div>
+            {
+                i++;
+            }
+        }
+    </div>
+    <HandGame Class="hand" Cards="_cards" OnCardClick="CardClicked"/>
+</div>
+
+<svg style="height: 0">
+    <filter id="wavy2">
+        <feTurbulence x="0" y="0" baseFrequency="0.01" numOctaves="10" seed="1"/>
+        <feDisplacementMap in="SourceGraphic" scale="20"/>
+    </filter>
+</svg>
+<svg style="height: 0">
+    <filter id="wavy3">
+        <feTurbulence x="0" y="0" baseFrequency="0.01" numOctaves="6" seed="3"/>
+        <feDisplacementMap in="SourceGraphic" scale="20"/>
+    </filter>
+</svg>
 
 @code {
-
     [Parameter]
-    public HubConnection Connection { get; set; } = null!;
-
-    [Parameter]
-    public ICollection<string> Cards { get; set; } = new List<string>();
+    public HubConnection Connection { get; set; }
 
     [Parameter]
     public bool IsVisible { get; set; }
 
-    [Parameter]
-    public bool IsMyTurn { get; set; }
+    private bool _IsMyTurn { get; set; }
 
     private async Task<int> AskVote(int maxVote)
     {
         var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, DisableBackdropClick = true };
         var parameters = new DialogParameters { ["MaxValue"] = maxVote };
-        var dialog = DialogService.Show<Vote>("Votez !", parameters, options);
+        var dialog = DialogService.Show<VotePopup>("Votez !", parameters, options);
         var result = await dialog.Result;
         return (int)result.Data;
     }
 
     protected override async Task OnInitializedAsync()
     {
-        Connection.On("VoteAsked", async (int _, int maxVote) =>
+        if (Connection == null) return;
+
+        Connection.On(Events.HandChanged, (List<string> newHand) =>
+        {
+            _cards = newHand;
+            Console.WriteLine($"{Events.HandChanged}: {newHand}");
+            StateHasChanged();
+        });
+        Connection.On(Events.VoteAsked, async (int _, int maxVote) =>
         {
             var vote = await AskVote(maxVote);
-            await Connection.SendAsync("SendVote", vote);
+            await Connection.SendAsync(Events.SendVote, vote);
         });
-        Connection.On("MustPlay", (IEnumerable<string> playableCards) =>
+        Connection.On(Events.MustPlay, (IEnumerable<string> playableCards) =>
         {
+    //TODO : sucess
             Console.WriteLine("Must play with available cards : " + string.Join(", ", playableCards));
-            IsMyTurn = true;
+
+            _IsMyTurn = true;
+        });
+        Connection.On(Events.RoundEnded, (int[] scores) =>
+        {
+            Console.WriteLine("Scores of this round :");
+            for (int i = 0; i < scores.Length; i++)
+            {
+                Console.WriteLine($"Player {i} : {scores[i]}");
+            }
+        });
+        Connection.On(Events.CardPlayed, (string player,string card,string winnerName) =>
+        {
+            Console.WriteLine($"{player} played {card} and winner is {winnerName}");
         });
     }
 
     private async void CardClicked(string card)
     {
-        await Connection.SendAsync("PlayCard", card);
+        Console.WriteLine("Card clicked : " + card);
+    // await Connection.SendAsync(Events.PlayCard, card);
+    }
+
+    private ICollection<string> _cards = new List<string>();
+
+    private List<(string, (string, bool), (int, int))> _players = new()
+    {
+        ("Player 1", ("Red_2", false), (0, 5)),
+        ("Player 2", ("Blue_5", false), (5, 5)),
+        ("Player 3", ("Black_3", false), (7, 10)),
+        ("Player 4", ("SkullKing", false), (4, 4)),
+        ("Player 4", ("SkullKing", false), (4, 4))
+    };
+
+    private void Test(int i)
+    {
+        var t = _players[i];
+        t.Item2.Item2 = !t.Item2.Item2;
+        _players[i] = t;
+        Console.WriteLine(t.Item2.Item2);
+        StateHasChanged();
+    }
+
+    private void OpenScores()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<ScoresPopup>("Tableau des scores", options);
     }
 
 }

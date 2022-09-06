@@ -13,14 +13,14 @@ public class Fold
     public Fold()
     {
         CardsPlayed = new LinkedList<Play>();
-        TurnColor = Colors.None;
+        TurnColor = Color.None;
     }
 
     public ICollection<Play> CardsPlayed { get; }
 
     public bool HasSkullKing { get; private set; }
 
-    public Colors TurnColor { get; private set; }
+    public Color TurnColor { get; private set; }
 
     /// <summary>
     ///     Compte le nombre de pirates dans le pli.
@@ -41,7 +41,6 @@ public class Fold
         HasSkullKing = false;
         Play? winningPlay = null;
         Play? mermaidPlay = null;
-
         foreach (var play in CardsPlayed)
         {
             if (play.IsMermaid() && mermaidPlay == null)
@@ -88,7 +87,6 @@ public class Fold
                 }
             }
         }
-
         return winningPlay ?? throw new Exception("On sait pas coder.");
     }
 
@@ -101,7 +99,7 @@ public class Fold
     {
         var play = new Play(player, card);
 
-        if (!play.IsSpecial() && TurnColor == Colors.None) TurnColor = card.Color;
+        if (!play.IsSpecial() && TurnColor == Color.None) TurnColor = card.Color;
 
         player.Hand.Remove(card);
         CardsPlayed.Add(play);

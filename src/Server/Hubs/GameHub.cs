@@ -1,4 +1,6 @@
-﻿namespace KingSkullClassicOnline.Server.Hubs;
+﻿using KingSkullClassicOnline.Shared;
+
+namespace KingSkullClassicOnline.Server.Hubs;
 
 using System.Collections.Concurrent;
 using Engine;
@@ -102,6 +104,6 @@ public class GameHub : Hub
 
     public async Task StartGame(string roomName)
     {
-        Controllers[roomName].StartNextRound();
+        Controllers[roomName].StartGame();
     }
 }

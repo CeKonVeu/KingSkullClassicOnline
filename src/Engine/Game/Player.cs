@@ -21,7 +21,7 @@ public class Player
 
     public List<Card> Hand { get; internal set; }
 
-    private bool CheckIfCardRespectsRule(Colors TurnColor)
+    private bool CheckIfCardRespectsRule(Color turnColor)
     {
         return true;
         // var temp = false;
@@ -52,7 +52,7 @@ public class Player
         return _votes[turn - 1];
     }
 
-    public int PlayCard(Colors turnColor)
+    public int PlayCard(Color turnColor)
     {
         return 1;
     }
@@ -60,5 +60,18 @@ public class Player
     public void SetVote(int turn, int voted)
     {
         _votes[turn - 1] = new Vote(voted);
+    }
+
+    public void SetTotal(int turn,int total)
+    {
+        int? score = 0;
+        if(turn > 1)
+            score = _votes[turn - 2]?.Total;
+        _votes[turn - 1]!.Total = total + score;
+    }
+    
+    public void AddActual(int turn)
+    {
+        _votes[turn - 1]!.Actual+=1;
     }
 }

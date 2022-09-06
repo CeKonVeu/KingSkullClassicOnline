@@ -23,7 +23,7 @@ public partial class Card
     /// <param name="value">valeur de la carte</param>
     /// <param name="name"></param>
     /// <param name="color"></param>
-    private Card(int value, string name, Colors color = Colors.None)
+    private Card(int value, string name, Color color = Engine.Color.None)
     {
         Color = color;
         Name = name;
@@ -33,8 +33,8 @@ public partial class Card
     /// <summary>
     ///     couleur de la carte
     /// </summary>
-    public Colors Color { get; }
-
+    public Color Color { get; }
+    
     /// <summary>
     ///     nom représentant la carte
     /// </summary>

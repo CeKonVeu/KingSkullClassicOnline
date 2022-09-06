@@ -161,6 +161,7 @@ public class FoldTests
         var c1 = Card.NumberedCard(1, Colors.Red);
         var c2 = Card.NumberedCard(13, Colors.Blue);
 
+
         PlayTwoTestCards(c1, c2, true);
     }
 
@@ -286,7 +287,7 @@ public class FoldTests
     [Test]
     public void ARedCardShouldWinAgainstAnEscape()
     {
-        var c1 = Card.NumberedCard(1, Colors.Red);
+        var c1 = Card.NumberedCard(1, Color.Red);
         var c2 = Card.Escape();
 
         PlayTwoTestCardsBothWays(c1, c2);

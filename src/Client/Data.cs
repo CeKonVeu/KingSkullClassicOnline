@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿namespace KingSkullClassicOnline.Client;
 
-namespace KingSkullClassicOnline.Client;
-
+/// <summary>
+///     Classe utilisée pour transmettre des informations de page en page.
+/// </summary>
 public class Data
 {
     public string? Name { get; set; }
-    public static string? Player { get; set; }
-    public static string? LobbyName { get; set; }
-    public static HubConnection? HubConnection { get; set; }
 }

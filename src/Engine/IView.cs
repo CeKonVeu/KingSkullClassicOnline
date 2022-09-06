@@ -5,8 +5,8 @@ using Game;
 
 public interface IView
 {
-    Task CardPlayed(PlayerData data, string card);
-    Task GameEnded(string[] scores, string winner);
+    Task CardPlayed(PlayerData data, string card, string winnerName);
+    Task GameEnded(int[] scores, string winner);
     Task GameStarted();
     Task HandReceived(PlayerData player, List<Card> cards);
     Task MustPlay(PlayerData player, IEnumerable<Card> availableCards);
@@ -15,5 +15,7 @@ public interface IView
     Task PlayerJoined(PlayerData player);
     Task PlayerLeft(PlayerData player);
     Task RoomCreated(string roomName, PlayerData player);
-    Task RoundEnded(string[] scores);
+    Task RoundEnded(int[] scores);
+    Task FoldStarted(string[] players, int[] scores);
+
 }

@@ -5,6 +5,7 @@ using Engine.Cards;
 using Engine.Game;
 using Hubs;
 using Microsoft.AspNetCore.SignalR;
+using Shared;
 
 public class SignalRView : IView
 {
@@ -25,33 +26,38 @@ public class SignalRView : IView
         await PlayerJoined(player);
     }
 
-    public async Task CardPlayed(PlayerData player, string card)
+    public async Task CardPlayed(PlayerData player, string card, string winnerName)
     {
         Console.WriteLine($"{player.Name} played {card}");
-        await _hubContext.Clients.Group(_group).SendAsync("CardPlayed", player.Id, card);
+        await _hubContext.Clients.Group(_group).SendAsync(Events.CardPlayed, player.Id, card,  winnerName);
     }
 
-    public async Task GameEnded(string[] scores, string winner)
+    public async Task GameEnded(int[] scores, string winner)
     {
+        //TODO implement
+        //await _hubContext.Clients.Group(_group).SendAsync(Events.GameEnded, scores, winner);
         throw new NotImplementedException();
     }
 
     public async Task GameStarted()
     {
+        Console.WriteLine("Game has started");
+        await _hubContext.Clients.Group(_group).SendAsync(Events.GameStarted);
+
         throw new NotImplementedException();
     }
 
     public async Task HandReceived(PlayerData player, List<Card> cards)
     {
         Console.WriteLine($"Player {player.Name} received: {string.Join(", ", cards.Select(c => c.Name))}");
-        await _hubContext.Clients.Client(player.Id).SendAsync("HandChanged", cards.Select(c => c.Name));
+        await _hubContext.Clients.Client(player.Id).SendAsync(Events.HandChanged, cards.Select(c => c.Name));
     }
 
     public async Task MustPlay(PlayerData player, IEnumerable<Card> availableCards)
     {
         var cards = availableCards.Select(c => c.Name);
         Console.WriteLine($"Player {player.Name} must play with {string.Join(", ", cards)}");
-        await _hubContext.Clients.Client(player.Id).SendAsync("MustPlay", cards);
+        await _hubContext.Clients.Client(player.Id).SendAsync(Events.MustPlay, cards);
     }
 
     public async Task PlayerJoined(PlayerData player)
@@ -68,21 +74,25 @@ public class SignalRView : IView
         await SendPlayers();
     }
 
-    public async Task RoundEnded(string[] scores)
+    public async Task RoundEnded(int[] scores)
     {
-        throw new NotImplementedException();
+        await _hubContext.Clients.Group(_group).SendAsync(Events.RoundEnded, scores);
+    }
+    public async Task FoldStarted(string[] players, int[] scores)
+    {
+        await _hubContext.Clients.Group(_group).SendAsync(Events.FoldStarted,players,scores);
     }
 
     public async Task NotifyError(PlayerData player, string message)
     {
         //TODO créer l'event
-        await _hubContext.Clients.Client(player.Id).SendAsync("OnError", message);
+        await _hubContext.Clients.Client(player.Id).SendAsync(Events.OnError, message);
     }
 
     public async Task MustVote(int min, int max)
     {
         Console.WriteLine($"Must vote between {min} and {max}");
-        await _hubContext.Clients.Group(_group).SendAsync("VoteAsked", min, max);
+        await _hubContext.Clients.Group(_group).SendAsync(Events.VoteAsked, min, max);
     }
 
     private async Task AddToGroup(PlayerData player)
@@ -101,7 +111,7 @@ public class SignalRView : IView
 
     private async Task SendPlayers()
     {
-        await _hubContext.Clients.Group(_group).SendAsync("RoomChanged", _group, _players.Select(p => p.Name));
+        await _hubContext.Clients.Group(_group).SendAsync(Events.RoomChanged, _group, _players.Select(p => p.Name));
     }
 
     private async Task SendToGroup(string method, params object?[] args)
