@@ -29,7 +29,7 @@ Ce projet est composé de 4 sous-programmes :
 
 Selon la machine, il est nécessaire d'ajouter dotnet dans la variable système Path.
 
-Pour cela, vous devez aller dans "Modifier les variables d'environnement système" -> "variables d'environnement" -> Dans variable système, sélectionner Path -> modifier ->  Nouveau. Il faut ajouter le chemin où se situt l'éxecutable dotnet, par défaut il se situe sur **C:\Program Files\dotnet**.
+Pour cela, vous devez aller dans "Modifier les variables d'environnement système" -> "variables d'environnement" -> Dans variable système, sélectionner Path -> modifier ->  Nouveau. Il faut ajouter le chemin où se situe l'exécutable dotnet, par défaut il se situe sur **C:\Program Files\dotnet**.
 
 Pas obligatoire : IDE ([Rider](https://www.jetbrains.com/fr-fr/rider/))
 
