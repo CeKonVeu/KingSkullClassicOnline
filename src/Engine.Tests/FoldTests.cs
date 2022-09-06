@@ -54,7 +54,7 @@ public class FoldTests
     // Test sur les cartes numérotées //
 
     [Test]
-    public void TheRedCardWithTheHighestValueShouldWinIfTheTurnColorIsRed()
+    public void HighestRedCardShouldWinIfTheTurnColorIsRed()
     {
         var c1 = Card.NumberedCard(13, Colors.Red);
         var c2 = Card.NumberedCard(1, Colors.Red);
@@ -63,7 +63,7 @@ public class FoldTests
     }
 
     [Test]
-    public void TheBlueCardWithTheHighestValueShouldWinIfTheTurnColorIsBlue()
+    public void HighestBlueCardShouldWinIfTheTurnColorIsBlue()
     {
         var c1 = Card.NumberedCard(13, Colors.Blue);
         var c2 = Card.NumberedCard(1, Colors.Blue);
@@ -72,7 +72,7 @@ public class FoldTests
     }
     
     [Test]
-    public void TheYellowCardWithTheHighestValueShouldWinIfTheTurnColorIsYellow()
+    public void HighestYellowCardShouldWinIfTheTurnColorIsYellow()
     {
         var c1 = Card.NumberedCard(13, Colors.Yellow);
         var c2 = Card.NumberedCard(1, Colors.Yellow);
@@ -81,7 +81,7 @@ public class FoldTests
     }
     
     [Test]
-    public void TheBlackCardWithTheHighestValueShouldWinIfTheTurnColorIsBlack()
+    public void HighestBlackCardShouldWinIfTheTurnColorIsBlack()
     {
         var c1 = Card.NumberedCard(13, Colors.Black);
         var c2 = Card.NumberedCard(1, Colors.Black);
@@ -89,20 +89,30 @@ public class FoldTests
         PlayTestCardsBothWays(c1, c2);
     }
     
-    // Test sur l'atout //
-
-    [Test]
-    public void RedCardsShouldNotWinIfTheTurnColorIsYellow()
-    {
+    // Test sur l'atout (rouge) //
         
-        var c3 = Card.NumberedCard(1, Colors.Yellow);
-        var c4 = Card.NumberedCard(13, Colors.Red);
+    [Test]
+    public void IfTheTurnColorIsRedBlueCardsShouldNotWin()
+    {
+        var c1 = Card.NumberedCard(1, Colors.Red);
+        var c2 = Card.NumberedCard(13, Colors.Blue);
 
-        PlayTestCards(c3, c4, true);
+        PlayTestCards(c1, c2, true);
     }
     
     [Test]
-    public void RedCardsShouldNotWinIfTheTurnColorIsBlue()
+    public void IfTheTurnColorIsRedYellowCardsShouldNotWin()
+    {
+        var c1 = Card.NumberedCard(1, Colors.Red);
+        var c2 = Card.NumberedCard(13, Colors.Yellow);
+
+        PlayTestCards(c1, c2, true);
+    }
+    
+    // Test sur l'atout (bleu) //
+
+    [Test]
+    public void IfTheTurnColorIsBlueRedCardsShouldNotWin()
     {
         var c1 = Card.NumberedCard(1, Colors.Blue);
         var c2 = Card.NumberedCard(13, Colors.Red);
@@ -111,50 +121,99 @@ public class FoldTests
     }
     
     [Test]
-    public void BlueCardsShouldNotWinIfTheTurnColorIsRed()
+    public void IfTheTurnColorIsBlueYellowCardsShouldNotWin()
     {
-        
-        var c3 = Card.NumberedCard(1, Colors.Red);
-        var c4 = Card.NumberedCard(13, Colors.Blue);
+        var c1 = Card.NumberedCard(1, Colors.Blue);
+        var c2 = Card.NumberedCard(13, Colors.Yellow);
 
-        PlayTestCards(c3, c4, true);
+        PlayTestCards(c1, c2, true);
+    }
+
+    // Test sur l'atout (jaune) //
+
+    [Test]
+    public void IfTheTurnColorIsYellowRedCardsShouldNotWin()
+    {
+        var c1 = Card.NumberedCard(1, Colors.Yellow);
+        var c2 = Card.NumberedCard(13, Colors.Red);
+
+        PlayTestCards(c1, c2, true);
+    }
+
+    [Test]
+    public void IfTheTurnColorIsYellowBlueCardsShouldNotWin()
+    {
+        var c1 = Card.NumberedCard(1, Colors.Yellow);
+        var c2 = Card.NumberedCard(13, Colors.Blue);
+
+        PlayTestCards(c1, c2, true);
+    }
+
+    // Test de l'atout (noir) //
+        
+    [Test]
+    public void IfTheTurnColorIsBlackRedCardsShouldNotWin()
+    {
+        var c1 = Card.NumberedCard(1, Colors.Black);
+        var c2 = Card.NumberedCard(13, Colors.Red);
+
+        PlayTestCards(c1, c2, true);
     }
     
     [Test]
-    public void BlueCardsShouldNotWinIfTheTurnColorIsYellow()
+    public void IfTheTurnColorIsBlackBlueCardsShouldNotWin()
     {
-        var c3 = Card.NumberedCard(1, Colors.Yellow);
-        var c4 = Card.NumberedCard(13, Colors.Blue);
+        var c1 = Card.NumberedCard(1, Colors.Black);
+        var c2 = Card.NumberedCard(13, Colors.Blue);
 
-        PlayTestCards(c3, c4, true);
+        PlayTestCards(c1, c2, true);
     }
-
+    
     [Test]
-    public void YellowCardsShouldNotWinIfTheTurnColorIsRed()
+    public void IfTheTurnColorIsBlackYellowCardsShouldNotWin()
     {
-        var c3 = Card.NumberedCard(1, Colors.Red);
-        var c4 = Card.NumberedCard(13, Colors.Yellow);
+        var c1 = Card.NumberedCard(1, Colors.Black);
+        var c2 = Card.NumberedCard(13, Colors.Yellow);
 
-        PlayTestCards(c3, c4, true);
-    }
-
-    [Test]
-    public void YellowCardsShouldNotWinIfTheTurnColorIsBlue()
-    {
-        var c3 = Card.NumberedCard(1, Colors.Blue);
-        var c4 = Card.NumberedCard(13, Colors.Yellow);
-
-        PlayTestCards(c3, c4, true);
+        PlayTestCards(c1, c2, true);
     }
     
     // Test sur les cartes noires //
     
     [Test]
-    public void HighestBlackCardShouldWinEvenIfTheTurnColorIsNotBlack()
+    public void BlackCardsShouldWinEvenIfTheTurnColorIsRed()
     {
         var c1 = Card.NumberedCard(13, Colors.Red);
         var c2 = Card.NumberedCard(1, Colors.Black);
-        var c3 = Card.NumberedCard(2, Colors.Black);
+
+        PlayTestCards(c1, c2, false);
+    }
+    
+    [Test]
+    public void BlackCardsShouldWinEvenIfTheTurnColorIsBlue()
+    {
+        var c1 = Card.NumberedCard(13, Colors.Blue);
+        var c2 = Card.NumberedCard(1, Colors.Black);
+
+        PlayTestCards(c1, c2, false);
+    }
+    
+    [Test]
+    public void BlackCardsShouldWinEvenIfTheTurnColorIsYellow()
+    {
+        var c1 = Card.NumberedCard(13, Colors.Yellow);
+        var c2 = Card.NumberedCard(1, Colors.Black);
+
+        PlayTestCards(c1, c2, false);
+    }
+    
+    [Test]
+    public void HighestBlackCardShouldWinEvenIfTheTurnColorIsNotBlack()
+    {
+        // Cas où la carte plus haute est jouée en dernier
+        var c1 = Card.NumberedCard(13, Colors.Red);
+        var c2 = Card.NumberedCard(1, Colors.Black);
+        var c3 = Card.NumberedCard(5, Colors.Black);
 
         _p1.Hand.Add(c1);
         _p2.Hand.Add(c2);
@@ -165,6 +224,22 @@ public class FoldTests
         _fold.PlayCard(_p3, c3);
 
         Assert.AreEqual(_fold.GetWinner().Card, c3);
+        
+        // Cas où la carte plus haute est jouée avant une autre noire
+        ResetFold();
+        var c4 = Card.NumberedCard(13, Colors.Red);
+        var c5 = Card.NumberedCard(5, Colors.Black);
+        var c6 = Card.NumberedCard(1, Colors.Black);
+
+        _p1.Hand.Add(c4);
+        _p2.Hand.Add(c5);
+        _p3.Hand.Add(c6);
+
+        _fold.PlayCard(_p1, c4);
+        _fold.PlayCard(_p2, c5);
+        _fold.PlayCard(_p3, c6);
+
+        Assert.AreEqual(_fold.GetWinner().Card, c5);
     }
 
     // Tests des escapes //
