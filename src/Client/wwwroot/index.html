@@ -33,7 +33,20 @@
     <a class="reload" href="">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
-<script src="_framework/blazor.webassembly.js"></script>
+
+<script autostart="false" src="_framework/blazor.webassembly.js"></script>
+<script>
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function wait() {
+        await sleep(2300);
+        Blazor.start();
+    }
+
+    wait();
+</script>
 <script src="_content/MudBlazor/MudBlazor.min.js"></script>
 </body>
 
