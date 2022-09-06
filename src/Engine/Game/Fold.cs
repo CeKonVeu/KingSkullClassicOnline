@@ -87,8 +87,6 @@ public class Fold
                 }
             }
         }
-        //TODO WTF POURQUOI çA PASSE DANS LE THROW
-        Console.WriteLine(winningPlay.Card.Name);
         return winningPlay ?? throw new Exception("On sait pas coder.");
     }
 

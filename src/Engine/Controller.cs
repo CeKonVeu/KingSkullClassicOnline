@@ -21,7 +21,7 @@ public class Controller
         _view = view;
         var player = new Player(playerId, playerName);
         Players = new List<Player> { player };
-        Turn = 1;
+        Turn = 10;
         Deck = CreateDeck();
         _view.RoomCreated(roomName, player.Data);
         _rounds = new Round[Config.RoundsPerGame];
@@ -161,13 +161,14 @@ public class Controller
         {
             //TODO mettre à jour et envoyer les scores
             CurrentRound.EndRound();
-            var scores = new int[Players.Count];
-            for (var i = 0; i < Players.Count; ++i)
-            {
-                scores[i] = Players[i].GetVote(Turn)!.Total!.Value;
-            }
+            var scores = GetScores(Turn);
             _view.RoundEnded(scores);
             ++Turn;
+            if (Turn == Config.RoundsPerGame)
+            {
+                _view.GameEnded(GetScores(Turn),CurrentRound.CurrentFold.GetWinner().Player.Data.Name);
+                return;
+            }
             StartNextRound();
         }
         else
@@ -177,6 +178,16 @@ public class Controller
         }
     }
 
+    private int[] GetScores(int turn)
+    {
+        var scores = new int[Players.Count];
+        for (var i = 0; i < Players.Count; ++i)
+        {
+            scores[i] = Players[i].GetVote(turn)!.Total!.Value;
+        }
+        return scores;
+    }
+    
     public void SetVote(string playerId, int vote)
     {
         if (!_hasStarted || CurrentRound == null || CurrentRound.AreAllVotesIn()) return;
@@ -192,7 +203,7 @@ public class Controller
     public void StartGame()
     {
         // TODO nb joueurs
-        if (_hasStarted) return;
+        if (_hasStarted || Players.Count is < 1 or > Config.MaxPlayers) return;
 
         _hasStarted = true;
         _view.GameStarted();
@@ -207,7 +218,8 @@ public class Controller
         Console.WriteLine("Starting next round");
 
         CurrentRound = new Round(Turn, Players, Deck);
-
+        var players = CurrentRound.GetPlayersFromStarting();
+        _view.FoldStarted(players.Select(p => p.Data.Name).ToArray(),players.Select(p => p.GetVote(Turn)!.Voted).ToArray());
         foreach (var player in Players)
         {
             CurrentRound.DealCards(player);

@@ -32,8 +32,10 @@ public class SignalRView : IView
         await _hubContext.Clients.Group(_group).SendAsync(Events.CardPlayed, player.Id, card,  winnerName);
     }
 
-    public async Task GameEnded(string[] scores, string winner)
+    public async Task GameEnded(int[] scores, string winner)
     {
+        //TODO implement
+        //await _hubContext.Clients.Group(_group).SendAsync(Events.GameEnded, scores, winner);
         throw new NotImplementedException();
     }
 
@@ -75,6 +77,10 @@ public class SignalRView : IView
     public async Task RoundEnded(int[] scores)
     {
         await _hubContext.Clients.Group(_group).SendAsync(Events.RoundEnded, scores);
+    }
+    public async Task FoldStarted(string[] players, int[] scores)
+    {
+        await _hubContext.Clients.Group(_group).SendAsync(Events.FoldStarted,players,scores);
     }
 
     public async Task NotifyError(PlayerData player, string message)

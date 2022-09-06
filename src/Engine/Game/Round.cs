@@ -78,6 +78,18 @@ public class Round
     
     private static int NextIndexInCollection(int index, int count) => (index + 1) % count;
 
+    public Player[] GetPlayersFromStarting()
+    {
+        var players = new Player[_players.Count];
+        var tmpPlayer = _startingPlayer;
+        for (int i = 0; i < _players.Count; i++)
+        {
+            players[i] = _players[tmpPlayer];
+            tmpPlayer = NextIndexInCollection(tmpPlayer, _players.Count);
+        }
+        return players;
+    }
+    
     private static List<T> Shuffle<T>(IEnumerable<T> array)
     {
         var deck = array.ToList();
