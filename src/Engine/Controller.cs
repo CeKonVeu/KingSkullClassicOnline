@@ -155,17 +155,24 @@ public class Controller
 
         CurrentRound.Play(player, playedCard);
         _view.HandReceived(player.Data, player.Hand);
-        _view.CardPlayed(player.Data, card);
-
+        _view.CardPlayed(player.Data, card, CurrentRound.CurrentFold.GetWinner().Player.Data.Name);
+        CurrentRound.EndFold();
         if (CurrentRound.IsOver)
         {
             //TODO mettre à jour et envoyer les scores
-            _view.RoundEnded(new[] { "" });
+            CurrentRound.EndRound();
+            var scores = new int[Players.Count];
+            for (var i = 0; i < Players.Count; ++i)
+            {
+                scores[i] = Players[i].GetVote(Turn)!.Total!.Value;
+            }
+            _view.RoundEnded(scores);
             ++Turn;
             StartNextRound();
         }
         else
         {
+
             NotifyNextPlayer();
         }
     }

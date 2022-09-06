@@ -127,6 +127,19 @@
 
             _isMyTurn = true;
         });
+        
+        Connection.On(Events.RoundEnded, (int[] scores) =>
+        {
+            Console.WriteLine("Scores of this round :");
+            for (int i = 0; i < scores.Length; i++)
+            {
+                Console.WriteLine($"Player {i} : {scores[i]}");
+            }
+        });
+        Connection.On(Events.CardPlayed, (string player,string card,string winnerName) =>
+        {
+            Console.WriteLine($"{player} played {card} and winner is {winnerName}");
+        });
     }
 
     private async void CardClicked(string card)

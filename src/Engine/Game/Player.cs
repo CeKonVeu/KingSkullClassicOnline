@@ -61,4 +61,17 @@ public class Player
     {
         _votes[turn - 1] = new Vote(voted);
     }
+
+    public void SetTotal(int turn,int total)
+    {
+        int? score = 0;
+        if(turn > 1)
+            score = _votes[turn - 2]?.Total;
+        _votes[turn - 1]!.Total = total + score;
+    }
+    
+    public void AddActual(int turn)
+    {
+        _votes[turn - 1]!.Actual+=1;
+    }
 }
