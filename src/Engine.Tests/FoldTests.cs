@@ -6,8 +6,8 @@ namespace KingSkullClassicOnline.Engine.Tests;
 
 public class FoldTests
 {
-    private Fold _fold;
-    private Player _p1, _p2, _p3;
+    private Fold _fold = null!;
+    private Player _p1 = null!, _p2 = null!, _p3 = null!;
 
     // TODO : Tester la ScaryMary
 
@@ -573,7 +573,6 @@ public class FoldTests
         PlayTwoTestCards(c1, c2, true);
         ResetFold();
         PlayTwoTestCards(c2, c1, true);
-        ;
     }
 
     // Setup //
