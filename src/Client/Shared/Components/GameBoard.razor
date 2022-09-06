@@ -41,6 +41,7 @@
             <MudIconButton
                 Icon="@Icons.Filled.GridOn"
                 Variant="Variant.Filled"
+                OnClick="OpenScores"
                 Color="Color.Warning"
                 Size="Size.Large"/>
         </MudTooltip>
@@ -153,6 +154,12 @@
         _players[i] = t;
         Console.WriteLine(t.Item2.Item2);
         StateHasChanged();
+    }
+
+    private void OpenScores()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<Scores>("Tableau des scores", options);
     }
 
 }
