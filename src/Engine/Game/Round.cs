@@ -54,16 +54,7 @@ public class Round
     {
         CurrentFold.PlayCard(player, card);
         _currentPlayer = NextIndexInCollection(_currentPlayer, _players.Count);
-
-        if (_startingPlayer != _currentPlayer) return;
         
-        var (winner, _) = CurrentFold.GetWinner();
-        winner.AddActual(_turn);
-        _currentPlayer = _startingPlayer = _players.IndexOf(winner);
-        ++_currentFold;
-        if (_currentFold != _turn) return;
-        IsOver = true;
-        --_currentFold;
     }
 
     public void EndRound()
@@ -72,6 +63,17 @@ public class Round
         {
             ScoreCalculator.UpdateScore(p,_folds,_turn);
         }
+    }
+    
+    public void EndFold()
+    {
+        if (_startingPlayer != _currentPlayer) return;
+        var (winner, _) = CurrentFold.GetWinner();
+        winner.AddActual(_turn);
+        _currentPlayer = _startingPlayer = _players.IndexOf(winner);
+        ++_currentFold;
+        if (_currentFold != _turn) return;
+        IsOver = true;
     }
     
     private static int NextIndexInCollection(int index, int count) => (index + 1) % count;

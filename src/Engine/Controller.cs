@@ -155,7 +155,8 @@ public class Controller
 
         CurrentRound.Play(player, playedCard);
         _view.HandReceived(player.Data, player.Hand);
-        
+        _view.CardPlayed(player.Data, card, CurrentRound.CurrentFold.GetWinner().Player.Data.Name);
+        CurrentRound.EndFold();
         if (CurrentRound.IsOver)
         {
             //TODO mettre à jour et envoyer les scores
@@ -171,7 +172,7 @@ public class Controller
         }
         else
         {
-            _view.CardPlayed(player.Data, card, CurrentRound.CurrentFold.GetWinner().Player.Data.Name);
+
             NotifyNextPlayer();
         }
     }
