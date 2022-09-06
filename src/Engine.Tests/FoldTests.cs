@@ -120,8 +120,8 @@ public class FoldTests
     [Test]
     public void HighestRedCardShouldWinIfTheTurnColorIsRed()
     {
-        var c1 = Card.NumberedCard(13, Colors.Red);
-        var c2 = Card.NumberedCard(1, Colors.Red);
+        var c1 = Card.NumberedCard(13, Color.Red);
+        var c2 = Card.NumberedCard(1, Color.Red);
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
@@ -129,8 +129,8 @@ public class FoldTests
     [Test]
     public void HighestBlueCardShouldWinIfTheTurnColorIsBlue()
     {
-        var c1 = Card.NumberedCard(13, Colors.Blue);
-        var c2 = Card.NumberedCard(1, Colors.Blue);
+        var c1 = Card.NumberedCard(13, Color.Blue);
+        var c2 = Card.NumberedCard(1, Color.Blue);
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
@@ -138,8 +138,8 @@ public class FoldTests
     [Test]
     public void HighestYellowCardShouldWinIfTheTurnColorIsYellow()
     {
-        var c1 = Card.NumberedCard(13, Colors.Yellow);
-        var c2 = Card.NumberedCard(1, Colors.Yellow);
+        var c1 = Card.NumberedCard(13, Color.Yellow);
+        var c2 = Card.NumberedCard(1, Color.Yellow);
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
@@ -147,8 +147,8 @@ public class FoldTests
     [Test]
     public void HighestBlackCardShouldWinIfTheTurnColorIsBlack()
     {
-        var c1 = Card.NumberedCard(13, Colors.Black);
-        var c2 = Card.NumberedCard(1, Colors.Black);
+        var c1 = Card.NumberedCard(13, Color.Black);
+        var c2 = Card.NumberedCard(1, Color.Black);
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
@@ -158,8 +158,8 @@ public class FoldTests
     [Test]
     public void IfTheTurnColorIsRedBlueCardsShouldNotWin()
     {
-        var c1 = Card.NumberedCard(1, Colors.Red);
-        var c2 = Card.NumberedCard(13, Colors.Blue);
+        var c1 = Card.NumberedCard(1, Color.Red);
+        var c2 = Card.NumberedCard(13, Color.Blue);
 
 
         PlayTwoTestCards(c1, c2, true);
@@ -168,8 +168,8 @@ public class FoldTests
     [Test]
     public void IfTheTurnColorIsRedYellowCardsShouldNotWin()
     {
-        var c1 = Card.NumberedCard(1, Colors.Red);
-        var c2 = Card.NumberedCard(13, Colors.Yellow);
+        var c1 = Card.NumberedCard(1, Color.Red);
+        var c2 = Card.NumberedCard(13, Color.Yellow);
 
         PlayTwoTestCards(c1, c2, true);
     }
@@ -179,8 +179,8 @@ public class FoldTests
     [Test]
     public void IfTheTurnColorIsBlueRedCardsShouldNotWin()
     {
-        var c1 = Card.NumberedCard(1, Colors.Blue);
-        var c2 = Card.NumberedCard(13, Colors.Red);
+        var c1 = Card.NumberedCard(1, Color.Blue);
+        var c2 = Card.NumberedCard(13, Color.Red);
 
         PlayTwoTestCards(c1, c2, true);
     }
@@ -188,8 +188,8 @@ public class FoldTests
     [Test]
     public void IfTheTurnColorIsBlueYellowCardsShouldNotWin()
     {
-        var c1 = Card.NumberedCard(1, Colors.Blue);
-        var c2 = Card.NumberedCard(13, Colors.Yellow);
+        var c1 = Card.NumberedCard(1, Color.Blue);
+        var c2 = Card.NumberedCard(13, Color.Yellow);
 
         PlayTwoTestCards(c1, c2, true);
     }
@@ -199,8 +199,8 @@ public class FoldTests
     [Test]
     public void IfTheTurnColorIsYellowRedCardsShouldNotWin()
     {
-        var c1 = Card.NumberedCard(1, Colors.Yellow);
-        var c2 = Card.NumberedCard(13, Colors.Red);
+        var c1 = Card.NumberedCard(1, Color.Yellow);
+        var c2 = Card.NumberedCard(13, Color.Red);
 
         PlayTwoTestCards(c1, c2, true);
     }
@@ -208,8 +208,8 @@ public class FoldTests
     [Test]
     public void IfTheTurnColorIsYellowBlueCardsShouldNotWin()
     {
-        var c1 = Card.NumberedCard(1, Colors.Yellow);
-        var c2 = Card.NumberedCard(13, Colors.Blue);
+        var c1 = Card.NumberedCard(1, Color.Yellow);
+        var c2 = Card.NumberedCard(13, Color.Blue);
 
         PlayTwoTestCards(c1, c2, true);
     }
@@ -219,8 +219,8 @@ public class FoldTests
     [Test]
     public void IfTheTurnColorIsBlackRedCardsShouldNotWin()
     {
-        var c1 = Card.NumberedCard(1, Colors.Black);
-        var c2 = Card.NumberedCard(13, Colors.Red);
+        var c1 = Card.NumberedCard(1, Color.Black);
+        var c2 = Card.NumberedCard(13, Color.Red);
 
         PlayTwoTestCards(c1, c2, true);
     }
@@ -228,8 +228,8 @@ public class FoldTests
     [Test]
     public void IfTheTurnColorIsBlackBlueCardsShouldNotWin()
     {
-        var c1 = Card.NumberedCard(1, Colors.Black);
-        var c2 = Card.NumberedCard(13, Colors.Blue);
+        var c1 = Card.NumberedCard(1, Color.Black);
+        var c2 = Card.NumberedCard(13, Color.Blue);
 
         PlayTwoTestCards(c1, c2, true);
     }
@@ -237,8 +237,8 @@ public class FoldTests
     [Test]
     public void IfTheTurnColorIsBlackYellowCardsShouldNotWin()
     {
-        var c1 = Card.NumberedCard(1, Colors.Black);
-        var c2 = Card.NumberedCard(13, Colors.Yellow);
+        var c1 = Card.NumberedCard(1, Color.Black);
+        var c2 = Card.NumberedCard(13, Color.Yellow);
 
         PlayTwoTestCards(c1, c2, true);
     }
@@ -248,8 +248,8 @@ public class FoldTests
     [Test]
     public void BlackCardsShouldWinEvenIfTheTurnColorIsRed()
     {
-        var c1 = Card.NumberedCard(13, Colors.Red);
-        var c2 = Card.NumberedCard(1, Colors.Black);
+        var c1 = Card.NumberedCard(13, Color.Red);
+        var c2 = Card.NumberedCard(1, Color.Black);
 
         PlayTwoTestCards(c1, c2, false);
     }
@@ -257,8 +257,8 @@ public class FoldTests
     [Test]
     public void BlackCardsShouldWinEvenIfTheTurnColorIsBlue()
     {
-        var c1 = Card.NumberedCard(13, Colors.Blue);
-        var c2 = Card.NumberedCard(1, Colors.Black);
+        var c1 = Card.NumberedCard(13, Color.Blue);
+        var c2 = Card.NumberedCard(1, Color.Black);
 
         PlayTwoTestCards(c1, c2, false);
     }
@@ -266,8 +266,8 @@ public class FoldTests
     [Test]
     public void BlackCardsShouldWinEvenIfTheTurnColorIsYellow()
     {
-        var c1 = Card.NumberedCard(13, Colors.Yellow);
-        var c2 = Card.NumberedCard(1, Colors.Black);
+        var c1 = Card.NumberedCard(13, Color.Yellow);
+        var c2 = Card.NumberedCard(1, Color.Black);
 
         PlayTwoTestCards(c1, c2, false);
     }
@@ -275,9 +275,9 @@ public class FoldTests
     [Test]
     public void HighestBlackCardShouldWinEvenIfTheTurnColorIsNotBlack()
     {
-        var c1 = Card.NumberedCard(5, Colors.Black);
-        var c2 = Card.NumberedCard(1, Colors.Black);
-        var c3 = Card.NumberedCard(13, Colors.Red);
+        var c1 = Card.NumberedCard(5, Color.Black);
+        var c2 = Card.NumberedCard(1, Color.Black);
+        var c3 = Card.NumberedCard(13, Color.Red);
         
         PlayThreeTestCardsBotsWays(c1, c2, c3);
     }
@@ -296,7 +296,7 @@ public class FoldTests
     [Test]
     public void ABlueCardShouldWinAgainstAnEscape()
     {
-        var c1 = Card.NumberedCard(1, Colors.Blue);
+        var c1 = Card.NumberedCard(1, Color.Blue);
         var c2 = Card.Escape();
 
         PlayTwoTestCardsBothWays(c1, c2);
@@ -305,7 +305,7 @@ public class FoldTests
     [Test]
     public void AYellowCardShouldWinAgainstAnEscape()
     {
-        var c1 = Card.NumberedCard(1, Colors.Yellow);
+        var c1 = Card.NumberedCard(1, Color.Yellow);
         var c2 = Card.Escape();
 
         PlayTwoTestCardsBothWays(c1, c2);
@@ -314,7 +314,7 @@ public class FoldTests
     [Test]
     public void ABlackCardShouldWinAgainstAnEscape()
     {
-        var c1 = Card.NumberedCard(1, Colors.Black);
+        var c1 = Card.NumberedCard(1, Color.Black);
         var c2 = Card.Escape();
 
         PlayTwoTestCardsBothWays(c1, c2);
@@ -335,7 +335,7 @@ public class FoldTests
     public void AMermaidShouldWinAgainstRedCards()
     {
         var c1 = Card.Mermaid();
-        var c2 = Card.NumberedCard(13, Colors.Red);
+        var c2 = Card.NumberedCard(13, Color.Red);
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
@@ -344,7 +344,7 @@ public class FoldTests
     public void AMermaidShouldWinAgainstBlueCards()
     {
         var c1 = Card.Mermaid();
-        var c2 = Card.NumberedCard(13, Colors.Blue);
+        var c2 = Card.NumberedCard(13, Color.Blue);
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
@@ -353,7 +353,7 @@ public class FoldTests
     public void AMermaidShouldWinAgainstYellowCards()
     {
         var c1 = Card.Mermaid();
-        var c2 = Card.NumberedCard(13, Colors.Yellow);
+        var c2 = Card.NumberedCard(13, Color.Yellow);
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
@@ -362,7 +362,7 @@ public class FoldTests
     public void AMermaidShouldWinAgainstBlackCards()
     {
         var c1 = Card.Mermaid();
-        var c2 = Card.NumberedCard(13, Colors.Black);
+        var c2 = Card.NumberedCard(13, Color.Black);
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
@@ -382,7 +382,7 @@ public class FoldTests
     public void APirateShouldWinAgainstRedCards()
     {
         var c1 = Card.Pirate();
-        var c2 = Card.NumberedCard(13, Colors.Red);
+        var c2 = Card.NumberedCard(13, Color.Red);
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
@@ -391,7 +391,7 @@ public class FoldTests
     public void APirateShouldWinAgainstBlueCards()
     {
         var c1 = Card.Pirate();
-        var c2 = Card.NumberedCard(13, Colors.Blue);
+        var c2 = Card.NumberedCard(13, Color.Blue);
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
@@ -400,7 +400,7 @@ public class FoldTests
     public void APirateShouldWinAgainstYellowCards()
     {
         var c1 = Card.Pirate();
-        var c2 = Card.NumberedCard(13, Colors.Yellow);
+        var c2 = Card.NumberedCard(13, Color.Yellow);
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
@@ -409,7 +409,7 @@ public class FoldTests
     public void APirateShouldWinAgainstBlackCards()
     {
         var c1 = Card.Pirate();
-        var c2 = Card.NumberedCard(13, Colors.Black);
+        var c2 = Card.NumberedCard(13, Color.Black);
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
@@ -438,7 +438,7 @@ public class FoldTests
     public void ASkullKingShouldWinAgainstRedCards()
     {
         var c1 = Card.SkullKing();
-        var c2 = Card.NumberedCard(13, Colors.Red);
+        var c2 = Card.NumberedCard(13, Color.Red);
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
@@ -447,7 +447,7 @@ public class FoldTests
     public void ASkullKingShouldWinAgainstBlueCards()
     {
         var c1 = Card.SkullKing();
-        var c2 = Card.NumberedCard(13, Colors.Blue);
+        var c2 = Card.NumberedCard(13, Color.Blue);
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
@@ -456,7 +456,7 @@ public class FoldTests
     public void ASkullKingShouldWinAgainstYellowCards()
     {
         var c1 = Card.SkullKing();
-        var c2 = Card.NumberedCard(13, Colors.Yellow);
+        var c2 = Card.NumberedCard(13, Color.Yellow);
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
@@ -465,7 +465,7 @@ public class FoldTests
     public void ASkullKingShouldWinAgainstBlackCards()
     {
         var c1 = Card.SkullKing();
-        var c2 = Card.NumberedCard(13, Colors.Black);
+        var c2 = Card.NumberedCard(13, Color.Black);
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
