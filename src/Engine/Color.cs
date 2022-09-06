@@ -1,6 +1,6 @@
 ﻿namespace KingSkullClassicOnline.Engine;
 
-public enum Colors
+public enum Color
 {
     Yellow,
     Blue,

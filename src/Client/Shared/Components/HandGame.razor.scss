@@ -1,5 +1,5 @@
 ﻿::deep .card {
-  max-width: 100px;
+  max-width: 150px;
   position: relative;
   top: 0;
   transition: 0.3s;
@@ -16,7 +16,7 @@
   min-width: 1px;
 
   &:last-child {
-    width: 100px;
+    width: 150px;
   }
 
   &.disabled {

@@ -3,15 +3,27 @@
 /// <summary>
 ///     Carte de jeu
 /// </summary>
-public abstract class Card
+public partial class Card
 {
+    private bool Equals(Card other)
+    {
+        return Color == other.Color && Name == other.Name && Value == other.Value;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        return obj.GetType() == GetType() && Equals((Card)obj);
+    }
+
     /// <summary>
     ///     constructeur
     /// </summary>
     /// <param name="value">valeur de la carte</param>
     /// <param name="name"></param>
     /// <param name="color"></param>
-    protected Card(int value, string name, Colors color)
+    private Card(int value, string name, Color color = Engine.Color.None)
     {
         Color = color;
         Name = name;
@@ -21,8 +33,8 @@ public abstract class Card
     /// <summary>
     ///     couleur de la carte
     /// </summary>
-    public Colors Color { get; }
-
+    public Color Color { get; }
+    
     /// <summary>
     ///     nom représentant la carte
     /// </summary>
@@ -32,18 +44,6 @@ public abstract class Card
     ///     valeur de la carte
     /// </summary>
     public int Value { get; }
-
-    private bool Equals(Card other)
-    {
-        return Color == other.Color && Value == other.Value && Name == other.Name;
-    }
-
-    public override bool Equals(object? obj)
-    {
-        if (ReferenceEquals(null, obj)) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        return obj.GetType() == GetType() && Equals((Card)obj);
-    }
 
     public override int GetHashCode()
     {

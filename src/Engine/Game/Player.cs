@@ -21,7 +21,7 @@ public class Player
 
     public List<Card> Hand { get; internal set; }
 
-    private bool CheckIfCardRespectsRule(Colors TurnColor)
+    private bool CheckIfCardRespectsRule(Color turnColor)
     {
         return true;
         // var temp = false;
@@ -52,7 +52,7 @@ public class Player
         return _votes[turn - 1];
     }
 
-    public int PlayCard(Colors turnColor)
+    public int PlayCard(Color turnColor)
     {
         return 1;
     }
