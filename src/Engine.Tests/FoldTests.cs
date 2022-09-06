@@ -63,6 +63,24 @@ public class FoldTests
     }
 
     [Test]
+    public void TheBlueCardWithTheHighestValueShouldWinIfTheTurnColorIsBlue()
+    {
+        var c1 = Card.NumberedCard(13, Colors.Blue);
+        var c2 = Card.NumberedCard(1, Colors.Blue);
+
+        PlayTestCardsBothWays(c1, c2);
+    }
+    
+    [Test]
+    public void TheYellowCardWithTheHighestValueShouldWinIfTheTurnColorIsYellow()
+    {
+        var c1 = Card.NumberedCard(13, Colors.Yellow);
+        var c2 = Card.NumberedCard(1, Colors.Yellow);
+
+        PlayTestCardsBothWays(c1, c2);
+    }
+
+    [Test]
     public void OnlyNumberedCardsOfTheTurnColorShouldWin()
     {
         var c1 = Card.NumberedCard(1, Colors.Red);
