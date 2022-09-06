@@ -12,8 +12,8 @@
 <PageTitle>Jeu</PageTitle>
 
 <div class="relative">
-    <div class="d-inline-flex parchment">
-        <div class="parchment-bg"></div>
+    <div class="d-inline-flex parchment-game">
+        <div class="parchment-bg-game"></div>
         <MudText
             Class="pa-4 rounds"
             Typo="Typo.h3"
@@ -48,8 +48,8 @@
         </MudTooltip>
     </MudStack>
 
-    <div class="d-flex justify-space-around flex-wrap mt-15 gap-4 pl-6 pr-6 parchment pt-4">
-        <div class="parchment-bg board"></div>
+    <div class="d-flex justify-space-around flex-wrap mt-15 gap-4 pl-6 pr-6 parchment-game pt-4">
+        <div class="parchment-bg-game board"></div>
 
         @{ var i = 0; }
         @foreach (var player in _players)
@@ -67,11 +67,11 @@
                 @{
                     if (i1 % 2 == 0)
                     {
-                        <Card CardName="@player.Item2.Item1" Class="@($"oui {(player.Item2.Item2 ? "winning" : "")}")" OnCardClick="@(_ => Test(i1))"/>
+                        <Card CardName="@player.Item2.Item1" Class="@($"player-card {(player.Item2.Item2 ? "winning" : "")}")" OnCardClick="@(_ => Test(i1))"/>
                     }
                     else
                     {
-                        <Card CardName="Back" Class="@($"oui back {(player.Item2.Item2 ? "winning" : "")}")" OnCardClick="@(_ => Test(i1))"/>
+                        <Card CardName="Back" Class="@($"player-card back {(player.Item2.Item2 ? "winning" : "")}")" OnCardClick="@(_ => Test(i1))"/>
                     }
 
                 }

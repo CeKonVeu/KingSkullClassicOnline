@@ -18,7 +18,7 @@
   min-height: 600px;
 }
 
-::deep .oui {
+::deep .player-card {
   width: 150px;
   transition: all 0.3s ease-in-out;
 
@@ -35,7 +35,7 @@
   text-align: center;
 }
 
-::deep .parchment-bg {
+::deep .parchment-bg-game {
   position: absolute;
   display: flex;
   width: 110%;
@@ -58,7 +58,7 @@
   }
 }
 
-::deep .parchment {
+::deep .parchment-game {
   position: relative;
   z-index: 10;
 }
