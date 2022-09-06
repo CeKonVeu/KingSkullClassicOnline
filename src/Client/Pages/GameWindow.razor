@@ -1,75 +1,25 @@
-@page "/game"
+@page "/game2"
+@using KingSkullClassicOnline.Client.Shared.Components
 
 @inject IDialogService DialogService
 
-<PageTitle>Game @roomName</PageTitle>
+<PageTitle>Games</PageTitle>
 
-<MudStack Row="true">
-    <MudPaper
-        Class="pa-6 ma-2 object-left">
-        <MudText
-            Typo="Typo.h3"
-            Align="Align.Left">
-            <b>@actualFold / @actualRound</b>
-        </MudText>
-    </MudPaper>
-
-    <MudPaper
-        Class="pa-6 ma-2 object-top">
-        <MudTooltip
-            Text="Règles"
-            Duration="1000">
-            <MudIconButton
-                Href="https://www.schmidtspiele.de/files/Produkte/7/75024%20-%20Skull%20King/75024_Skull_King_DE_FR_IT_GB.pdf#page=3"
-                Target="_blank"
-                Icon="@Icons.Filled.Help"
-                Variant="Variant.Filled"
-                Color="Color.Warning"
-                Size="Size.Large"/>
-        </MudTooltip>
-
-        <MudTooltip
-            Text="Scores"
-            Duration="1000">
-            <MudIconButton
-                @onclick="OpenScoresDialog"
-                Icon="@Icons.Filled.GridOn"
-                Variant="Variant.Filled"
-                Color="Color.Warning"
-                Size="Size.Large"/>
-        </MudTooltip>
-
-        @* Bouton de debug -> à dégager *@
-        <MudTooltip
-            Text="Vote"
-            Duration="1000">
-            <MudIconButton
-                @onclick="OpenVoteDialog"
-                Icon="@Icons.Filled.HowToVote"
-                Variant="Variant.Filled"
-                Color="Color.Warning"
-                Size="Size.Large"/>
-        </MudTooltip>
-    </MudPaper>
-</MudStack>
+<GameBoard IsVisible="true" Cards="_cards"/>
 
 @code {
-    public string roomName = "Amogus";
-    public int actualFold = 2;
-    public int actualRound = 9;
+    
 
-    // Pop-up des votes
-    private void OpenVoteDialog()
+    private readonly List<string> _cards = new()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<VotePopup>("Votations", options);
-    }
+        "Red_2", "Blue_1", "Pirate_1", "ScaryMary", "Escape"
+    };
 
     // Pop-up des scores
     private void OpenScoresDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<ScorePopup>("Tableau des scores", options);
+    // DialogService.Show<ScorePopup>("Tableau des scores", options);
     }
 
 }

@@ -11,18 +11,90 @@
 
 <PageTitle>Jeu</PageTitle>
 
-<HandGame Cards="_cards" OnCardClick="CardClicked"/>
+<div class="relative">
+    <MudPaper
+        Class="pa-4 d-inline-flex rounds">
+        <MudText
+            Typo="Typo.h3"
+            Align="Align.Left">
+            0 / 5
+        </MudText>
+    </MudPaper>
+    <MudStack Class="buttons">
+        <MudTooltip
+            Text="Règles"
+            Duration="1000"
+            Placement="Placement.Left">
+            <MudIconButton
+                Href="https://www.schmidtspiele.de/files/Produkte/7/75024%20-%20Skull%20King/75024_Skull_King_DE_FR_IT_GB.pdf#page=3"
+                Target="_blank"
+                Icon="@Icons.Filled.Help"
+                Variant="Variant.Filled"
+                Color="Color.Warning"
+                Size="Size.Large"/>
+        </MudTooltip>
+
+        <MudTooltip
+            Text="Scores"
+            Duration="1000"
+            Placement="Placement.Left">
+            <MudIconButton
+                Icon="@Icons.Filled.GridOn"
+                Variant="Variant.Filled"
+                Color="Color.Warning"
+                Size="Size.Large"/>
+        </MudTooltip>
+    </MudStack>
+    <div class="d-flex justify-center gap-4 flex-wrap">
+        @{ var i = 0; }
+        @foreach (var player in _players)
+        {
+            <div>
+                <MudText Align="Align.Center">@player.Item3.Item1 / @player.Item3.Item2</MudText>
+
+                @{
+                    var i1 = i;
+                }
+                <MudPaper Class="pl-3 pr-3 pt-2 pb-1 rounds center" Outlined="true">
+                    <MudText Typo="Typo.h5" Class="mb-2">
+                        @player.Item1
+                    </MudText>
+                    @{
+                        if (i1 % 2 == 0)
+                        {
+                            <Card CardName="@player.Item2.Item1" Class="@($"oui {(player.Item2.Item2 ? "winning" : "")}")" OnCardClick="@(_ => Test(i1))"/>
+                        }
+                        else
+                        {
+                            <Card CardName="Back" Class="@($"oui back {(player.Item2.Item2 ? "winning" : "")}")" OnCardClick="@(_ => Test(i1))"/>
+                        }
+
+                    }
+                </MudPaper>
+
+            </div>
+            {
+                i++;
+            }
+        }
+    </div>
+    <HandGame Class="hand" Cards="Cards" OnCardClick="CardClicked"/>
+</div>
 
 @code {
+    private string _testStr = "oui";
 
     [Parameter]
-    public HubConnection Connection { get; set; } = null!;
+    public HubConnection Connection { get; set; }
 
     [Parameter]
     public bool IsVisible { get; set; }
 
     [Parameter]
     public bool IsMyTurn { get; set; }
+
+    [Parameter]
+    public ICollection<string> Cards { get; set; }
 
     private async Task<int> AskVote(int maxVote)
     {
@@ -35,6 +107,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        if (Connection == null) return;
+
         Connection.On(Events.HandChanged, (List<string> newHand) =>
         {
             _cards = newHand;
@@ -48,17 +122,37 @@
         });
         Connection.On(Events.MustPlay, (IEnumerable<string> playableCards) =>
         {
-            //TODO : sucess
+    //TODO : sucess
             Console.WriteLine("Must play with available cards : " + string.Join(", ", playableCards));
-            
+
             IsMyTurn = true;
         });
     }
 
     private async void CardClicked(string card)
     {
-        await Connection.SendAsync(Events.PlayCard, card);
+        Console.WriteLine("Card clicked : " + card);
+    // await Connection.SendAsync(Events.PlayCard, card);
     }
 
     private ICollection<string> _cards = new List<string>();
+
+    private List<(string, (string, bool), (int, int))> _players = new()
+    {
+        ("Player 1", ("Red_2", false), (0, 5)),
+        ("Player 2", ("Blue_5", false), (5, 5)),
+        ("Player 3", ("Black_3", false), (7, 10)),
+        ("Player 4", ("SkullKing", false), (4, 4)),
+        ("Player 4", ("SkullKing", false), (4, 4))
+    };
+
+    private void Test(int i)
+    {
+        var t = _players[i];
+        t.Item2.Item2 = !t.Item2.Item2;
+        _players[i] = t;
+        Console.WriteLine(t.Item2.Item2);
+        StateHasChanged();
+    }
+
 }

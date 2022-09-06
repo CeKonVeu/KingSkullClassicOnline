@@ -1,0 +1,1 @@
+::deep .buttons{position:absolute;top:0;right:0}::deep .hand{position:absolute;bottom:0}.relative{height:100%;min-height:600px}::deep .oui{width:70px;transition:all 0.3s ease-in-out}::deep .oui.winning{box-shadow:0 0 10px 2px green}::deep .oui.back{opacity:0.5}::deep .center{text-align:center}
