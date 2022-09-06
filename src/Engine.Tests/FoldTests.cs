@@ -486,7 +486,46 @@ public class FoldTests
         var c1 = Card.Mermaid();
         var c2 = Card.SkullKing();
 
-        PlayTestCardsBothWays(c1, c2);
+        PlayTwoTestCardsBothWays(c1, c2);
+    }
+
+    [Test]
+    public void TheFirstMermaidShouldWinAgainstASkullKing()
+    {
+        var c1 = Card.Mermaid();
+        var c2 = Card.Mermaid();
+        var c3 = Card.SkullKing();
+        
+        // Sière 1 gagne
+        PlayThreeTestCards(c1, c2, c3);
+        CheckThreeTestCards(c1, c2, c3);
+        ResetFold();
+        PlayThreeTestCards(c1, c3, c2);
+        CheckThreeTestCards(c1, c2, c3);
+        ResetFold();
+        PlayThreeTestCards(c3, c1, c2);
+        CheckThreeTestCards(c1, c2, c3);
+        ResetFold();
+
+        // Sirène 2 gagne
+        PlayThreeTestCards(c2, c1, c3);
+        CheckThreeTestCards(c2, c1, c3);
+        ResetFold();
+        PlayThreeTestCards(c2, c3, c1);
+        CheckThreeTestCards(c2, c1, c3);
+        ResetFold();
+        PlayThreeTestCards(c3, c2, c1);
+        CheckThreeTestCards(c2, c1, c3);
+    }
+
+    [Test]
+    public void AMermaidShouldWinAgainstAPirateIfThereIsASkullKing()
+    {
+        var c1 = Card.Mermaid();
+        var c2 = Card.Pirate();
+        var c3 = Card.SkullKing();
+
+        PlayThreeTestCardsBotsWays(c1, c2, c3);
     }
 
     // Tests d'égalités //
