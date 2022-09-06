@@ -42,13 +42,17 @@
                 Commencer la partie
             </MudButton>
 
-            <MudButton
-                OnClick="OpenRulesDialog"
-                Variant="Variant.Filled"
-                Color="Color.Primary"
-                FullWidth="true">
-                Modifier les règles
-            </MudButton>
+            <MudStack Row="true">
+                <MudButton
+                    OnClick="OpenRulesDialog"
+                    Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    FullWidth="true"
+                    Disabled="true">
+                    Modifier les règles
+                </MudButton>
+                <RulesButton/>
+            </MudStack>
         }
 
         <MudTextField
@@ -93,7 +97,7 @@
     private void OpenRulesDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<Rules>("Modifier les règles", options);
+        DialogService.Show<RulesPopup>("Modifier les règles", options);
     }
 
     protected override async Task OnInitializedAsync()

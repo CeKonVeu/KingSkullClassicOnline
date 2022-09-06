@@ -22,18 +22,7 @@
         </MudText>
     </div>
     <MudStack Class="buttons">
-        <MudTooltip
-            Text="Règles"
-            Duration="1000"
-            Placement="Placement.Left">
-            <MudIconButton
-                Href="https://www.schmidtspiele.de/files/Produkte/7/75024%20-%20Skull%20King/75024_Skull_King_DE_FR_IT_GB.pdf#page=3"
-                Target="_blank"
-                Icon="@Icons.Filled.Help"
-                Variant="Variant.Filled"
-                Color="Color.Secondary"
-                Size="Size.Large"/>
-        </MudTooltip>
+        <RulesButton/>
 
         <MudTooltip
             Text="Scores"
@@ -116,7 +105,7 @@
     {
         var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, DisableBackdropClick = true };
         var parameters = new DialogParameters { ["MaxValue"] = maxVote };
-        var dialog = DialogService.Show<Vote>("Votez !", parameters, options);
+        var dialog = DialogService.Show<VotePopup>("Votez !", parameters, options);
         var result = await dialog.Result;
         return (int)result.Data;
     }
@@ -174,7 +163,7 @@
     private void OpenScores()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<Scores>("Tableau des scores", options);
+        DialogService.Show<ScoresPopup>("Tableau des scores", options);
     }
 
 }
