@@ -245,14 +245,32 @@ public class FoldTests
     // Tests des escapes //
 
     [Test]
-    public void AColoredCardShouldWinAgainstAnEscape()
+    public void ARedCardShouldWinAgainstAnEscape()
     {
         var c1 = Card.NumberedCard(1, Colors.Red);
         var c2 = Card.Escape();
 
         PlayTestCardsBothWays(c1, c2);
     }
+    
+    [Test]
+    public void ABlueCardShouldWinAgainstAnEscape()
+    {
+        var c1 = Card.NumberedCard(1, Colors.Blue);
+        var c2 = Card.Escape();
 
+        PlayTestCardsBothWays(c1, c2);
+    }
+
+    [Test]
+    public void AYellowCardShouldWinAgainstAnEscape()
+    {
+        var c1 = Card.NumberedCard(1, Colors.Yellow);
+        var c2 = Card.Escape();
+
+        PlayTestCardsBothWays(c1, c2);
+    }
+    
     [Test]
     public void ABlackCardShouldWinAgainstAnEscape()
     {
@@ -261,7 +279,9 @@ public class FoldTests
 
         PlayTestCardsBothWays(c1, c2);
     }
-    
+
+    // Test des sirènes //
+
     [Test]
     public void AMermaidShouldWinAgainstAnEscape()
     {
@@ -270,6 +290,44 @@ public class FoldTests
 
         PlayTestCardsBothWays(c1, c2);
     }
+    
+    [Test]
+    public void AMermaidShouldWinAgainstRedCards()
+    {
+        var c1 = Card.Mermaid();
+        var c2 = Card.NumberedCard(13, Colors.Red);
+
+        PlayTestCardsBothWays(c1, c2);
+    }
+    
+    [Test]
+    public void AMermaidShouldWinAgainstBlueCards()
+    {
+        var c1 = Card.Mermaid();
+        var c2 = Card.NumberedCard(13, Colors.Blue);
+
+        PlayTestCardsBothWays(c1, c2);
+    }
+    
+    [Test]
+    public void AMermaidShouldWinAgainstYellowCards()
+    {
+        var c1 = Card.Mermaid();
+        var c2 = Card.NumberedCard(13, Colors.Yellow);
+
+        PlayTestCardsBothWays(c1, c2);
+    }
+    
+    [Test]
+    public void AMermaidShouldWinAgainstBlackCards()
+    {
+        var c1 = Card.Mermaid();
+        var c2 = Card.NumberedCard(13, Colors.Black);
+
+        PlayTestCardsBothWays(c1, c2);
+    }
+    
+    // Test des pirates //
     
     [Test]
     public void APirateShouldWinAgainstAnEscape()
@@ -281,27 +339,41 @@ public class FoldTests
     }
 
     [Test]
-    public void ASkullKingShouldWinAgainstAnEscape()
+    public void APirateShouldWinAgainstRedCards()
     {
-        var c1 = Card.SkullKing();
-        var c2 = Card.Escape();
-
-        PlayTestCardsBothWays(c1, c2);
-    }
-    
-    // Test des sirènes //
-
-    [Test]
-    public void AMermaidShouldWinAgainstColoredCards()
-    {
-        var c1 = Card.Mermaid();
+        var c1 = Card.Pirate();
         var c2 = Card.NumberedCard(13, Colors.Red);
 
         PlayTestCardsBothWays(c1, c2);
     }
     
-    // Test des pirates //
+    [Test]
+    public void APirateShouldWinAgainstBlueCards()
+    {
+        var c1 = Card.Pirate();
+        var c2 = Card.NumberedCard(13, Colors.Blue);
 
+        PlayTestCardsBothWays(c1, c2);
+    }
+    
+    [Test]
+    public void APirateShouldWinAgainstYellowCards()
+    {
+        var c1 = Card.Pirate();
+        var c2 = Card.NumberedCard(13, Colors.Yellow);
+
+        PlayTestCardsBothWays(c1, c2);
+    }
+    
+    [Test]
+    public void APirateShouldWinAgainstBlackCards()
+    {
+        var c1 = Card.Pirate();
+        var c2 = Card.NumberedCard(13, Colors.Black);
+
+        PlayTestCardsBothWays(c1, c2);
+    }
+    
     [Test]
     public void APirateShouldWinAgainstAMermaid()
     {
@@ -314,6 +386,51 @@ public class FoldTests
     // Test du Skull King //
 
     [Test]
+    public void ASkullKingShouldWinAgainstAnEscape()
+    {
+        var c1 = Card.SkullKing();
+        var c2 = Card.Escape();
+
+        PlayTestCardsBothWays(c1, c2);
+    }
+    
+    [Test]
+    public void ASkullKingShouldWinAgainstRedCards()
+    {
+        var c1 = Card.SkullKing();
+        var c2 = Card.NumberedCard(13, Colors.Red);
+
+        PlayTestCardsBothWays(c1, c2);
+    }
+    
+    [Test]
+    public void ASkullKingShouldWinAgainstBlueCards()
+    {
+        var c1 = Card.SkullKing();
+        var c2 = Card.NumberedCard(13, Colors.Blue);
+
+        PlayTestCardsBothWays(c1, c2);
+    }
+    
+    [Test]
+    public void ASkullKingShouldWinAgainstYellowCards()
+    {
+        var c1 = Card.SkullKing();
+        var c2 = Card.NumberedCard(13, Colors.Yellow);
+
+        PlayTestCardsBothWays(c1, c2);
+    }
+    
+    [Test]
+    public void ASkullKingShouldWinAgainstBlackCards()
+    {
+        var c1 = Card.SkullKing();
+        var c2 = Card.NumberedCard(13, Colors.Black);
+
+        PlayTestCardsBothWays(c1, c2);
+    }
+    
+    [Test]
     public void ASkullKingShouldWinAgainstAPirate()
     {
         var c1 = Card.SkullKing();
@@ -322,6 +439,8 @@ public class FoldTests
         PlayTestCardsBothWays(c1, c2);
     }
 
+    // Cas particulier //
+    
     [Test]
     public void AMermaidShouldWinAgainstASkullKing()
     {
