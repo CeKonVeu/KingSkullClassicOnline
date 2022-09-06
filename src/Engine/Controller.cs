@@ -21,7 +21,7 @@ public class Controller
         _view = view;
         var player = new Player(playerId, playerName);
         Players = new List<Player> { player };
-        Turn = 10;
+        Turn = 1;
         Deck = CreateDeck();
         _view.RoomCreated(roomName, player.Data);
         _rounds = new Round[Config.RoundsPerGame];
@@ -196,6 +196,8 @@ public class Controller
         CurrentRound.AddVote(player, vote);
 
         if (!CurrentRound.AreAllVotesIn()) return;
+        var players = CurrentRound.GetPlayersFromStarting();
+        _view.FoldStarted(players.Select(p => p.Data.Name).ToArray(),players.Select(p => p.GetVote(Turn)!.Voted).ToArray());
 
         NotifyNextPlayer();
     }
@@ -218,8 +220,6 @@ public class Controller
         Console.WriteLine("Starting next round");
 
         CurrentRound = new Round(Turn, Players, Deck);
-        var players = CurrentRound.GetPlayersFromStarting();
-        _view.FoldStarted(players.Select(p => p.Data.Name).ToArray(),players.Select(p => p.GetVote(Turn)!.Voted).ToArray());
         foreach (var player in Players)
         {
             CurrentRound.DealCards(player);

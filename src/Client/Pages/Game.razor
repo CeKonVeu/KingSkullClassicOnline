@@ -32,11 +32,10 @@
             .WithUrl(NavigationManager.ToAbsoluteUri("/connectRoom"))
             .Build();
 
-        _connection.On(Events.GameStarted, (string[] players) =>
+        _connection.On(Events.GameStarted, () =>
         {
             _isPlaying = true;
             Console.WriteLine($"{Events.GameStarted}");
-            //TODO utiliser players
             StateHasChanged();
         });
 
