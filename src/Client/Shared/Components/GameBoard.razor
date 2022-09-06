@@ -89,7 +89,7 @@
 @code {
 
     [Parameter]
-    public HubConnection Connection { get; set; }
+    public HubConnection Connection { get; set; } = null!;
 
     [Parameter]
     public bool IsVisible { get; set; }
@@ -105,9 +105,9 @@
         return (int)result.Data;
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
-        if (Connection == null) return;
+        if (Connection == null) return Task.CompletedTask;
 
         Connection.On(Events.HandChanged, (List<string> newHand) =>
         {
@@ -127,19 +127,17 @@
 
             _isMyTurn = true;
         });
-        
+
         Connection.On(Events.RoundEnded, (int[] scores) =>
         {
             Console.WriteLine("Scores of this round :");
-            for (int i = 0; i < scores.Length; i++)
+            for (var i = 0; i < scores.Length; i++)
             {
                 Console.WriteLine($"Player {i} : {scores[i]}");
             }
         });
-        Connection.On(Events.CardPlayed, (string player,string card,string winnerName) =>
-        {
-            Console.WriteLine($"{player} played {card} and winner is {winnerName}");
-        });
+        Connection.On(Events.CardPlayed, (string player, string card, string winnerName) => { Console.WriteLine($"{player} played {card} and winner is {winnerName}"); });
+        return Task.CompletedTask;
     }
 
     private async void CardClicked(string card)

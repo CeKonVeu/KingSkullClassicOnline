@@ -37,7 +37,7 @@
         return _scoreReformat?.TakeWhile(x => x != element).Count() + 1;
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
     // TODO Utiliser le vrai score
 
@@ -60,6 +60,7 @@
     // _scoreReformat[i][x] = _score[x].Votes[i];
             }
         }
+        return Task.CompletedTask;
     }
 
 }

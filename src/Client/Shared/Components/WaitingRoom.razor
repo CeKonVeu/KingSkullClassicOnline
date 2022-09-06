@@ -100,7 +100,7 @@
         DialogService.Show<RulesPopup>("Modifier les règles", options);
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
         Connection.On(Events.RoomChanged, (string roomName, IEnumerable<string> players) =>
         {

@@ -56,11 +56,11 @@
         await _timer.DisposeAsync();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender)
         {
-            return;
+            return Task.CompletedTask;
         }
         _timer = new Timer(async _ =>
         {
@@ -72,6 +72,8 @@
             _timeLeft--;
             await InvokeAsync(StateHasChanged);
         }, null, 1000, 1000);
+
+        return Task.CompletedTask;
     }
 
 }
