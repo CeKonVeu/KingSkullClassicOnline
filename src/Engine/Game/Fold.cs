@@ -44,7 +44,7 @@ public class Fold
 
         foreach (var play in CardsPlayed)
         {
-            if (play.IsMermaid())
+            if (play.IsMermaid() && mermaidPlay == null)
                 mermaidPlay = play;
             else if (play.IsSkullKing())
                 HasSkullKing = true;
