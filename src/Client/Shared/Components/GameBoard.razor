@@ -70,7 +70,7 @@
             }
         }
     </div>
-    <HandGame Class="hand" Cards="Cards" OnCardClick="CardClicked"/>
+    <HandGame Class="hand" Cards="_cards" OnCardClick="CardClicked"/>
 </div>
 
 <svg style="height: 0">
@@ -87,19 +87,13 @@
 </svg>
 
 @code {
-    private string _testStr = "oui";
-
     [Parameter]
     public HubConnection Connection { get; set; }
 
     [Parameter]
     public bool IsVisible { get; set; }
 
-    [Parameter]
-    public bool IsMyTurn { get; set; }
-
-    [Parameter]
-    public ICollection<string> Cards { get; set; }
+    private bool _IsMyTurn { get; set; }
 
     private async Task<int> AskVote(int maxVote)
     {
@@ -130,7 +124,19 @@
     //TODO : sucess
             Console.WriteLine("Must play with available cards : " + string.Join(", ", playableCards));
 
-            IsMyTurn = true;
+            _IsMyTurn = true;
+        });
+        Connection.On(Events.RoundEnded, (int[] scores) =>
+        {
+            Console.WriteLine("Scores of this round :");
+            for (int i = 0; i < scores.Length; i++)
+            {
+                Console.WriteLine($"Player {i} : {scores[i]}");
+            }
+        });
+        Connection.On(Events.CardPlayed, (string player,string card,string winnerName) =>
+        {
+            Console.WriteLine($"{player} played {card} and winner is {winnerName}");
         });
     }
 

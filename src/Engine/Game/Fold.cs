@@ -41,7 +41,6 @@ public class Fold
         HasSkullKing = false;
         Play? winningPlay = null;
         Play? mermaidPlay = null;
-
         foreach (var play in CardsPlayed)
         {
             if (play.IsMermaid())
@@ -88,7 +87,6 @@ public class Fold
                 }
             }
         }
-
         return winningPlay ?? throw new Exception("On sait pas coder.");
     }
 

@@ -29,7 +29,7 @@ public class Round
         IsOver = false;
     }
     public Color CurrentColor => _folds[_currentFold].TurnColor; 
-    private Fold CurrentFold => _folds[_currentFold];
+    public Fold CurrentFold => _folds[_currentFold];
     public bool IsOver { get; private set; }
 
     public Player NextPlayer => _players[_currentPlayer];
@@ -54,19 +54,42 @@ public class Round
     {
         CurrentFold.PlayCard(player, card);
         _currentPlayer = NextIndexInCollection(_currentPlayer, _players.Count);
-
-        if (_startingPlayer != _currentPlayer) return;
-
-        if (_currentFold == _turn-1) { IsOver = true; }
-
-        var (winner, _) = CurrentFold.GetWinner();
-        _currentPlayer = _startingPlayer = _players.IndexOf(winner);
         
+    }
+
+    public void EndRound()
+    {
+        foreach (var p in _players)
+        {
+            ScoreCalculator.UpdateScore(p,_folds,_turn);
+        }
+    }
+    
+    public void EndFold()
+    {
+        if (_startingPlayer != _currentPlayer) return;
+        var (winner, _) = CurrentFold.GetWinner();
+        winner.AddActual(_turn);
+        _currentPlayer = _startingPlayer = _players.IndexOf(winner);
         ++_currentFold;
+        if (_currentFold != _turn) return;
+        IsOver = true;
     }
     
     private static int NextIndexInCollection(int index, int count) => (index + 1) % count;
 
+    public Player[] GetPlayersFromStarting()
+    {
+        var players = new Player[_players.Count];
+        var tmpPlayer = _startingPlayer;
+        for (int i = 0; i < _players.Count; i++)
+        {
+            players[i] = _players[tmpPlayer];
+            tmpPlayer = NextIndexInCollection(tmpPlayer, _players.Count);
+        }
+        return players;
+    }
+    
     private static List<T> Shuffle<T>(IEnumerable<T> array)
     {
         var deck = array.ToList();

@@ -13,6 +13,10 @@ public static class Events
     public const string VoteAsked = "VoteAsked";
     public const string SendVote = "SendVote";
     public const string PlayCard = "PlayCard";
+    public const string FoldStarted = "RoundStarted";
+    public const string RoundEnded = "RoundEnded";
+    public const string CardPlayed = "CardPlayed";
+    public const string GameEnded = "GameEnded";
     
     //TODO popup
     public const string ScaryMary = "ScaryMary";

@@ -155,21 +155,39 @@ public class Controller
 
         CurrentRound.Play(player, playedCard);
         _view.HandReceived(player.Data, player.Hand);
-        _view.CardPlayed(player.Data, card);
-
+        _view.CardPlayed(player.Data, card, CurrentRound.CurrentFold.GetWinner().Player.Data.Name);
+        CurrentRound.EndFold();
         if (CurrentRound.IsOver)
         {
             //TODO mettre à jour et envoyer les scores
-            _view.RoundEnded(new[] { "" });
+            CurrentRound.EndRound();
+            var scores = GetScores(Turn);
+            _view.RoundEnded(scores);
             ++Turn;
+            if (Turn == Config.RoundsPerGame)
+            {
+                _view.GameEnded(GetScores(Turn),CurrentRound.CurrentFold.GetWinner().Player.Data.Name);
+                return;
+            }
             StartNextRound();
         }
         else
         {
+
             NotifyNextPlayer();
         }
     }
 
+    private int[] GetScores(int turn)
+    {
+        var scores = new int[Players.Count];
+        for (var i = 0; i < Players.Count; ++i)
+        {
+            scores[i] = Players[i].GetVote(turn)!.Total!.Value;
+        }
+        return scores;
+    }
+    
     public void SetVote(string playerId, int vote)
     {
         if (!_hasStarted || CurrentRound == null || CurrentRound.AreAllVotesIn()) return;
@@ -178,6 +196,8 @@ public class Controller
         CurrentRound.AddVote(player, vote);
 
         if (!CurrentRound.AreAllVotesIn()) return;
+        var players = CurrentRound.GetPlayersFromStarting();
+        _view.FoldStarted(players.Select(p => p.Data.Name).ToArray(),players.Select(p => p.GetVote(Turn)!.Voted).ToArray());
 
         NotifyNextPlayer();
     }
@@ -185,7 +205,7 @@ public class Controller
     public void StartGame()
     {
         // TODO nb joueurs
-        if (_hasStarted) return;
+        if (_hasStarted || Players.Count is < 1 or > Config.MaxPlayers) return;
 
         _hasStarted = true;
         _view.GameStarted();
@@ -200,7 +220,6 @@ public class Controller
         Console.WriteLine("Starting next round");
 
         CurrentRound = new Round(Turn, Players, Deck);
-
         foreach (var player in Players)
         {
             CurrentRound.DealCards(player);

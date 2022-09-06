@@ -26,14 +26,16 @@ public class SignalRView : IView
         await PlayerJoined(player);
     }
 
-    public async Task CardPlayed(PlayerData player, string card)
+    public async Task CardPlayed(PlayerData player, string card, string winnerName)
     {
         Console.WriteLine($"{player.Name} played {card}");
-        await _hubContext.Clients.Group(_group).SendAsync("CardPlayed", player.Id, card);
+        await _hubContext.Clients.Group(_group).SendAsync(Events.CardPlayed, player.Id, card,  winnerName);
     }
 
-    public async Task GameEnded(string[] scores, string winner)
+    public async Task GameEnded(int[] scores, string winner)
     {
+        //TODO implement
+        //await _hubContext.Clients.Group(_group).SendAsync(Events.GameEnded, scores, winner);
         throw new NotImplementedException();
     }
 
@@ -72,9 +74,13 @@ public class SignalRView : IView
         await SendPlayers();
     }
 
-    public async Task RoundEnded(string[] scores)
+    public async Task RoundEnded(int[] scores)
     {
-        throw new NotImplementedException();
+        await _hubContext.Clients.Group(_group).SendAsync(Events.RoundEnded, scores);
+    }
+    public async Task FoldStarted(string[] players, int[] scores)
+    {
+        await _hubContext.Clients.Group(_group).SendAsync(Events.FoldStarted,players,scores);
     }
 
     public async Task NotifyError(PlayerData player, string message)
