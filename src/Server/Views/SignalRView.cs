@@ -29,7 +29,7 @@ public class SignalRView : IView
     public async Task CardPlayed(PlayerData player, string card, string winnerName)
     {
         Console.WriteLine($"{player.Name} played {card}");
-        await _hubContext.Clients.Group(_group).SendAsync("CardPlayed", player.Id, card,  winnerName);
+        await _hubContext.Clients.Group(_group).SendAsync(Events.CardPlayed, player.Id, card,  winnerName);
     }
 
     public async Task GameEnded(string[] scores, string winner)

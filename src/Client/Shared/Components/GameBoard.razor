@@ -61,7 +61,10 @@
             {
                 Console.WriteLine($"Player {i} : {scores[i]}");
             }
-            
+        });
+        Connection.On(Events.CardPlayed, (string player,string card,string winnerName) =>
+        {
+            Console.WriteLine($"{player} played {card} and winner is {winnerName}");
         });
     }
 

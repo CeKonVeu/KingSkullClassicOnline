@@ -171,7 +171,7 @@ public class Controller
         }
         else
         {
-            //_view.CardPlayed(player.Data, card, CurrentRound.CurrentFold.GetWinner().Player.Data.Name);
+            _view.CardPlayed(player.Data, card, CurrentRound.CurrentFold.GetWinner().Player.Data.Name);
             NotifyNextPlayer();
         }
     }

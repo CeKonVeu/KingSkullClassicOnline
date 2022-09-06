@@ -57,16 +57,13 @@ public class Round
 
         if (_startingPlayer != _currentPlayer) return;
         
-
         var (winner, _) = CurrentFold.GetWinner();
         winner.AddActual(_turn);
         _currentPlayer = _startingPlayer = _players.IndexOf(winner);
         ++_currentFold;
-        if (_currentFold == _turn)
-        {
-            IsOver = true;
-            --_currentFold;
-        }
+        if (_currentFold != _turn) return;
+        IsOver = true;
+        --_currentFold;
     }
 
     public void EndRound()
