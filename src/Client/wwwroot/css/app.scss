@@ -1,8 +1,4 @@
-﻿* {
-  cursor: url("../cursors/standard.png") 3 0, auto;
-}
-
-$font-path: "../fonts/blackpearl/BlackPearl";
+﻿$font-path: "../fonts/blackpearl/BlackPearl";
 
 @font-face {
   font-family: 'BlackPearl';
@@ -21,6 +17,7 @@ html, body {
   margin: 0;
   height: 100%;
   width: 100%;
+  cursor: url("../cursors/standard.png") 3 0, auto;
 }
 
 #app {
@@ -83,4 +80,13 @@ html, body {
   &:hover {
     border-color: var(--mud-palette-action-default);
   }
+}
+
+.card {
+  border-radius: 8px;
+  border-width: 1px;
+}
+
+.mud-button-root {
+  cursor: url("../cursors/hook.png") 3 9, auto;
 }

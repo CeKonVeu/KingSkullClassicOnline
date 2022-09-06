@@ -12,13 +12,13 @@
     return;
 }
 
-<PageTitle>Port</PageTitle>
+<PageTitle>Taverne</PageTitle>
 
 <h2 class="title">Equipage</h2>
 
 <MudContainer MaxWidth="MaxWidth.ExtraSmall">
     <MudStack>
-        <div class="relative">
+        <div class="relative mb-6">
             <div class="parchment-bg"></div>
             <MudStack Class="parchment">
                 @foreach (var name in Names)
@@ -42,13 +42,17 @@
                 Commencer la partie
             </MudButton>
 
-            <MudButton
-                OnClick="OpenRulesDialog"
-                Variant="Variant.Filled"
-                Color="Color.Primary"
-                FullWidth="true">
-                Modifier les règles
-            </MudButton>
+            <MudStack Row="true">
+                <MudButton
+                    OnClick="OpenRulesDialog"
+                    Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    FullWidth="true"
+                    Disabled="true">
+                    Modifier les règles
+                </MudButton>
+                <RulesButton/>
+            </MudStack>
         }
 
         <MudTextField
@@ -58,6 +62,7 @@
             Label="URL pour rejoindre cette room"
             Adornment="Adornment.End"
             AdornmentIcon="@Icons.Filled.ContentCopy"
+            OnAdornmentClick="CopyRoomLink"
             @onclick="CopyRoomLink">
         </MudTextField>
     </MudStack>
@@ -92,7 +97,7 @@
     private void OpenRulesDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<Rules>("Modifier les règles", options);
+        DialogService.Show<RulesPopup>("Modifier les règles", options);
     }
 
     protected override async Task OnInitializedAsync()

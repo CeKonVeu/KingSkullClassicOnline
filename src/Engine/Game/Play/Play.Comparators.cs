@@ -9,7 +9,7 @@ public partial record Play
 
     public bool IsBlack()
     {
-        return Card.Color == Colors.Black;
+        return Card.Color == Color.Black;
     }
 
     public bool IsEscape()
@@ -34,7 +34,7 @@ public partial record Play
 
     public bool IsSpecial()
     {
-        return Card.Color == Colors.None;
+        return Card.IsSpecial();
     }
 
     public bool IsStrongerThan(Play other)

@@ -1,6 +1,6 @@
-﻿namespace KingSkullClassicOnline.Engine.Game;
+﻿using KingSkullClassicOnline.Engine.Cards;
 
-using Cards;
+namespace KingSkullClassicOnline.Engine.Game;
 
 /// <summary>
 ///     Gère le déroulement d'un pli.
@@ -13,14 +13,14 @@ public class Fold
     public Fold()
     {
         CardsPlayed = new LinkedList<Play>();
-        TurnColor = Colors.None;
+        TurnColor = Color.None;
     }
 
     public ICollection<Play> CardsPlayed { get; }
 
     public bool HasSkullKing { get; private set; }
 
-    public Colors TurnColor { get; private set; }
+    public Color TurnColor { get; private set; }
 
     /// <summary>
     ///     Compte le nombre de pirates dans le pli.
@@ -49,7 +49,7 @@ public class Fold
             else if (play.IsSkullKing())
                 HasSkullKing = true;
 
-            // La première carte jouée est la gagnante par défaut
+            // La première carte jouée est gagnante par défaut
             if (winningPlay == null)
             {
                 winningPlay = play;
@@ -60,30 +60,33 @@ public class Fold
             if (HasSkullKing && mermaidPlay != null)
                 return mermaidPlay;
 
-            // Gère toutes les cartes spéciales
+            // Pour les cartes spéciales, il suffit de comparer leur valeur
             if (play.IsSpecial())
             {
-                if (play.IsStrongerThan(winningPlay)) winningPlay = play;
-                continue;
+                if (play.IsStrongerThan(winningPlay))
+                    winningPlay = play;
             }
-
-            // Cartes normales de même couleur que la carte gagnante
-            if (play.HasSameColorAs(winningPlay))
+            else
             {
-                if (play.IsStrongerThan(winningPlay)) winningPlay = play;
-                continue;
+                // Les cartes de couleurs gagnent forcément sur une Escape
+                if (winningPlay.IsEscape())
+                {
+                    winningPlay = play;
+                }
+                // Si la carte est de la même couleur que la carte gagnante, on compare leur valeur
+                // PS : si l'atout est rouge et que quelqu'un joue une carte noire, la couleur gagnante devient le noir
+                else if (play.HasSameColorAs(winningPlay))
+                {
+                    if (play.IsStrongerThan(winningPlay))
+                        winningPlay = play;
+                }
+                // Si la carte n'est pas de la même couleur que la carte gagnante, mais qu'elle est noire,
+                // alors elle gagne sur les cartes de couleur
+                else if (play.IsBlack() && !winningPlay.IsSpecial())
+                {
+                    winningPlay = play;
+                }
             }
-
-            if (!play.IsBlack()) continue;
-
-            if (winningPlay.IsSpecial())
-            {
-                if (winningPlay.IsEscape()) winningPlay = play;
-
-                continue;
-            }
-
-            winningPlay = play;
         }
 
         return winningPlay ?? throw new Exception("On sait pas coder.");
@@ -98,7 +101,7 @@ public class Fold
     {
         var play = new Play(player, card);
 
-        if (!play.IsSpecial() && TurnColor == Colors.None) TurnColor = card.Color;
+        if (!play.IsSpecial() && TurnColor == Color.None) TurnColor = card.Color;
 
         player.Hand.Remove(card);
         CardsPlayed.Add(play);

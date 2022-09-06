@@ -21,12 +21,15 @@ public class Round
         _currentFold = 0;
         _players = players;
         _folds = new Fold[turn];
+        for (var i = 0; i < _folds.Length; ++i)
+        {
+            _folds[i] = new Fold();
+        }
         _deck = Shuffle(deck);
         IsOver = false;
     }
-
+    public Color CurrentColor => _folds[_currentFold].TurnColor; 
     private Fold CurrentFold => _folds[_currentFold];
-
     public bool IsOver { get; private set; }
 
     public Player NextPlayer => _players[_currentPlayer];
@@ -50,17 +53,19 @@ public class Round
     public void Play(Player player, Card card)
     {
         CurrentFold.PlayCard(player, card);
-        ++_currentPlayer;
+        _currentPlayer = NextIndexInCollection(_currentPlayer, _players.Count);
 
         if (_startingPlayer != _currentPlayer) return;
 
-        ++_currentFold;
+        if (_currentFold == _turn-1) { IsOver = true; }
 
         var (winner, _) = CurrentFold.GetWinner();
         _currentPlayer = _startingPlayer = _players.IndexOf(winner);
-
-        if (_currentFold == _turn) IsOver = true;
+        
+        ++_currentFold;
     }
+    
+    private static int NextIndexInCollection(int index, int count) => (index + 1) % count;
 
     private static List<T> Shuffle<T>(IEnumerable<T> array)
     {

@@ -1,0 +1,28 @@
+﻿@inherits ComponentBase
+
+<div class="card-container" @onclick="() => CardClicked(CardName)">
+    <MudImage Class="@($"card {Class}")" Src="@($"./cards/{CardName}.png")" Elevation="1" UserAttributes="_imgCustomAttr"/>
+</div>
+
+@code {
+
+    [Parameter]
+    public string CardName { get; set; } = null!;
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<string> OnCardClick { get; set; }
+
+    private readonly Dictionary<string, object> _imgCustomAttr = new()
+    {
+        { "draggable", "false" }
+    };
+
+    private async void CardClicked(string card)
+    {
+        await OnCardClick.InvokeAsync(card);
+    }
+
+}
