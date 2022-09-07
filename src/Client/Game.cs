@@ -6,8 +6,6 @@ using Engine.Game;
 
 public class Game
 {
-    private int _turn;
-
     public Player? Winner = null;
 
     public Game()
@@ -20,22 +18,11 @@ public class Game
     public int CurrentFold { get; set; }
     public Dictionary<string, Player> Players { get; }
 
-    public int Turn
-    {
-        get => _turn;
-        set
-        {
-            _turn = value;
-            CurrentFold = 1;
-        }
-    }
+    public int Turn { get; set; }
 
     public void ClearPlayedCards()
     {
-        foreach (var (_, player) in Players)
-        {
-            player.PlayedCard = null;
-        }
+        foreach (var (_, player) in Players) player.PlayedCard = null;
     }
 }
 
@@ -54,7 +41,7 @@ public class Player
     public string Id { get; }
     public string Name { get; }
 
-    public Card? PlayedCard { get; set; } = null;
+    public Card? PlayedCard { get; set; }
     public PlayerScore[] Scores { get; set; }
 }
 

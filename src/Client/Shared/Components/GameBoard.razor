@@ -123,6 +123,7 @@
         {
             Logger.LogInformation($"{Events.HandChanged}: {string.Join(", ", newHand.Select(c => c.Name))}");
             GetPlayer().Hand = newHand;
+
             StateHasChanged();
         });
         Connection.On(Events.VoteAsked, async (int minVote, int maxVote) =>
@@ -141,12 +142,15 @@
             {
                 _game.Players[id].Scores[turn].Voted = vote;
             }
+
             StateHasChanged();
         });
         Connection.On(Events.MustPlay, (List<Card> cards) =>
         {
             Logger.LogInformation($"{Events.MustPlay}: {string.Join(",", cards)}");
+
             GetPlayer().Hand = cards;
+
             StateHasChanged();
         });
         Connection.On(Events.CardPlayed, (PlayerData player, Card card, PlayerData winner) =>
@@ -156,6 +160,23 @@
             _game.Players[player.Id].PlayedCard = card;
             _game.Winner = _game.Players[winner.Id];
 
+            StateHasChanged();
+        });
+        Connection.On(Events.FoldEnded, (int fold, IEnumerable<PlayerVote> votes) =>
+        {
+            Logger.LogInformation($"{Events.FoldEnded}: Fold N°{fold}");
+
+
+            _game.CurrentFold = fold;
+            _game.ClearPlayedCards();
+            StateHasChanged();
+
+            foreach (var (id, vote) in votes)
+            {
+                _game.Players[id].Scores[fold].Actual = vote;
+            }
+
+            if (fold == _game.Turn) return;
             StateHasChanged();
         });
 
