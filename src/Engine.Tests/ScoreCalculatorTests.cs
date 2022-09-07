@@ -32,10 +32,10 @@ public class ScoreCalculatorTests
     /// <param name="c2">Carte de p2</param>
     private void PlayFold(int turn, Card c1, Card c2)
     {
-        _folds[turn].PlayCard(_p1, c1);
-        _folds[turn].PlayCard(_p2, c2);
+        _folds[turn-1].PlayCard(_p1, c1);
+        _folds[turn-1].PlayCard(_p2, c2);
         
-        var (winner, _) = _folds[turn].GetWinner();
+        var (winner, _) = _folds[turn-1].GetWinner();
         winner.AddActual(_turn);
     }
 
@@ -80,9 +80,9 @@ public class ScoreCalculatorTests
     public void ItShouldAddAndSubtractScoreCorrectlyWhenTheVoteIsNot0()
     {
         SetAllVotes(2, 2);
-        PlayFold(0, Card.NumberedCard(1, Color.Yellow), Card.Escape());
         PlayFold(1, Card.NumberedCard(1, Color.Yellow), Card.Escape());
-        PlayFold(2, Card.Escape(), Card.NumberedCard(1, Color.Yellow));
+        PlayFold(2, Card.NumberedCard(1, Color.Yellow), Card.Escape());
+        PlayFold(3, Card.Escape(), Card.NumberedCard(1, Color.Yellow));
         UpdateAllScores();
         CheckScores(GetWinVoteNot0(_vote1), GetLoseVoteNot0(_vote2, _p2));
     }
@@ -93,9 +93,9 @@ public class ScoreCalculatorTests
     public void ItShouldAddAndSubtractScoreCorrectlyWhenTheVoteIs0()
     {
         SetAllVotes(0, 0);
-        PlayFold(0, Card.Escape(), Card.NumberedCard(1, Color.Yellow));
         PlayFold(1, Card.Escape(), Card.NumberedCard(1, Color.Yellow));
         PlayFold(2, Card.Escape(), Card.NumberedCard(1, Color.Yellow));
+        PlayFold(3, Card.Escape(), Card.NumberedCard(1, Color.Yellow));
         UpdateAllScores();
         CheckScores(GetVote0(true), GetVote0(false));
     }
@@ -106,11 +106,22 @@ public class ScoreCalculatorTests
     public void ItShouldGiveBonusForMermaidOnSkullKing()
     {
         SetAllVotes(2, 1);
-        PlayFold(0, Card.Mermaid(), Card.SkullKing());
-        PlayFold(1, Card.Escape(), Card.Escape());
-        PlayFold(2, Card.SkullKing(), Card.Mermaid());
+        PlayFold(1, Card.Mermaid(), Card.SkullKing());
+        PlayFold(2, Card.Escape(), Card.Escape());
+        PlayFold(3, Card.SkullKing(), Card.Mermaid());
         UpdateAllScores();
         CheckScores(GetWinVoteNot0(_vote1) + Config.BonusMermaid, GetWinVoteNot0(_vote2) + Config.BonusMermaid);
+    }
+    
+    [Test]
+    public void ItShouldGiveBonusForSkullKingOnPirate()
+    {
+        SetAllVotes(2, 1);
+        PlayFold(1, Card.SkullKing(), Card.Pirate());
+        PlayFold(2, Card.Escape(), Card.Escape());
+        PlayFold(3, Card.Pirate(), Card.SkullKing());
+        UpdateAllScores();
+        CheckScores(GetWinVoteNot0(_vote1) + Config.BonusSkullKing, GetWinVoteNot0(_vote2) + Config.BonusSkullKing);
     }
 
 /*
