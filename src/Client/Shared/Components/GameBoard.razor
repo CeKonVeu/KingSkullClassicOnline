@@ -1,9 +1,11 @@
 ﻿@using Microsoft.AspNetCore.SignalR.Client
 @using KingSkullClassicOnline.Client.Shared.Popups
+@using KingSkullClassicOnline.Engine
 @using KingSkullClassicOnline.Engine.Cards
 @using KingSkullClassicOnline.Engine.Game
 @using KingSkullClassicOnline.Shared
 @using Player = KingSkullClassicOnline.Client.Player
+@using Color = MudBlazor.Color
 @inherits ComponentBase
 @inject IDialogService DialogService
 @inject ILogger<GameBoard> Logger
@@ -63,7 +65,7 @@
                 else
                 {
                     <SingleCard CardName="@player.PlayedCard.Name"
-                                Class="@($"player-card {(player.PlayedCard.IsWinning ? "winning" : "")}")"/>
+                                Class="@($"player-card {(player.Id == _game.Winner?.Id ? "winning" : "")}")"/>
                 }
 
             </div>
@@ -141,15 +143,21 @@
             }
             StateHasChanged();
         });
-        Connection.On(Events.MustPlay, (IEnumerable<string> playableCards) =>
+        Connection.On(Events.MustPlay, (List<Card> cards) =>
         {
-            Logger.LogInformation($"{Events.MustPlay}: {string.Join(",", playableCards)}");
-    // _isMyTurn = true;
-    // _cards = _cards.Select(c => new HandGame.Card(c.Name, playableCards.Contains(c.Name))).ToList();
+            Logger.LogInformation($"{Events.MustPlay}: {string.Join(",", cards)}");
+            GetPlayer().Hand = cards;
             StateHasChanged();
         });
+        Connection.On(Events.CardPlayed, (PlayerData player, Card card, PlayerData winner) =>
+        {
+            Logger.LogInformation($"{Events.CardPlayed}: {player.Name} - {card} - {winner.Name}");
 
+            _game.Players[player.Id].PlayedCard = card;
+            _game.Winner = _game.Players[winner.Id];
 
+            StateHasChanged();
+        });
 
         Connection.On(Events.RoundEnded, (int[] scores) =>
         {
@@ -158,24 +166,6 @@
     // for (var i = 0; i < scores.Length; i++)
     // {
     //     _players[i].Score.Actual = scores[i];
-    // }
-            StateHasChanged();
-        });
-        Connection.On(Events.CardPlayed, (string player, string card, string winnerName) =>
-        {
-            Logger.LogInformation($"{Events.CardPlayed}: {player} - {card} - {winnerName}");
-    // foreach (var p in _players)
-    // {
-    //     if (p.Data.Name == player)
-    //     {
-    //         p.Card.Name = card;
-    //         Console.WriteLine("update card");
-    //     }
-    //     if (p.Data.Name == winnerName)
-    //     {
-    //         p.Card.IsWinning = true;
-    //         Console.WriteLine("update winner");
-    //     }
     // }
             StateHasChanged();
         });

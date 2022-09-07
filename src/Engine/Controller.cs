@@ -2,7 +2,6 @@
 
 using Cards;
 using Game;
-using Shared;
 
 /// <summary>
 ///     Gère le déroulement d'une partie
@@ -121,25 +120,16 @@ public class Controller
 
         var nextPlayer = CurrentRound.NextPlayer;
 
-        //Send only the playable cards to the player
-        var playableCards = new List<Card>();
-
         if (CurrentRound.CurrentColor != Color.None &&
             nextPlayer.Hand.Exists(card => card.Color == CurrentRound.CurrentColor))
             foreach (var card in nextPlayer.Hand)
-            {
                 card.IsPlayable = card.Color == CurrentRound.CurrentColor
-                                          || card.IsSpecial();
-            }
+                                  || card.IsSpecial();
         else
-        {
             foreach (var card in nextPlayer.Hand)
-            {
                 card.IsPlayable = true;
-            }
-        }
 
-        _view.MustPlay(nextPlayer.Data, playableCards);
+        _view.MustPlay(nextPlayer.Data, nextPlayer.Hand);
     }
 
     public void PlayCard(string playerId, string card)
@@ -167,7 +157,7 @@ public class Controller
 
         CurrentRound.Play(player, playedCard);
         _view.HandReceived(player.Data, player.Hand);
-        _view.CardPlayed(player.Data, card, CurrentRound.CurrentFold.GetWinner().Player.Data.Name);
+        _view.CardPlayed(player.Data, playedCard, CurrentRound.CurrentFold.GetWinner().Player.Data);
         CurrentRound.EndFold();
         if (CurrentRound.IsOver)
         {

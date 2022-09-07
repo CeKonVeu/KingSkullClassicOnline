@@ -1,3 +1,3 @@
-﻿namespace KingSkullClassicOnline.Shared;
+﻿namespace KingSkullClassicOnline.Engine;
 
-public record PlayerVote(string Id, int value);
+public record PlayerVote(string Id, int Value);

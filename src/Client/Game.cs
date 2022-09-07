@@ -8,6 +8,8 @@ public class Game
 {
     private int _turn;
 
+    public Player? Winner = null;
+
     public Game()
     {
         CurrentFold = 1;
@@ -27,6 +29,14 @@ public class Game
             CurrentFold = 1;
         }
     }
+
+    public void ClearPlayedCards()
+    {
+        foreach (var (_, player) in Players)
+        {
+            player.PlayedCard = null;
+        }
+    }
 }
 
 public class Player
@@ -43,7 +53,8 @@ public class Player
 
     public string Id { get; }
     public string Name { get; }
-    public PlayerCard? PlayedCard { get; set; } = null;
+
+    public Card? PlayedCard { get; set; } = null;
     public PlayerScore[] Scores { get; set; }
 }
 
@@ -51,10 +62,4 @@ public class PlayerScore
 {
     public int Actual { get; set; } = 0;
     public int Voted { get; set; } = 0;
-}
-
-public class PlayerCard
-{
-    public bool IsWinning { get; set; } = false;
-    public string Name { get; set; }
 }

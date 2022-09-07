@@ -26,10 +26,10 @@ public class SignalRView : IView
         await PlayerJoined(player);
     }
 
-    public async Task CardPlayed(PlayerData player, string card, string winnerName)
+    public async Task CardPlayed(PlayerData player, Card card, PlayerData winner)
     {
         Console.WriteLine($"{player.Name} played {card}");
-        await _hubContext.Clients.Group(_group).SendAsync(Events.CardPlayed, player.Id, card, winnerName);
+        await _hubContext.Clients.Group(_group).SendAsync(Events.CardPlayed, player, card, winner);
     }
 
     public async Task GameEnded(int[] scores, string winner)
@@ -51,9 +51,8 @@ public class SignalRView : IView
         await _hubContext.Clients.Client(player.Id).SendAsync(Events.HandChanged, cards);
     }
 
-    public async Task MustPlay(PlayerData player, IEnumerable<Card> availableCards)
+    public async Task MustPlay(PlayerData player, List<Card> cards)
     {
-        var cards = availableCards.Select(c => c.Name);
         Console.WriteLine($"Player {player.Name} must play with {string.Join(", ", cards)}");
         await _hubContext.Clients.Client(player.Id).SendAsync(Events.MustPlay, cards);
     }
