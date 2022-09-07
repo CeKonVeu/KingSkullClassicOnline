@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNetCore.SignalR.Client
-@using KingSkullClassicOnline.Client.Shared.Popups
+@using KingSkullClassicOnline.Engine
 @using KingSkullClassicOnline.Shared
+@using Color = MudBlazor.Color
+@using KingSkullClassicOnline.Client.Shared.Popups
 @inherits ComponentBase
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
@@ -39,7 +41,8 @@
                 OnClick="StartGame"
                 Variant="Variant.Filled"
                 Color="Color.Primary"
-                FullWidth="true">
+                FullWidth="true"
+                Disabled="Names.Count() < Config.MinPlayers">
                 Commencer la partie
             </MudButton>
 

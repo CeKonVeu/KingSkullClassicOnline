@@ -204,8 +204,7 @@ public class Controller
 
     public void StartGame()
     {
-        // TODO nb joueurs
-        if (_hasStarted || Players.Count is < 1 or > Config.MaxPlayers) return;
+        if (_hasStarted || Players.Count is < Config.MinPlayers or > Config.MaxPlayers) return;
 
         _hasStarted = true;
         _view.GameStarted(Players.Select(p => p.Data));
