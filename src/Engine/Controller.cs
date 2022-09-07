@@ -1,7 +1,7 @@
-﻿using KingSkullClassicOnline.Engine.Cards;
-using KingSkullClassicOnline.Engine.Game;
+﻿namespace KingSkullClassicOnline.Engine;
 
-namespace KingSkullClassicOnline.Engine;
+using Cards;
+using Game;
 
 /// <summary>
 ///     Gère le déroulement d'une partie

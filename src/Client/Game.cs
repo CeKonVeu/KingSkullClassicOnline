@@ -47,6 +47,8 @@ public class Player
 
 public class PlayerScore
 {
-    public int Actual { get; set; } = 0;
-    public int Voted { get; set; } = 0;
+    public int Actual { get; set; }
+
+    public int Total { get; set; } = 0;
+    public int Voted { get; set; }
 }

@@ -46,12 +46,13 @@
     <div class="d-flex justify-space-around flex-wrap mt-15 gap-4 pl-6 pr-6 parchment-game pt-4">
         <div class="parchment-bg-game board"></div>
 
+        @*//TODO start quand je veux wallah*@
         @foreach (var (_, player) in _game.Players)
         {
             <div>
                 <MudText Typo="Typo.h5"
                          Align="Align.Center">
-                    @player.Scores[_game.Turn].Actual / @player.Scores[_game.Turn].Voted
+                    @player.Scores[_game.Turn - 1].Actual / @player.Scores[_game.Turn - 1].Voted
                 </MudText>
                 <MudText Typo="Typo.h5"
                          Class="@($"mb-2 pseudo {(player.Id == Connection.ConnectionId ? "self" : "")}")"
@@ -122,6 +123,7 @@
         Connection.On(Events.HandChanged, (List<Card> newHand) =>
         {
             Logger.LogInformation($"{Events.HandChanged}: {string.Join(", ", newHand.Select(c => c.Name))}");
+
             GetPlayer().Hand = newHand;
 
             StateHasChanged();
@@ -140,7 +142,7 @@
             _game.Turn = turn;
             foreach (var (id, vote) in votes)
             {
-                _game.Players[id].Scores[turn].Voted = vote;
+                _game.Players[id].Scores[turn - 1].Voted = vote;
             }
 
             StateHasChanged();
@@ -164,30 +166,33 @@
         });
         Connection.On(Events.FoldEnded, (int fold, IEnumerable<PlayerVote> votes) =>
         {
-            Logger.LogInformation($"{Events.FoldEnded}: Fold N°{fold}");
+            Logger.LogInformation($"{Events.FoldEnded}: Fold N°{fold} - {string.Join(",", votes.Select(v => v.Value))}");
 
-
-            _game.CurrentFold = fold;
             _game.ClearPlayedCards();
-            StateHasChanged();
-
             foreach (var (id, vote) in votes)
             {
-                _game.Players[id].Scores[fold].Actual = vote;
+                _game.Players[id].Scores[_game.Turn - 1].Actual = vote;
             }
 
-            if (fold == _game.Turn) return;
+            StateHasChanged();
+        });
+        Connection.On(Events.FoldStarted, (int fold) =>
+        {
+            Logger.LogInformation($"{Events.FoldStarted}: Fold N°{fold}");
+            
+            _game.CurrentFold = fold;
+
             StateHasChanged();
         });
 
-        Connection.On(Events.RoundEnded, (int[] scores) =>
+        Connection.On(Events.RoundEnded, (int turn, IEnumerable<PlayerVote> scores) =>
         {
-            Logger.LogInformation($"{Events.RoundEnded}: {string.Join(",", scores)}");
+            Logger.LogInformation($"{Events.RoundEnded}");
 
-    // for (var i = 0; i < scores.Length; i++)
-    // {
-    //     _players[i].Score.Actual = scores[i];
-    // }
+            foreach (var (id, score) in scores)
+            {
+                _game.Players[id].Scores[turn - 1].Total = score;
+            }
             StateHasChanged();
         });
 
