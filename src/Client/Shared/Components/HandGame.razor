@@ -6,7 +6,7 @@
         @foreach (var card in Cards)
         {
             <SingleCard CardName="@card.Name"
-                        Class="@($"card-container {(card.IsPlayable ? "" : "disabled")}")"
+                        ContainerClass="@($"{(card.IsPlayable ? "" : "disabled")}")"
                         OnCardClick="OnCardClick"/>
         }
     </MudContainer>

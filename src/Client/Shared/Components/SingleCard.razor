@@ -1,6 +1,6 @@
 ﻿@inherits ComponentBase
 
-<div class="card-container" @onclick="() => CardClicked(CardName)">
+<div class="@($"card-container {ContainerClass}")" @onclick="() => CardClicked(CardName)">
     <MudImage Class="@($"card {Class}")" Src="@($"./cards/{CardName}.png")" Elevation="1" UserAttributes="_imgCustomAttr"/>
 </div>
 
@@ -11,6 +11,9 @@
 
     [Parameter]
     public string Class { get; set; } = string.Empty;
+
+    [Parameter]
+    public string ContainerClass { get; set; } = string.Empty;
 
     [Parameter]
     public EventCallback<string> OnCardClick { get; set; }
