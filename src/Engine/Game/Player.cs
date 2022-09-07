@@ -21,9 +21,9 @@ public class Player
 
     public List<Card> Hand { get; internal set; }
 
-    public Vote? GetVote(int turn)
+    public Vote GetVote(int turn)
     {
-        return _votes[turn - 1];
+        return _votes[turn - 1] ?? throw new InvalidOperationException();
     }
 
     public void SetVote(int turn, int voted)
