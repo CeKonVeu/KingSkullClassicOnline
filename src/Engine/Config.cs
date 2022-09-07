@@ -11,6 +11,7 @@ public static class Config
     public const int NumberSkullKing = 1;
     public const int NumberScaryM = 1;
     public const int NumberMermaids = 2;
+    public const int MinPlayers = 2;
     public const int MaxPlayers = 6;
     public const int EscapeValue = 0;
     public const int MermaidValue = NumberNumCards + 1;

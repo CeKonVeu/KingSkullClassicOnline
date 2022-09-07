@@ -1,7 +1,7 @@
-﻿using KingSkullClassicOnline.Engine.Cards;
-using KingSkullClassicOnline.Engine.Game;
+﻿namespace KingSkullClassicOnline.Engine;
 
-namespace KingSkullClassicOnline.Engine;
+using Cards;
+using Game;
 
 /// <summary>
 ///     Gère le déroulement d'une partie
@@ -30,8 +30,8 @@ public class Controller
 
     private Round? CurrentRound
     {
-        get => _rounds[Turn-1];
-        set => _rounds[Turn-1] = value;
+        get => _rounds[Turn - 1];
+        set => _rounds[Turn - 1] = value;
     }
 
     public IEnumerable<Card> Deck { get; }
@@ -59,7 +59,7 @@ public class Controller
             deck.Add(Card.SkullKing());
 
         for (var i = 1; i <= Config.NumberPirates; ++i)
-            deck.Add(Card.Pirate((i % Config.PirateVariants) + 1));
+            deck.Add(Card.Pirate(i % Config.PirateVariants + 1));
 
         for (var i = 0; i < Config.NumberScaryM; ++i)
             deck.Add(Card.ScaryMary());
@@ -73,22 +73,33 @@ public class Controller
         return deck;
     }
 
+    private int[] GetScores(int turn)
+    {
+        var scores = new int[Players.Count];
+        for (var i = 0; i < Players.Count; ++i) scores[i] = Players[i].GetVote(turn)!.Total;
+        return scores;
+    }
+
     /// <summary>
     ///     Ajoute un joueur à la partie.
     /// </summary>
     /// <param name="playerId">l'id du joueur</param>
     /// <param name="name">le nom du joueur</param>
     /// <returns>vrai si l'ajout s'est effectué, faux sinon</returns>
-    public void JoinGame(string playerId, string name)
+    public bool JoinGame(string playerId, string name)
     {
-        if (_hasStarted) return;
+        if (_hasStarted) return false;
 
         var playerData = new PlayerData(playerId, name);
         if (Players.Count >= Config.MaxPlayers || Players.Exists(p => p.Data.Name == playerId))
+        {
             _view.NotifyError(playerData, "La partie est complète");
+            return false;
+        }
 
         Players.Add(new Player(playerData));
         _view.PlayerJoined(playerData);
+        return true;
     }
 
     /// <summary>
@@ -113,21 +124,16 @@ public class Controller
 
         var nextPlayer = CurrentRound.NextPlayer;
 
-        //Send only the playable cards to the player
-        var playableCards = new List<Card>();
-        
-        if (CurrentRound.CurrentColor != Color.None && nextPlayer.Hand.Exists(card => card.Color == CurrentRound.CurrentColor))
-        {
-            playableCards.AddRange(
-                nextPlayer.Hand.
-                    Where(card => card.Color == CurrentRound.CurrentColor 
-                                  || card.IsSpecial()));
-        }else
-        {
-          playableCards = nextPlayer.Hand;   
-        }
+        if (CurrentRound.CurrentColor != Color.None &&
+            nextPlayer.Hand.Exists(card => card.Color == CurrentRound.CurrentColor))
+            foreach (var card in nextPlayer.Hand)
+                card.IsPlayable = card.Color == CurrentRound.CurrentColor
+                                  || card.IsSpecial();
+        else
+            foreach (var card in nextPlayer.Hand)
+                card.IsPlayable = true;
 
-        _view.MustPlay(nextPlayer.Data, playableCards);
+        _view.MustPlay(nextPlayer.Data, nextPlayer.Hand);
     }
 
     public void PlayCard(string playerId, string card)
@@ -153,41 +159,39 @@ public class Controller
             return;
         }
 
+
         CurrentRound.Play(player, playedCard);
+        foreach (var c in player.Hand) c.IsPlayable = false;
         _view.HandReceived(player.Data, player.Hand);
-        _view.CardPlayed(player.Data, card, CurrentRound.CurrentFold.GetWinner().Player.Data.Name);
-        CurrentRound.EndFold();
+        _view.CardPlayed(player.Data, playedCard, CurrentRound.CurrentFold.GetWinner().Player.Data);
+        var foldNumber = CurrentRound.EndFold();
+        if (foldNumber != -1)
+            _view.FoldEnded(foldNumber, Players.Select(p => new PlayerVote(p.Data.Id, p.GetVote(Turn)!.Actual)));
+
         if (CurrentRound.IsOver)
         {
             //TODO mettre à jour et envoyer les scores
             CurrentRound.EndRound();
-            var scores = GetScores(Turn);
-            _view.RoundEnded(scores);
-            ++Turn;
+            _view.RoundEnded(Turn, Players.Select(p => new PlayerVote(p.Data.Id, p.GetVote(Turn)!.Total)));
+
             if (Turn == Config.RoundsPerGame)
             {
-                _view.GameEnded(GetScores(Turn),CurrentRound.CurrentFold.GetWinner().Player.Data.Name);
+                _view.GameEnded(GetScores(Turn), "");
                 return;
             }
+
+            ++Turn;
+
             StartNextRound();
         }
         else
         {
-
+            if (CurrentRound.IsNewFold())
+                _view.FoldStarted(CurrentRound.FoldNumber());
             NotifyNextPlayer();
         }
     }
 
-    private int[] GetScores(int turn)
-    {
-        var scores = new int[Players.Count];
-        for (var i = 0; i < Players.Count; ++i)
-        {
-            scores[i] = Players[i].GetVote(turn)!.Total;
-        }
-        return scores;
-    }
-    
     public void SetVote(string playerId, int vote)
     {
         if (!_hasStarted || CurrentRound == null || CurrentRound.AreAllVotesIn()) return;
@@ -197,18 +201,17 @@ public class Controller
 
         if (!CurrentRound.AreAllVotesIn()) return;
         var players = CurrentRound.GetPlayersFromStarting();
-        _view.FoldStarted(players.Select(p => p.Data.Name).ToArray(),players.Select(p => p.GetVote(Turn)!.Voted).ToArray());
-
+        _view.RoundStarted(Turn, players.Select(p => new PlayerVote(p.Data.Id, p.GetVote(Turn)!.Voted)));
+        _view.FoldStarted(1);
         NotifyNextPlayer();
     }
 
     public void StartGame()
     {
-        // TODO nb joueurs
-        if (_hasStarted || Players.Count is < 1 or > Config.MaxPlayers) return;
+        if (_hasStarted || Players.Count is < Config.MinPlayers or > Config.MaxPlayers) return;
 
         _hasStarted = true;
-        _view.GameStarted();
+        _view.GameStarted(Players.Select(p => p.Data));
 
         StartNextRound();
     }

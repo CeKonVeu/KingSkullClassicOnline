@@ -64,9 +64,9 @@ public class ScoreCalculatorTests
     /// <param name="score3">Score attendu de p3</param>
     private void CheckScores(int score1, int score2, int score3)
     {
-        Assert.AreEqual(_p1.GetTotal(_turn), score1);
-        Assert.AreEqual(_p2.GetTotal(_turn), score2);
-        Assert.AreEqual(_p2.GetTotal(_turn), score3);
+        Assert.AreEqual(_p1.GetVote(_turn)!.Total, score1);
+        Assert.AreEqual(_p2.GetVote(_turn)!.Total, score2);
+        Assert.AreEqual(_p2.GetVote(_turn)!.Total, score3);
     }
     
     private int GetGoodVoteNot0(int vote)
@@ -102,7 +102,7 @@ public class ScoreCalculatorTests
         PlayFold(2, Card.NumberedCard(1, Color.Yellow), Card.Escape(), Card.Escape());
         PlayFold(3, Card.Escape(), Card.NumberedCard(1, Color.Yellow), Card.Escape());
         UpdateAllScores();
-        Assert.AreEqual(_p1.GetTotal(_turn), GetGoodVoteNot0(_vote1));
+        Assert.AreEqual(_p1.GetVote(_turn)!.Total, GetGoodVoteNot0(_vote1));
     }
     
     /// <summary>
@@ -116,7 +116,7 @@ public class ScoreCalculatorTests
         PlayFold(2, Card.Escape(), Card.NumberedCard(1, Color.Yellow), Card.Escape());
         PlayFold(3, Card.Escape(), Card.NumberedCard(1, Color.Yellow), Card.Escape());
         UpdateAllScores();
-        Assert.AreEqual(_p1.GetTotal(_turn), GetBadVoteNot0(_vote1, _p1));
+        Assert.AreEqual(_p1.GetVote(_turn)!.Total, GetBadVoteNot0(_vote1, _p1));
     }
     
     /// <summary>
@@ -130,7 +130,7 @@ public class ScoreCalculatorTests
         PlayFold(2, Card.NumberedCard(1, Color.Yellow), Card.Escape(), Card.Escape());
         PlayFold(3, Card.NumberedCard(1, Color.Yellow), Card.Escape(), Card.Escape());
         UpdateAllScores();
-        Assert.AreEqual(_p1.GetTotal(_turn), GetBadVoteNot0(_vote1, _p1));
+        Assert.AreEqual(_p1.GetVote(_turn)!.Total, GetBadVoteNot0(_vote1, _p1));
     }
 
     // Test sur des votes = 0 //
@@ -146,7 +146,7 @@ public class ScoreCalculatorTests
         PlayFold(2, Card.Escape(), Card.NumberedCard(1, Color.Yellow), Card.Escape());
         PlayFold(3, Card.Escape(), Card.NumberedCard(1, Color.Yellow), Card.Escape());
         UpdateAllScores();
-        Assert.AreEqual(_p1.GetTotal(_turn), GetGoodVote0());
+        Assert.AreEqual(_p1.GetVote(_turn)!.Total, GetGoodVote0());
     }
     
     /// <summary>
@@ -161,8 +161,8 @@ public class ScoreCalculatorTests
         PlayFold(2, Card.Escape(), Card.NumberedCard(1, Color.Yellow), Card.Escape());
         PlayFold(3, Card.Escape(), Card.NumberedCard(1, Color.Yellow), Card.Escape());
         UpdateAllScores();
-        Assert.AreEqual(_p1.GetTotal(_turn), GetBadVote0());
-        Assert.AreEqual(_p2.GetTotal(_turn), GetBadVote0());
+        Assert.AreEqual(_p1.GetVote(_turn)!.Total, GetBadVote0());
+        Assert.AreEqual(_p2.GetVote(_turn)!.Total, GetBadVote0());
     }
 
     // Test des points bonus Mermaid//
@@ -179,8 +179,8 @@ public class ScoreCalculatorTests
         PlayFold(2, Card.Escape(), Card.Escape(), Card.Escape());
         PlayFold(3, Card.Escape(), Card.Escape(), Card.Escape());
         UpdateAllScores();
-        Assert.AreEqual(_p1.GetTotal(_turn), GetGoodVoteNot0(_vote1) + Config.BonusMermaid);
-        Assert.AreEqual(_p2.GetTotal(_turn), GetBadVoteNot0(_vote2, _p2));
+        Assert.AreEqual(_p1.GetVote(_turn)!.Total, GetGoodVoteNot0(_vote1) + Config.BonusMermaid);
+        Assert.AreEqual(_p2.GetVote(_turn)!.Total, GetBadVoteNot0(_vote2, _p2));
     }
     
     /// <summary>
@@ -195,8 +195,8 @@ public class ScoreCalculatorTests
         PlayFold(2, Card.Escape(), Card.Escape(), Card.Escape());
         PlayFold(3, Card.Escape(), Card.Escape(), Card.Escape());
         UpdateAllScores();
-        Assert.AreEqual(_p1.GetTotal(_turn), GetGoodVoteNot0(_vote1) + Config.BonusMermaid);
-        Assert.AreEqual(_p3.GetTotal(_turn), GetBadVoteNot0(_vote3, _p3));
+        Assert.AreEqual(_p1.GetVote(_turn)!.Total, GetGoodVoteNot0(_vote1) + Config.BonusMermaid);
+        Assert.AreEqual(_p3.GetVote(_turn)!.Total, GetBadVoteNot0(_vote3, _p3));
     }
     
     /// <summary>
@@ -210,7 +210,7 @@ public class ScoreCalculatorTests
         PlayFold(2, Card.Escape(), Card.Escape(), Card.Escape());
         PlayFold(3, Card.Escape(), Card.Escape(), Card.Escape());
         UpdateAllScores();
-        Assert.AreEqual(_p1.GetTotal(_turn), GetBadVoteNot0(_vote1, _p1));
+        Assert.AreEqual(_p1.GetVote(_turn)!.Total, GetBadVoteNot0(_vote1, _p1));
     }
     
     // Test des points bonus Skull King //
@@ -226,7 +226,7 @@ public class ScoreCalculatorTests
         PlayFold(2, Card.Escape(), Card.Escape(), Card.Escape());
         PlayFold(3, Card.Escape(), Card.Escape(), Card.Escape());
         UpdateAllScores();
-        Assert.AreEqual(_p1.GetTotal(_turn), GetGoodVoteNot0(_vote1) + Config.BonusSkullKing);
+        Assert.AreEqual(_p1.GetVote(_turn)!.Total, GetGoodVoteNot0(_vote1) + Config.BonusSkullKing);
     }
     
     /// <summary>
@@ -240,7 +240,7 @@ public class ScoreCalculatorTests
         PlayFold(2, Card.Escape(), Card.Escape(), Card.Escape());
         PlayFold(3, Card.Escape(), Card.Escape(), Card.Escape());
         UpdateAllScores();
-        Assert.AreEqual(_p1.GetTotal(_turn), GetGoodVoteNot0(_vote1) + 2 * Config.BonusSkullKing);
+        Assert.AreEqual(_p1.GetVote(_turn)!.Total, GetGoodVoteNot0(_vote1) + 2 * Config.BonusSkullKing);
     }
     
     /// <summary>
@@ -254,7 +254,7 @@ public class ScoreCalculatorTests
         PlayFold(2, Card.Escape(), Card.Escape(), Card.Escape());
         PlayFold(3, Card.Escape(), Card.Escape(), Card.Escape());
         UpdateAllScores();
-        Assert.AreEqual(_p1.GetTotal(_turn), GetBadVoteNot0(_vote1, _p1));
+        Assert.AreEqual(_p1.GetVote(_turn)!.Total, GetBadVoteNot0(_vote1, _p1));
     }
     
     /// <summary>

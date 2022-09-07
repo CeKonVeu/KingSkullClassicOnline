@@ -1,8 +1,15 @@
 ﻿@using Microsoft.AspNetCore.SignalR.Client
 @using KingSkullClassicOnline.Client.Shared.Popups
+@using KingSkullClassicOnline.Engine
+@using KingSkullClassicOnline.Engine.Cards
+@using KingSkullClassicOnline.Engine.Game
 @using KingSkullClassicOnline.Shared
+@using Player = KingSkullClassicOnline.Client.Player
+@using Color = MudBlazor.Color
 @inherits ComponentBase
 @inject IDialogService DialogService
+@inject ILogger<GameBoard> Logger
+@inject NavigationManager NavigationManager
 
 @if (!IsVisible)
 {
@@ -18,7 +25,7 @@
             Class="pa-4 rounds"
             Typo="Typo.h3"
             Align="Align.Left">
-            10 / 10
+            @_game.CurrentFold / @_game.Turn
         </MudText>
     </div>
     <MudStack Class="buttons">
@@ -31,7 +38,7 @@
             <MudIconButton
                 Icon="@Icons.Filled.GridOn"
                 Variant="Variant.Filled"
-                OnClick="OpenScores"
+                OnClick="() => OpenScores()"
                 Color="Color.Secondary"
                 Size="Size.Large"/>
         </MudTooltip>
@@ -40,60 +47,69 @@
     <div class="d-flex justify-space-around flex-wrap mt-15 gap-4 pl-6 pr-6 parchment-game pt-4">
         <div class="parchment-bg-game board"></div>
 
-        @{ var i = 0; }
-        @foreach (var player in _players)
-        {
-            <div>
+        @{
+            var winnerIndex = _game.GetWinnerIndex();
+            var i = winnerIndex;
+            do
+            {
+                if (_game.Players.Count == 0) break;
+                var player = _game.Players[i];
 
-
-                @{
-                    var i1 = i;
-                }
-                <MudText Typo="Typo.h5" Align="Align.Center">@player.Item3.Item1 / @player.Item3.Item2</MudText>
-                <MudText Typo="Typo.h5" Class="@($"mb-2 pseudo {(i1 == 0 ? "self" : "")}")" Align="Align.Center">
-                    @player.Item1
-                </MudText>
-                @{
-                    if (i1 % 2 == 0)
+                <div class="center">
+                    <MudText Typo="Typo.h5"
+                             Align="Align.Center">
+                        @player.Scores[_game.Turn - 1].Actual / @player.Scores[_game.Turn - 1].Voted
+                    </MudText>
+                    <MudText Typo="Typo.h5"
+                             Class="@($"mb-2 pseudo {(player.Id == Connection.ConnectionId ? "self" : "")}")"
+                             Align="Align.Center">
+                        @player.Name
+                    </MudText>
+                    @if (player.PlayedCard == null)
                     {
-                        <Card CardName="@player.Item2.Item1" Class="@($"player-card {(player.Item2.Item2 ? "winning" : "")}")" OnCardClick="@(_ => Test(i1))"/>
+                        <SingleCard CardName="Back" Class="player-card back"/>
                     }
                     else
                     {
-                        <Card CardName="Back" Class="@($"player-card back {(player.Item2.Item2 ? "winning" : "")}")" OnCardClick="@(_ => Test(i1))"/>
+                        <SingleCard CardName="@player.PlayedCard.Name"
+                                    Class="@($"player-card {(player.Id == _game.Winner?.Id ? "winning" : "")}")"/>
                     }
 
-                }
-            </div>
-            {
-                i++;
-            }
+                </div>
+
+
+                i = (i + 1) % _game.Players.Count;
+            } while (i != winnerIndex);
         }
     </div>
-    <HandGame Class="hand" Cards="_cards" OnCardClick="CardClicked"/>
+    @if (_game.Player(Connection.ConnectionId!, out var p))
+    {
+        <HandGame Class="hand" Cards="p.Hand" OnCardClick="CardClicked"/>
+    }
 </div>
 
 <svg style="height: 0">
-    <filter id="wavy2">
+    <filter id="wavy4">
         <feTurbulence x="0" y="0" baseFrequency="0.01" numOctaves="10" seed="1"/>
         <feDisplacementMap in="SourceGraphic" scale="20"/>
     </filter>
 </svg>
 <svg style="height: 0">
-    <filter id="wavy3">
+    <filter id="wavy5">
         <feTurbulence x="0" y="0" baseFrequency="0.01" numOctaves="6" seed="3"/>
         <feDisplacementMap in="SourceGraphic" scale="20"/>
     </filter>
 </svg>
 
 @code {
+
     [Parameter]
-    public HubConnection Connection { get; set; }
+    public HubConnection Connection { get; set; } = null!;
 
     [Parameter]
     public bool IsVisible { get; set; }
 
-    private bool _IsMyTurn { get; set; }
+    private Game _game = new();
 
     private async Task<int> AskVote(int maxVote)
     {
@@ -104,72 +120,119 @@
         return (int)result.Data;
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
-        if (Connection == null) return;
-
-        Connection.On(Events.HandChanged, (List<string> newHand) =>
+        Connection.On(Events.GameStarted, (IEnumerable<PlayerData> players) =>
         {
-            _cards = newHand;
-            Console.WriteLine($"{Events.HandChanged}: {newHand}");
+            foreach (var player in players)
+            {
+                _game.Players.Add(new Player(player));
+            }
+            GetPlayer().Hand = new List<Card>();
+        });
+        Connection.On(Events.HandChanged, (List<Card> newHand) =>
+        {
+            Logger.LogInformation($"{Events.HandChanged}: {string.Join(", ", newHand.Select(c => c.Name))}");
+
+            GetPlayer().Hand = newHand;
+
             StateHasChanged();
         });
-        Connection.On(Events.VoteAsked, async (int _, int maxVote) =>
+        Connection.On(Events.VoteAsked, async (int minVote, int maxVote) =>
         {
+            Logger.LogInformation($"{Events.VoteAsked}: {minVote} - {maxVote}");
+
             var vote = await AskVote(maxVote);
             await Connection.SendAsync(Events.SendVote, vote);
         });
-        Connection.On(Events.MustPlay, (IEnumerable<string> playableCards) =>
+        Connection.On(Events.RoundStarted, (int turn, IEnumerable<PlayerVote> votes) =>
         {
-    //TODO : sucess
-            Console.WriteLine("Must play with available cards : " + string.Join(", ", playableCards));
+            Logger.LogInformation($"{Events.RoundStarted}: Round N°{turn}");
 
-            _IsMyTurn = true;
-        });
-        Connection.On(Events.RoundEnded, (int[] scores) =>
-        {
-            Console.WriteLine("Scores of this round :");
-            for (int i = 0; i < scores.Length; i++)
+            _game.Turn = turn;
+            foreach (var (id, vote) in votes)
             {
-                Console.WriteLine($"Player {i} : {scores[i]}");
+                _game.Player(id).Scores[turn - 1].Voted = vote;
             }
+
+            StateHasChanged();
         });
-        Connection.On(Events.CardPlayed, (string player,string card,string winnerName) =>
+        Connection.On(Events.MustPlay, (List<Card> cards) =>
         {
-            Console.WriteLine($"{player} played {card} and winner is {winnerName}");
+            Logger.LogInformation($"{Events.MustPlay}: {string.Join(",", cards)}");
+
+            GetPlayer().Hand = cards;
+
+            StateHasChanged();
         });
+        Connection.On(Events.CardPlayed, (PlayerData player, Card card, PlayerData winner) =>
+        {
+            Logger.LogInformation($"{Events.CardPlayed}: {player.Name} - {card} - {winner.Name}");
+
+            _game.Player(player.Id).PlayedCard = card;
+            _game.Winner = _game.Player(winner.Id);
+
+            StateHasChanged();
+        });
+        Connection.On(Events.FoldEnded, (int fold, IEnumerable<PlayerVote> votes) =>
+        {
+            Logger.LogInformation($"{Events.FoldEnded}: Fold N°{fold} - {string.Join(",", votes.Select(v => v.Value))}");
+
+            _game.ClearPlayedCards();
+            foreach (var (id, vote) in votes)
+            {
+                _game.Player(id).Scores[_game.Turn - 1].Actual = vote;
+            }
+
+            StateHasChanged();
+        });
+        Connection.On(Events.FoldStarted, (int fold) =>
+        {
+            Logger.LogInformation($"{Events.FoldStarted}: Fold N°{fold}");
+
+            _game.CurrentFold = fold;
+
+            StateHasChanged();
+        });
+
+        Connection.On(Events.RoundEnded, (int turn, IEnumerable<PlayerVote> scores) =>
+        {
+            Logger.LogInformation($"{Events.RoundEnded}");
+
+            foreach (var (id, score) in scores)
+            {
+                _game.Player(id).Scores[turn - 1].Total = score;
+            }
+            StateHasChanged();
+        });
+
+        Connection.On(Events.GameEnded, async (int[] scores, string winner) =>
+        {
+            Logger.LogInformation($"{Events.GameEnded}");
+
+            var dialog = OpenScores();
+            if (dialog != null) await dialog.Result;
+            NavigationManager.NavigateTo(NavigationManager.BaseUri);
+        });
+
+        return Task.CompletedTask;
     }
 
     private async void CardClicked(string card)
     {
-        Console.WriteLine("Card clicked : " + card);
-    // await Connection.SendAsync(Events.PlayCard, card);
+        Logger.LogInformation($"Clicked on {card}");
+        await Connection.SendAsync(Events.PlayCard, card);
     }
 
-    private ICollection<string> _cards = new List<string>();
-
-    private List<(string, (string, bool), (int, int))> _players = new()
-    {
-        ("Player 1", ("Red_2", false), (0, 5)),
-        ("Player 2", ("Blue_5", false), (5, 5)),
-        ("Player 3", ("Black_3", false), (7, 10)),
-        ("Player 4", ("SkullKing", false), (4, 4)),
-        ("Player 4", ("SkullKing", false), (4, 4))
-    };
-
-    private void Test(int i)
-    {
-        var t = _players[i];
-        t.Item2.Item2 = !t.Item2.Item2;
-        _players[i] = t;
-        Console.WriteLine(t.Item2.Item2);
-        StateHasChanged();
-    }
-
-    private void OpenScores()
+    private IDialogReference? OpenScores()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<ScoresPopup>("Tableau des scores", options);
+        return DialogService.Show<ScoresPopup>("Tableau des scores", options);
+    }
+
+    private Player GetPlayer()
+    {
+        return _game.Player(Connection.ConnectionId!);
     }
 
 }

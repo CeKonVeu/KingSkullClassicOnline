@@ -1,6 +1,6 @@
-﻿namespace KingSkullClassicOnline.Engine.Game;
+﻿using KingSkullClassicOnline.Engine.Cards;
 
-using Cards;
+namespace KingSkullClassicOnline.Engine.Game;
 
 public class Round
 {
@@ -21,14 +21,12 @@ public class Round
         _currentFold = 0;
         _players = players;
         _folds = new Fold[turn];
-        for (var i = 0; i < _folds.Length; ++i)
-        {
-            _folds[i] = new Fold();
-        }
+        for (var i = 0; i < _folds.Length; ++i) _folds[i] = new Fold();
         _deck = Shuffle(deck);
         IsOver = false;
     }
-    public Color CurrentColor => _folds[_currentFold].TurnColor; 
+
+    public Color CurrentColor => _folds[_currentFold].TurnColor;
     public Fold CurrentFold => _folds[_currentFold];
     public bool IsOver { get; private set; }
 
@@ -54,42 +52,53 @@ public class Round
     {
         CurrentFold.PlayCard(player, card);
         _currentPlayer = NextIndexInCollection(_currentPlayer, _players.Count);
-        
     }
 
     public void EndRound()
     {
-        foreach (var p in _players)
-        {
-            ScoreCalculator.UpdateScore(p,_folds,_turn);
-        }
+        foreach (var p in _players) ScoreCalculator.UpdateScore(p, _folds, _turn);
     }
-    
-    public void EndFold()
+
+    public int EndFold()
     {
-        if (_startingPlayer != _currentPlayer) return;
+        if (_startingPlayer != _currentPlayer) return -1;
         var (winner, _) = CurrentFold.GetWinner();
         winner.AddActual(_turn);
         _currentPlayer = _startingPlayer = _players.IndexOf(winner);
         ++_currentFold;
-        if (_currentFold != _turn) return;
+        if (_currentFold != _turn) return _currentFold;
         IsOver = true;
+        return _currentFold;
     }
-    
-    private static int NextIndexInCollection(int index, int count) => (index + 1) % count;
+
+    public bool IsNewFold()
+    {
+        return CurrentFold.CardsPlayed.Count == 0;
+    }
+
+    public int FoldNumber()
+    {
+        return _currentFold + 1;
+    }
+
+    private static int NextIndexInCollection(int index, int count)
+    {
+        return (index + 1) % count;
+    }
 
     public Player[] GetPlayersFromStarting()
     {
         var players = new Player[_players.Count];
         var tmpPlayer = _startingPlayer;
-        for (int i = 0; i < _players.Count; i++)
+        for (var i = 0; i < _players.Count; i++)
         {
             players[i] = _players[tmpPlayer];
             tmpPlayer = NextIndexInCollection(tmpPlayer, _players.Count);
         }
+
         return players;
     }
-    
+
     private static List<T> Shuffle<T>(IEnumerable<T> array)
     {
         var deck = array.ToList();

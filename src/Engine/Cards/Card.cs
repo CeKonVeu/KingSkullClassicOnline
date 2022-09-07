@@ -5,6 +5,42 @@
 /// </summary>
 public partial class Card
 {
+    /// <summary>
+    ///     constructeur
+    /// </summary>
+    /// <param name="value">valeur de la carte</param>
+    /// <param name="name"></param>
+    /// <param name="color"></param>
+    private Card(int value, string name, Color color = Color.None)
+    {
+        Color = color;
+        Name = name;
+        Value = value;
+        IsPlayable = false;
+    }
+
+    // Nécessaire pour l'envoi via SignalR
+    public Card()
+    {
+    }
+
+    /// <summary>
+    ///     couleur de la carte
+    /// </summary>
+    internal Color Color { get; }
+
+    public bool IsPlayable { get; set; }
+
+    /// <summary>
+    ///     nom représentant la carte
+    /// </summary>
+    public string Name { get; set; }
+
+    /// <summary>
+    ///     valeur de la carte
+    /// </summary>
+    internal int Value { get; }
+
     private bool Equals(Card other)
     {
         return Color == other.Color && Name == other.Name && Value == other.Value;
@@ -16,34 +52,6 @@ public partial class Card
         if (ReferenceEquals(this, obj)) return true;
         return obj.GetType() == GetType() && Equals((Card)obj);
     }
-
-    /// <summary>
-    ///     constructeur
-    /// </summary>
-    /// <param name="value">valeur de la carte</param>
-    /// <param name="name"></param>
-    /// <param name="color"></param>
-    private Card(int value, string name, Color color = Engine.Color.None)
-    {
-        Color = color;
-        Name = name;
-        Value = value;
-    }
-
-    /// <summary>
-    ///     couleur de la carte
-    /// </summary>
-    public Color Color { get; }
-    
-    /// <summary>
-    ///     nom représentant la carte
-    /// </summary>
-    public string Name { get; }
-
-    /// <summary>
-    ///     valeur de la carte
-    /// </summary>
-    public int Value { get; }
 
     public override int GetHashCode()
     {

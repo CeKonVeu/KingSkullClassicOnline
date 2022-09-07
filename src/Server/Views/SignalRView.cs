@@ -26,36 +26,31 @@ public class SignalRView : IView
         await PlayerJoined(player);
     }
 
-    public async Task CardPlayed(PlayerData player, string card, string winnerName)
+    public async Task CardPlayed(PlayerData player, Card card, PlayerData winner)
     {
         Console.WriteLine($"{player.Name} played {card}");
-        await _hubContext.Clients.Group(_group).SendAsync(Events.CardPlayed, player.Id, card,  winnerName);
+        await _hubContext.Clients.Group(_group).SendAsync(Events.CardPlayed, player, card, winner);
     }
 
     public async Task GameEnded(int[] scores, string winner)
     {
-        //TODO implement
-        //await _hubContext.Clients.Group(_group).SendAsync(Events.GameEnded, scores, winner);
-        throw new NotImplementedException();
+        await _hubContext.Clients.Group(_group).SendAsync(Events.GameEnded, scores, winner);
     }
 
-    public async Task GameStarted()
+    public async Task GameStarted(IEnumerable<PlayerData> players)
     {
         Console.WriteLine("Game has started");
-        await _hubContext.Clients.Group(_group).SendAsync(Events.GameStarted);
-
-        throw new NotImplementedException();
+        await _hubContext.Clients.Group(_group).SendAsync(Events.GameStarted, players);
     }
 
     public async Task HandReceived(PlayerData player, List<Card> cards)
     {
         Console.WriteLine($"Player {player.Name} received: {string.Join(", ", cards.Select(c => c.Name))}");
-        await _hubContext.Clients.Client(player.Id).SendAsync(Events.HandChanged, cards.Select(c => c.Name));
+        await _hubContext.Clients.Client(player.Id).SendAsync(Events.HandChanged, cards);
     }
 
-    public async Task MustPlay(PlayerData player, IEnumerable<Card> availableCards)
+    public async Task MustPlay(PlayerData player, List<Card> cards)
     {
-        var cards = availableCards.Select(c => c.Name);
         Console.WriteLine($"Player {player.Name} must play with {string.Join(", ", cards)}");
         await _hubContext.Clients.Client(player.Id).SendAsync(Events.MustPlay, cards);
     }
@@ -74,18 +69,23 @@ public class SignalRView : IView
         await SendPlayers();
     }
 
-    public async Task RoundEnded(int[] scores)
+    public async Task RoundStarted(int turn, IEnumerable<PlayerVote> votes)
     {
-        await _hubContext.Clients.Group(_group).SendAsync(Events.RoundEnded, scores);
+        await _hubContext.Clients.Group(_group).SendAsync(Events.RoundStarted, turn, votes);
     }
-    public async Task FoldStarted(string[] players, int[] scores)
+
+    public async Task FoldStarted(int fold)
     {
-        await _hubContext.Clients.Group(_group).SendAsync(Events.FoldStarted,players,scores);
+        await _hubContext.Clients.Group(_group).SendAsync(Events.FoldStarted, fold);
+    }
+
+    public async Task FoldEnded(int fold, IEnumerable<PlayerVote> votes)
+    {
+        await _hubContext.Clients.Group(_group).SendAsync(Events.FoldEnded, fold, votes);
     }
 
     public async Task NotifyError(PlayerData player, string message)
     {
-        //TODO créer l'event
         await _hubContext.Clients.Client(player.Id).SendAsync(Events.OnError, message);
     }
 
@@ -93,6 +93,11 @@ public class SignalRView : IView
     {
         Console.WriteLine($"Must vote between {min} and {max}");
         await _hubContext.Clients.Group(_group).SendAsync(Events.VoteAsked, min, max);
+    }
+
+    public async Task RoundEnded(int turn, IEnumerable<PlayerVote> totalScores)
+    {
+        await _hubContext.Clients.Group(_group).SendAsync(Events.RoundEnded, turn, totalScores);
     }
 
     private async Task AddToGroup(PlayerData player)
@@ -112,16 +117,5 @@ public class SignalRView : IView
     private async Task SendPlayers()
     {
         await _hubContext.Clients.Group(_group).SendAsync(Events.RoomChanged, _group, _players.Select(p => p.Name));
-    }
-
-    private async Task SendToGroup(string method, params object?[] args)
-    {
-        Console.WriteLine($"Sending {method} to {_group}");
-        await _hubContext.Clients.Group(_group).SendAsync(method, args);
-    }
-
-    private async Task SendToPlayer(PlayerData player, string method, params object[] args)
-    {
-        await _hubContext.Clients.Client(player.Id).SendAsync(method, args);
     }
 }
