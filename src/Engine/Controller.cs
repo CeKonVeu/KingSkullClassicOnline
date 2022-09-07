@@ -1,7 +1,7 @@
-﻿namespace KingSkullClassicOnline.Engine;
+﻿using KingSkullClassicOnline.Engine.Cards;
+using KingSkullClassicOnline.Engine.Game;
 
-using Cards;
-using Game;
+namespace KingSkullClassicOnline.Engine;
 
 /// <summary>
 ///     Gère le déroulement d'une partie
@@ -159,7 +159,8 @@ public class Controller
         _view.HandReceived(player.Data, player.Hand);
         _view.CardPlayed(player.Data, playedCard, CurrentRound.CurrentFold.GetWinner().Player.Data);
         var foldNumber = CurrentRound.EndFold();
-        _view.FoldEnded(foldNumber, Players.Select(p => new PlayerVote(p.Data.Id, p.GetVote(Turn)!.Actual)));
+        if (foldNumber != -1)
+            _view.FoldEnded(foldNumber, Players.Select(p => new PlayerVote(p.Data.Id, p.GetVote(Turn)!.Actual)));
         if (CurrentRound.IsOver)
         {
             //TODO mettre à jour et envoyer les scores
