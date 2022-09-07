@@ -14,8 +14,8 @@ public class ScoreCalculatorTests
     /// <summary>
     ///     Défini les votes de 2 joueurs
     /// </summary>
-    /// <param name="vote1">Vote d</param>
-    /// <param name="vote2"></param>
+    /// <param name="vote1">Vote de p1</param>
+    /// <param name="vote2">Vote de p2</param>
     private void SetAllVotes(int vote1, int vote2)
     {
         _vote1 = vote1;
@@ -100,7 +100,7 @@ public class ScoreCalculatorTests
         CheckScores(GetVote0(true), GetVote0(false));
     }
 
-    // Test sur les points bonus //
+    // Test des points bonus Mermaid//
     
     [Test]
     public void ItShouldGiveBonusForMermaidOnSkullKing()
@@ -114,6 +114,19 @@ public class ScoreCalculatorTests
     }
     
     [Test]
+    public void ItShouldNotGiveBonusForMermaidOnSkullKingIfVoteIsWrong()
+    {
+        SetAllVotes(1, 2);
+        PlayFold(1, Card.Mermaid(), Card.SkullKing());
+        PlayFold(2, Card.Escape(), Card.Escape());
+        PlayFold(3, Card.SkullKing(), Card.Mermaid());
+        UpdateAllScores();
+        CheckScores(GetLoseVoteNot0(_vote1, _p1), GetLoseVoteNot0(_vote2, _p2));
+    }
+    
+    // Test des points bonus Skull King //
+    
+    [Test]
     public void ItShouldGiveBonusForSkullKingOnPirate()
     {
         SetAllVotes(2, 1);
@@ -123,23 +136,18 @@ public class ScoreCalculatorTests
         UpdateAllScores();
         CheckScores(GetWinVoteNot0(_vote1) + Config.BonusSkullKing, GetWinVoteNot0(_vote2) + Config.BonusSkullKing);
     }
-
-/*
+    
     [Test]
-    public void ItShouldntGiveBonusIfVoteIsWrong()
+    public void ItShouldNotGiveBonusForSkullKingOnPirateIfVoteIsWrong()
     {
-        _vote1 = 2;
-        _vote2 = 0;
-
-        _folds[2].PlayCard(_p1, new SpecialCard(16, "a"));
-        _folds[2].PlayCard(_p2, new SpecialCard(15, "a"));
-        ScoreCalculator.UpdateScore(_p1, _folds, _vote1, _turn);
-        ScoreCalculator.UpdateScore(_p2, _folds, _vote2, _turn);
-
-        Assert.AreEqual(_p1.Votes[_turn - 1], (_vote1, Math.Abs(_vote1 - _turn) * Config.ScoreBadVote));
-        Assert.AreEqual(_p2.Votes[_turn - 1], (_vote2, _turn * Config.Score0));
+        SetAllVotes(1, 2);
+        PlayFold(1, Card.SkullKing(), Card.Pirate());
+        PlayFold(2, Card.Escape(), Card.Escape());
+        PlayFold(3, Card.Pirate(), Card.SkullKing());
+        UpdateAllScores();
+        CheckScores(GetLoseVoteNot0(_vote1, _p1), GetLoseVoteNot0(_vote2, _p2));
     }
-*/
+
     /// <summary>
     /// 2 joueurs, tour 3.
     /// </summary>
