@@ -34,6 +34,9 @@ public class ScoreCalculatorTests
     {
         _folds[turn].PlayCard(_p1, c1);
         _folds[turn].PlayCard(_p2, c2);
+        
+        var (winner, _) = _folds[turn].GetWinner();
+        winner.AddActual(_turn);
     }
 
     /// <summary>
@@ -52,8 +55,8 @@ public class ScoreCalculatorTests
     /// <param name="score2">Score attendu de p2</param>
     private void CheckScores(int score1, int score2)
     {
-        Assert.AreEqual(_p1.GetVote(_turn)!.Total, _p1.GetTotal(_turn));
-        Assert.AreEqual(_p2.GetVote(_turn)!.Total, _p2.GetTotal(_turn));
+        Assert.AreEqual(_p1.GetTotal(_turn), score1);
+        Assert.AreEqual(_p2.GetTotal(_turn), score2);
     }
     
     private int GetWinVoteNot0(int vote)
@@ -63,7 +66,7 @@ public class ScoreCalculatorTests
 
     private int GetLoseVoteNot0(int vote, Player p)
     {
-        return Config.ScoreBadVote * Math.Abs((int)(vote - p.GetVote(_turn).Actual)); 
+        return Config.ScoreBadVote * Math.Abs(vote - p.GetVote(_turn)!.Actual);
     }
 
     private int GetVote0(bool win)
@@ -76,10 +79,10 @@ public class ScoreCalculatorTests
     [Test]
     public void ItShouldAddAndSubtractScoreCorrectlyWhenTheVoteIsNot0()
     {
-        SetAllVotes(3, 3);
-        PlayFold(0, Card.NumberedCard(10, Color.Black), Card.NumberedCard(1, Color.Yellow));
-        PlayFold(1, Card.NumberedCard(10, Color.Black), Card.NumberedCard(1, Color.Yellow));
-        PlayFold(2, Card.NumberedCard(10, Color.Black), Card.NumberedCard(1, Color.Yellow));
+        SetAllVotes(2, 2);
+        PlayFold(0, Card.NumberedCard(1, Color.Yellow), Card.Escape());
+        PlayFold(1, Card.NumberedCard(1, Color.Yellow), Card.Escape());
+        PlayFold(2, Card.Escape(), Card.NumberedCard(1, Color.Yellow));
         UpdateAllScores();
         CheckScores(GetWinVoteNot0(_vote1), GetLoseVoteNot0(_vote2, _p2));
     }
@@ -90,9 +93,9 @@ public class ScoreCalculatorTests
     public void ItShouldAddAndSubtractScoreCorrectlyWhenTheVoteIs0()
     {
         SetAllVotes(0, 0);
-        PlayFold(0, Card.NumberedCard(10, Color.Black), Card.NumberedCard(1, Color.Yellow));
-        PlayFold(1, Card.NumberedCard(10, Color.Black), Card.NumberedCard(1, Color.Yellow));
-        PlayFold(2, Card.NumberedCard(10, Color.Black), Card.NumberedCard(1, Color.Yellow));
+        PlayFold(0, Card.Escape(), Card.NumberedCard(1, Color.Yellow));
+        PlayFold(1, Card.Escape(), Card.NumberedCard(1, Color.Yellow));
+        PlayFold(2, Card.Escape(), Card.NumberedCard(1, Color.Yellow));
         UpdateAllScores();
         CheckScores(GetVote0(true), GetVote0(false));
     }
@@ -105,26 +108,12 @@ public class ScoreCalculatorTests
         SetAllVotes(2, 1);
         PlayFold(0, Card.Mermaid(), Card.SkullKing());
         PlayFold(1, Card.Escape(), Card.Escape());
-        PlayFold(2, Card.Escape(), Card.Escape());
+        PlayFold(2, Card.SkullKing(), Card.Mermaid());
         UpdateAllScores();
-        CheckScores(GetWinVoteNot0(_vote1) + Config.BonusMermaid, GetLoseVoteNot0(_vote1, _p2) + Config.BonusMermaid);
+        CheckScores(GetWinVoteNot0(_vote1) + Config.BonusMermaid, GetWinVoteNot0(_vote2) + Config.BonusMermaid);
     }
+
 /*
-    [Test]
-    public void ItShouldGiveBonusForSkullKingOnPirate()
-    {
-        _vote1 = 3;
-        _vote2 = 0;
-
-        _folds[2].PlayCard(_p1, new SpecialCard(16, "a"));
-        _folds[2].PlayCard(_p2, new SpecialCard(15, "a"));
-        ScoreCalculator.UpdateScore(_p1, _folds, _vote1, _turn);
-        ScoreCalculator.UpdateScore(_p2, _folds, _vote2, _turn);
-
-        Assert.AreEqual(_p1.Votes[_turn - 1], (_vote1, _turn * Config.ScoreVoted + Config.BonusSkullKing));
-        Assert.AreEqual(_p2.Votes[_turn - 1], (_vote2, _turn * Config.Score0));
-    }
-
     [Test]
     public void ItShouldntGiveBonusIfVoteIsWrong()
     {
@@ -154,5 +143,10 @@ public class ScoreCalculatorTests
         {
             new Fold(), new Fold(), new Fold()
         };
+        
+        _p1.SetVote(1, 0);
+        _p2.SetVote(1, 0);
+        _p1.SetVote(2, 0);
+        _p2.SetVote(2, 0);
     }
 }
