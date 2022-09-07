@@ -76,7 +76,7 @@ public class Controller
     private int[] GetScores(int turn)
     {
         var scores = new int[Players.Count];
-        for (var i = 0; i < Players.Count; ++i) scores[i] = Players[i].GetVote(turn)!.Total!.Value;
+        for (var i = 0; i < Players.Count; ++i) scores[i] = Players[i].GetVote(turn).Total!.Value;
         return scores;
     }
 
