@@ -1,35 +1,40 @@
 @page "/"
 @inject Data Data
+@inject NavigationManager NavigationManager
+
 
 <PageTitle>King Skull Classic Online</PageTitle>
 
 <h1 class="title">King Skull</h1>
 <h2 class="title">Classic Online</h2>
 
-<MudContainer Class="mt-16 bg" MaxWidth="MaxWidth.Small">
-    <MudStack>
-        <MudTextField
-            @bind-Value="Data.Name"
-            Variant="Variant.Filled"
-            AutoFocus="true"
-            Required="true"
-            Label="Votre nom"
-            RequiredError=""
-            Error="false"
-            Immediate="true">
-        </MudTextField>
+<form @onsubmit="Redirect">
+    <MudContainer Class="mt-16 bg" MaxWidth="MaxWidth.Small">
+        <MudStack>
+            <MudTextField
+                @bind-Value="Data.Name"
+                Variant="Variant.Filled"
+                AutoFocus="true"
+                Required="true"
+                Label="Votre nom"
+                RequiredError=""
+                Error="false"
+                Immediate="true">
+            </MudTextField>
 
-        <MudButton
-            Href="game"
-            Variant="Variant.Filled"
-            Color="Color.Primary"
-            Size="Size.Large"
-            Disabled="string.IsNullOrEmpty(Data.Name)"
-            FullWidth="true">
-            Créer la partie
-        </MudButton>
-    </MudStack>
-</MudContainer>
+            <MudButton
+                Href="game"
+                ButtonType="ButtonType.Submit"
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                Size="Size.Large"
+                Disabled="string.IsNullOrEmpty(Data.Name)"
+                FullWidth="true">
+                Créer la partie
+            </MudButton>
+        </MudStack>
+    </MudContainer>
+</form>
 
 <style>
 /* TODO trouver une solution*/
@@ -41,3 +46,13 @@
       background-size: cover;
     }
 </style>
+
+@code{
+
+    public void Redirect()
+    {
+        if (!string.IsNullOrEmpty(Data.Name))
+            NavigationManager.NavigateTo("game");
+    }
+
+}
