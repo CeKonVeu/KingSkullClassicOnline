@@ -1,0 +1,83 @@
+﻿@implements IAsyncDisposable
+
+<div>
+    <BaseDialog>
+        <MudContainer MaxWidth="MaxWidth.Medium">
+            <form>
+                <MudStack>
+                    <MudSlider TickMarks="true"
+                               TickMarkLabels="_votes"
+                               Min="0"
+                               Max="MaxValue"
+                               Color="Color.Dark"
+                               ValueLabel="true"
+                               Autofocus="true"
+                               Class="mb-6"
+                               @bind-Value="_value"/>
+                    <MudButton
+                        OnClick="ConfirmVote"
+                        Variant="Variant.Filled"
+                        ButtonType="ButtonType.Submit"
+                        Color="Color.Primary">
+                        Voter @_timeLeft
+                    </MudButton>
+                </MudStack>
+            </form>
+        </MudContainer>
+    </BaseDialog>
+</div>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter]
+    public int MaxValue { get; set; }
+
+    private int _value;
+
+    private int _timeLeft = 10;
+
+    private string[] _votes = { "0" };
+
+    private Timer _timer = null!;
+
+    protected override Task OnInitializedAsync()
+    {
+        _votes = Enumerable.Range(0, MaxValue + 1).Select(i => i.ToString()).ToArray();
+
+        return Task.CompletedTask;
+    }
+
+    private void ConfirmVote()
+    {
+        MudDialog.Close(DialogResult.Ok(_value));
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _timer.DisposeAsync();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return Task.CompletedTask;
+        }
+        _timer = new Timer(async _ =>
+        {
+            if (_timeLeft <= 0)
+            {
+                ConfirmVote();
+                return;
+            }
+            _timeLeft--;
+            await InvokeAsync(StateHasChanged);
+        }, null, 1000, 1000);
+
+        return Task.CompletedTask;
+    }
+
+}

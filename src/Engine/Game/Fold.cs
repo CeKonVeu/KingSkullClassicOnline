@@ -1,77 +1,107 @@
-﻿namespace KingSkullClassicOnline.Engine.Game;
+﻿using KingSkullClassicOnline.Engine.Cards;
+
+namespace KingSkullClassicOnline.Engine.Game;
 
 /// <summary>
-///     gère le déroulement d'un pli
+///     Gère le déroulement d'un pli.
 /// </summary>
 public class Fold
 {
     /// <summary>
-    ///     constructeur
+    ///     Construit un pli.
     /// </summary>
     public Fold()
     {
-        CardsPlayed = new List<Play>();
-        TurnColor = Colors.None;
+        CardsPlayed = new LinkedList<Play>();
+        TurnColor = Color.None;
     }
 
-    public List<Play> CardsPlayed { get; }
-
-    public Colors TurnColor { get; private set; }
+    public ICollection<Play> CardsPlayed { get; }
 
     public bool HasSkullKing { get; private set; }
 
-    /// <summary>
-    ///     rajoute une carte aux cartes jouées
-    /// </summary>
-    /// <param name="p">joueur jouant la carte</param>
-    /// <param name="c">carte jouée</param>
-    public void PlayCard(Player p, Card.Card c)
-    {
-        if (c < 13 && c > 1 && TurnColor == Colors.None) TurnColor = c.Color;
+    public Color TurnColor { get; private set; }
 
-        CardsPlayed.Add(new Play(p, c));
+    /// <summary>
+    ///     Compte le nombre de pirates dans le pli.
+    /// </summary>
+    /// <returns>le nombre de pirates</returns>
+    public int CountPirates()
+    {
+        return CardsPlayed.Count(card => card.IsPirate());
     }
 
     /// <summary>
-    ///     détermine le gagnant du pli en fonction des cartes jouées
+    ///     Détermine le gagnant du pli.
     /// </summary>
-    /// <returns>le gagnant du pli</returns>
+    /// <returns>le gagnant</returns>
+    /// <exception cref="Exception">Si aucun gagné n'est trouvé</exception>
     public Play GetWinner()
     {
-        Play? winningPlay = null, sirenPlay = null;
         HasSkullKing = false;
+        Play? winningPlay = null;
+        Play? mermaidPlay = null;
         foreach (var play in CardsPlayed)
         {
-            var isNumbered = play.Card.Value <= 13 && play.Card.Value > 1;
-
-            if (play.Card == Config.MermaidValue)
-                sirenPlay = play;
-            else if (play.Card == Config.SkullKingValue)
+            if (play.IsMermaid() && mermaidPlay == null)
+                mermaidPlay = play;
+            else if (play.IsSkullKing())
                 HasSkullKing = true;
 
-            if (HasSkullKing && sirenPlay != null)
-                winningPlay = sirenPlay;
-
-            else if (winningPlay == null ||
-                     (isNumbered && TurnColor != Colors.Black && play.Card.Color == Colors.Black) ||
-                     (isNumbered && winningPlay.Card < play.Card && play.Card.Color == TurnColor) ||
-                     (!isNumbered && winningPlay.Card < play.Card))
+            // La première carte jouée est gagnante par défaut
+            if (winningPlay == null)
+            {
                 winningPlay = play;
-        }
+                continue;
+            }
 
-        return winningPlay;
+            // La sirène bolosse le Skull King
+            if (HasSkullKing && mermaidPlay != null)
+                return mermaidPlay;
+
+            // Pour les cartes spéciales, il suffit de comparer leur valeur
+            if (play.IsSpecial())
+            {
+                if (play.IsStrongerThan(winningPlay))
+                    winningPlay = play;
+            }
+            else
+            {
+                // Les cartes de couleurs gagnent forcément sur une Escape
+                if (winningPlay.IsEscape())
+                {
+                    winningPlay = play;
+                }
+                // Si la carte est de la même couleur que la carte gagnante, on compare leur valeur
+                // PS : si l'atout est rouge et que quelqu'un joue une carte noire, la couleur gagnante devient le noir
+                else if (play.HasSameColorAs(winningPlay))
+                {
+                    if (play.IsStrongerThan(winningPlay))
+                        winningPlay = play;
+                }
+                // Si la carte n'est pas de la même couleur que la carte gagnante, mais qu'elle est noire,
+                // alors elle gagne sur les cartes de couleur
+                else if (play.IsBlack() && !winningPlay.IsSpecial())
+                {
+                    winningPlay = play;
+                }
+            }
+        }
+        return winningPlay ?? throw new Exception("On sait pas coder.");
     }
 
     /// <summary>
-    ///     retourne le nombre de pirate joués dans le pli
+    ///     Joue une carte dans le pli.
     /// </summary>
-    /// <returns>le nombre de pirates joués</returns>
-    public int GetNumberPirate()
+    /// <param name="player">le joueur qui joue</param>
+    /// <param name="card">la carte jouée</param>
+    public void PlayCard(Player player, Card card)
     {
-        var nbPirates = 0;
-        foreach (var card in CardsPlayed)
-            if (card.Card == Config.PirateValue)
-                nbPirates++;
-        return nbPirates;
+        var play = new Play(player, card);
+
+        if (!play.IsSpecial() && TurnColor == Color.None) TurnColor = card.Color;
+
+        player.Hand.Remove(card);
+        CardsPlayed.Add(play);
     }
 }

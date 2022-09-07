@@ -1,0 +1,139 @@
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@using KingSkullClassicOnline.Engine
+@using KingSkullClassicOnline.Shared
+@using Color = MudBlazor.Color
+@using KingSkullClassicOnline.Client.Shared.Popups
+@inherits ComponentBase
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject IClipboardService ClipboardService
+@inject NavigationManager NavigationManager
+@inject ILogger<WaitingRoom> Logger
+
+@if (!IsVisible)
+{
+    return;
+}
+
+<PageTitle>Taverne</PageTitle>
+
+<h2 class="title">Equipage</h2>
+
+<MudContainer MaxWidth="MaxWidth.ExtraSmall">
+    <MudStack>
+        <div class="relative mb-6">
+            <div class="parchment-bg"></div>
+            <MudStack Class="parchment">
+                @foreach (var name in Names)
+                {
+                    <MudText
+                        Class="pa-1 ml-16 mr-16"
+                        Typo="Typo.h5">
+                        @name
+                    </MudText>
+                }
+            </MudStack>
+        </div>
+
+        @if (IsOwner)
+        {
+            <MudButton
+                OnClick="StartGame"
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                FullWidth="true"
+                Disabled="Names.Count() < Config.MinPlayers">
+                Commencer la partie
+            </MudButton>
+
+            <MudButton
+                OnClick="OpenRulesDialog"
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                FullWidth="true"
+                Disabled="true">
+                Modifier les règles
+            </MudButton>
+        }
+
+        <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudTextField
+                Value="_url"
+                Variant="Variant.Filled"
+                ReadOnly="true"
+                Label="URL pour rejoindre cette room"
+                Adornment="Adornment.End"
+                AdornmentIcon="@Icons.Filled.ContentCopy"
+                OnAdornmentClick="CopyRoomLink"
+                @onclick="CopyRoomLink">
+            </MudTextField>
+            <RulesButton/>
+        </MudStack>
+    </MudStack>
+
+</MudContainer>
+
+<svg style="height: 0">
+    <filter id="wavy2">
+        <feTurbulence x="0" y="0" baseFrequency="0.02" numOctaves="5" seed="2"/>
+        <feDisplacementMap in="SourceGraphic" scale="20"/>
+    </filter>
+</svg>
+
+@code {
+
+    [Parameter]
+    public bool IsVisible { get; set; } = true;
+
+    [Parameter]
+    public bool IsOwner { get; set; }
+
+    [Parameter]
+    public string RoomName { get; set; } = null!;
+
+    [Parameter]
+    public HubConnection Connection { get; set; } = null!;
+
+    private IEnumerable<string> Names { get; set; } = Enumerable.Empty<string>();
+
+    private string _url = string.Empty;
+
+    private void OpenRulesDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<RulesPopup>("Modifier les règles", options);
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        Connection.On(Events.RoomChanged, (string roomName, IEnumerable<string> players) =>
+        {
+            Logger.LogInformation($"{Events.RoomChanged}: {roomName}");
+            _url = $"{NavigationManager.Uri}/{roomName}";
+            Names = players;
+            RoomName = roomName;
+            StateHasChanged();
+        });
+        return Task.CompletedTask;
+    }
+
+    private async void StartGame()
+    {
+        await Connection.SendAsync(Events.StartGame, RoomName);
+    }
+
+    private async Task CopyRoomLink()
+    {
+        Snackbar.Add(
+            "Lien copié !", Severity.Normal, config =>
+            {
+                config.VisibleStateDuration = 500;
+                config.ShowTransitionDuration = 200;
+                config.Icon = Icons.Filled.Link;
+            });
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+
+        await ClipboardService.CopyToClipboard(_url);
+    }
+
+}

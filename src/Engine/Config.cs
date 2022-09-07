@@ -11,7 +11,8 @@ public static class Config
     public const int NumberSkullKing = 1;
     public const int NumberScaryM = 1;
     public const int NumberMermaids = 2;
-    public const int MaxPlayer = 6;
+    public const int MinPlayers = 2;
+    public const int MaxPlayers = 6;
     public const int EscapeValue = 0;
     public const int MermaidValue = NumberNumCards + 1;
     public const int PirateValue = MermaidValue + 1;
@@ -21,5 +22,6 @@ public static class Config
     public const int ScoreBadVote = -10;
     public const int BonusMermaid = 50;
     public const int BonusSkullKing = 30;
-    public const int TurnNumber = 10;
+    public const int PirateVariants = 5;
+    public const int RoundsPerGame = 10;
 }

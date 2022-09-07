@@ -1,109 +1,115 @@
-﻿namespace KingSkullClassicOnline.Engine.Game;
+﻿using KingSkullClassicOnline.Engine.Cards;
 
-/// <summary>
-///     gère une manche de jeu
-/// </summary>
+namespace KingSkullClassicOnline.Engine.Game;
+
 public class Round
 {
     private static readonly Random Random = new();
-    private readonly Controller _controller;
+    private readonly List<Card> _deck;
+    private readonly Fold[] _folds;
+    private readonly IList<Player> _players;
+    private readonly int _turn;
 
-    /// <summary>
-    ///     constructeur
-    /// </summary>
-    /// <param name="numPlayers">nombre de joueurs dans la partie</param>
-    /// <param name="turn">tour du round</param>
-    public Round(Controller controller)
+    private int _currentFold;
+    private int _currentPlayer;
+    private int _startingPlayer;
+
+    public Round(int turn, IList<Player> players, IEnumerable<Card> deck)
     {
-        CurrentPlayer = 0;
-        _controller = controller;
-        Votes = new int[controller.Players.Count];
-        Plis = new Fold[controller.Turn];
+        _currentPlayer = _startingPlayer = (turn - 1) % players.Count;
+        _turn = turn;
+        _currentFold = 0;
+        _players = players;
+        _folds = new Fold[turn];
+        for (var i = 0; i < _folds.Length; ++i) _folds[i] = new Fold();
+        _deck = Shuffle(deck);
+        IsOver = false;
     }
 
-    public int[] Votes { get; }
+    public Color CurrentColor => _folds[_currentFold].TurnColor;
+    public Fold CurrentFold => _folds[_currentFold];
+    public bool IsOver { get; private set; }
 
-    public Fold[] Plis { get; }
+    public Player NextPlayer => _players[_currentPlayer];
 
-    public int CurrentPlayer { get; set; }
-
-    /// <summary>
-    ///     Mélange un array utilisant le "fisher yates shuffle"
-    /// </summary>
-    /// <param name="array">l'array à mélanger</param>
-    /// <typeparam name="T">type du contenu de l'array</typeparam>
-    /// <returns>l'array mélangé</returns>
-    public static T[] Shuffle<T>(T[] array)
+    public void AddVote(Player player, int vote)
     {
-        var n = array.Length;
+        player.SetVote(_turn, vote);
+    }
+
+    public bool AreAllVotesIn()
+    {
+        return _players.All(player => player.GetVote(_turn) != null);
+    }
+
+    public void DealCards(Player player)
+    {
+        player.Hand = _deck.GetRange(0, _turn);
+        _deck.RemoveRange(0, _turn);
+    }
+
+    public void Play(Player player, Card card)
+    {
+        CurrentFold.PlayCard(player, card);
+        _currentPlayer = NextIndexInCollection(_currentPlayer, _players.Count);
+    }
+
+    public void EndRound()
+    {
+        foreach (var p in _players) ScoreCalculator.UpdateScore(p, _folds, _turn);
+    }
+
+    public int EndFold()
+    {
+        if (_startingPlayer != _currentPlayer) return -1;
+        var (winner, _) = CurrentFold.GetWinner();
+        winner.AddActual(_turn);
+        _currentPlayer = _startingPlayer = _players.IndexOf(winner);
+        ++_currentFold;
+        if (_currentFold != _turn) return _currentFold;
+        IsOver = true;
+        return _currentFold;
+    }
+
+    public bool IsNewFold()
+    {
+        return CurrentFold.CardsPlayed.Count == 0;
+    }
+
+    public int FoldNumber()
+    {
+        return _currentFold + 1;
+    }
+
+    private static int NextIndexInCollection(int index, int count)
+    {
+        return (index + 1) % count;
+    }
+
+    public Player[] GetPlayersFromStarting()
+    {
+        var players = new Player[_players.Count];
+        var tmpPlayer = _startingPlayer;
+        for (var i = 0; i < _players.Count; i++)
+        {
+            players[i] = _players[tmpPlayer];
+            tmpPlayer = NextIndexInCollection(tmpPlayer, _players.Count);
+        }
+
+        return players;
+    }
+
+    private static List<T> Shuffle<T>(IEnumerable<T> array)
+    {
+        var deck = array.ToList();
+
+        var n = deck.Count;
         for (var i = 0; i < n - 1; i++)
         {
             var r = i + Random.Next(n - i);
-            (array[r], array[i]) = (array[i], array[r]);
+            (deck[r], deck[i]) = (deck[i], deck[r]);
         }
 
-        return array;
-    }
-
-    /// <summary>
-    ///     fait une copie du deck et distribue les cartes aux joueurs
-    /// </summary>
-    public void DealCards()
-    {
-        var temp = new List<Card.Card>();
-        temp.AddRange(Shuffle(_controller.Deck.ToArray()));
-
-        for (var index = 0; index < _controller.Players.Count; index++)
-            _controller.Players[index].AddCards(temp.GetRange(0 + index * _controller.Turn, _controller.Turn));
-    }
-
-    /// <summary>
-    ///     gère le tour actuel
-    /// </summary>
-    public void Play()
-    {
-        DealCards();
-        for (var index = 0; index < _controller.Players.Count; index++)
-        {
-            var player = _controller.Players[index];
-            Votes[index] = player.CurrentVote;
-        }
-
-        var lastWinner = 0;
-
-        for (var i = 0; i < _controller.Turn; ++i)
-        {
-            Plis[i] = new Fold();
-            for (var index = 0; index < _controller.Players.Count; index++)
-            {
-                var p = _controller.Players[(index + lastWinner) % _controller.Players.Count];
-                CurrentPlayer++;
-                var indexCard = p.PlayCard(Plis[i].TurnColor);
-                var cardPlayed = p.Hand[indexCard];
-                p.Hand.RemoveAt(indexCard);
-                Plis[i].PlayCard(p, cardPlayed);
-            }
-
-            lastWinner = _controller.Players.IndexOf(Plis[i].GetWinner().Player);
-        }
-
-        CurrentPlayer = 0;
-        for (var index = 0; index < _controller.Players.Count; index++)
-        {
-            var p = _controller.Players[index];
-            ScoreCalculator.UpdateScore(p, Plis, Votes[index], _controller.Turn);
-        }
-
-        ChangePlayerOrder();
-    }
-
-    /// <summary>
-    ///     Change l'ordre des joueurs
-    /// </summary>
-    private void ChangePlayerOrder()
-    {
-        var temp = _controller.Players.First();
-        _controller.Players.RemoveAt(0);
-        _controller.Players.Add(temp);
+        return deck;
     }
 }

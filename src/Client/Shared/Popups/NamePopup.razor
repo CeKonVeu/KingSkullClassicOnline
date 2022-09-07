@@ -1,0 +1,43 @@
+﻿<div>
+    <BaseDialog>
+
+        <MudContainer MaxWidth="MaxWidth.Medium">
+            <form>
+                <MudStack>
+                    <MudTextField
+                        @bind-Value="_name"
+                        Variant="Variant.Filled"
+                        AutoFocus="true"
+                        Required="true"
+                        Immediate="true"
+                        RequiredError=""
+                        Error="false"
+                        Label="Votre nom">
+                    </MudTextField>
+                    <MudButton
+                        OnClick="Confirm"
+                        ButtonType="ButtonType.Submit"
+                        Disabled="string.IsNullOrEmpty(_name)"
+                        Variant="Variant.Filled"
+                        Color="Color.Primary">
+                        Valider
+                    </MudButton>
+                </MudStack>
+            </form>
+        </MudContainer>
+    </BaseDialog>
+</div>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
+
+    private string _name = null!;
+
+    private void Confirm()
+    {
+        MudDialog.Close(DialogResult.Ok(_name));
+    }
+
+}

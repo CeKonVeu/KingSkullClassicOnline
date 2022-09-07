@@ -1,0 +1,238 @@
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@using KingSkullClassicOnline.Client.Shared.Popups
+@using KingSkullClassicOnline.Engine
+@using KingSkullClassicOnline.Engine.Cards
+@using KingSkullClassicOnline.Engine.Game
+@using KingSkullClassicOnline.Shared
+@using Player = KingSkullClassicOnline.Client.Player
+@using Color = MudBlazor.Color
+@inherits ComponentBase
+@inject IDialogService DialogService
+@inject ILogger<GameBoard> Logger
+@inject NavigationManager NavigationManager
+
+@if (!IsVisible)
+{
+    return;
+}
+
+<PageTitle>Jeu</PageTitle>
+
+<div class="relative">
+    <div class="d-inline-flex parchment-game">
+        <div class="parchment-bg-game"></div>
+        <MudText
+            Class="pa-4 rounds"
+            Typo="Typo.h3"
+            Align="Align.Left">
+            @_game.CurrentFold / @_game.Turn
+        </MudText>
+    </div>
+    <MudStack Class="buttons">
+        <RulesButton/>
+
+        <MudTooltip
+            Text="Scores"
+            Duration="1000"
+            Placement="Placement.Left">
+            <MudIconButton
+                Icon="@Icons.Filled.GridOn"
+                Variant="Variant.Filled"
+                OnClick="() => OpenScores()"
+                Color="Color.Secondary"
+                Size="Size.Large"/>
+        </MudTooltip>
+    </MudStack>
+
+    <div class="d-flex justify-space-around flex-wrap mt-15 gap-4 pl-6 pr-6 parchment-game pt-4">
+        <div class="parchment-bg-game board"></div>
+
+        @{
+            var winnerIndex = _game.GetWinnerIndex();
+            var i = winnerIndex;
+            do
+            {
+                if (_game.Players.Count == 0) break;
+                var player = _game.Players[i];
+
+                <div class="center">
+                    <MudText Typo="Typo.h5"
+                             Align="Align.Center">
+                        @player.Scores[_game.Turn - 1].Actual / @player.Scores[_game.Turn - 1].Voted
+                    </MudText>
+                    <MudText Typo="Typo.h5"
+                             Class="@($"mb-2 pseudo {(player.Id == Connection.ConnectionId ? "self" : "")}")"
+                             Align="Align.Center">
+                        @player.Name
+                    </MudText>
+                    @if (player.PlayedCard == null)
+                    {
+                        <SingleCard CardName="Back" Class="player-card back"/>
+                    }
+                    else
+                    {
+                        <SingleCard CardName="@player.PlayedCard.Name"
+                                    Class="@($"player-card {(player.Id == _game.Winner?.Id ? "winning" : "")}")"/>
+                    }
+
+                </div>
+
+
+                i = (i + 1) % _game.Players.Count;
+            } while (i != winnerIndex);
+        }
+    </div>
+    @if (_game.Player(Connection.ConnectionId!, out var p))
+    {
+        <HandGame Class="hand" Cards="p.Hand" OnCardClick="CardClicked"/>
+    }
+</div>
+
+<svg style="height: 0">
+    <filter id="wavy4">
+        <feTurbulence x="0" y="0" baseFrequency="0.01" numOctaves="10" seed="1"/>
+        <feDisplacementMap in="SourceGraphic" scale="20"/>
+    </filter>
+</svg>
+<svg style="height: 0">
+    <filter id="wavy5">
+        <feTurbulence x="0" y="0" baseFrequency="0.01" numOctaves="6" seed="3"/>
+        <feDisplacementMap in="SourceGraphic" scale="20"/>
+    </filter>
+</svg>
+
+@code {
+
+    [Parameter]
+    public HubConnection Connection { get; set; } = null!;
+
+    [Parameter]
+    public bool IsVisible { get; set; }
+
+    private Game _game = new();
+
+    private async Task<int> AskVote(int maxVote)
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, DisableBackdropClick = true };
+        var parameters = new DialogParameters { ["MaxValue"] = maxVote };
+        var dialog = DialogService.Show<VotePopup>("Votez !", parameters, options);
+        var result = await dialog.Result;
+        return (int)result.Data;
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        Connection.On(Events.GameStarted, (IEnumerable<PlayerData> players) =>
+        {
+            foreach (var player in players)
+            {
+                _game.Players.Add(new Player(player));
+            }
+            GetPlayer().Hand = new List<Card>();
+        });
+        Connection.On(Events.HandChanged, (List<Card> newHand) =>
+        {
+            Logger.LogInformation($"{Events.HandChanged}: {string.Join(", ", newHand.Select(c => c.Name))}");
+
+            GetPlayer().Hand = newHand;
+
+            StateHasChanged();
+        });
+        Connection.On(Events.VoteAsked, async (int minVote, int maxVote) =>
+        {
+            Logger.LogInformation($"{Events.VoteAsked}: {minVote} - {maxVote}");
+
+            var vote = await AskVote(maxVote);
+            await Connection.SendAsync(Events.SendVote, vote);
+        });
+        Connection.On(Events.RoundStarted, (int turn, IEnumerable<PlayerVote> votes) =>
+        {
+            Logger.LogInformation($"{Events.RoundStarted}: Round N°{turn}");
+
+            _game.Turn = turn;
+            foreach (var (id, vote) in votes)
+            {
+                _game.Player(id).Scores[turn - 1].Voted = vote;
+            }
+
+            StateHasChanged();
+        });
+        Connection.On(Events.MustPlay, (List<Card> cards) =>
+        {
+            Logger.LogInformation($"{Events.MustPlay}: {string.Join(",", cards)}");
+
+            GetPlayer().Hand = cards;
+
+            StateHasChanged();
+        });
+        Connection.On(Events.CardPlayed, (PlayerData player, Card card, PlayerData winner) =>
+        {
+            Logger.LogInformation($"{Events.CardPlayed}: {player.Name} - {card} - {winner.Name}");
+
+            _game.Player(player.Id).PlayedCard = card;
+            _game.Winner = _game.Player(winner.Id);
+
+            StateHasChanged();
+        });
+        Connection.On(Events.FoldEnded, (int fold, IEnumerable<PlayerVote> votes) =>
+        {
+            Logger.LogInformation($"{Events.FoldEnded}: Fold N°{fold} - {string.Join(",", votes.Select(v => v.Value))}");
+
+            _game.ClearPlayedCards();
+            foreach (var (id, vote) in votes)
+            {
+                _game.Player(id).Scores[_game.Turn - 1].Actual = vote;
+            }
+
+            StateHasChanged();
+        });
+        Connection.On(Events.FoldStarted, (int fold) =>
+        {
+            Logger.LogInformation($"{Events.FoldStarted}: Fold N°{fold}");
+
+            _game.CurrentFold = fold;
+
+            StateHasChanged();
+        });
+
+        Connection.On(Events.RoundEnded, (int turn, IEnumerable<PlayerVote> scores) =>
+        {
+            Logger.LogInformation($"{Events.RoundEnded}");
+
+            foreach (var (id, score) in scores)
+            {
+                _game.Player(id).Scores[turn - 1].Total = score;
+            }
+            StateHasChanged();
+        });
+
+        Connection.On(Events.GameEnded, async (int[] scores, string winner) =>
+        {
+            Logger.LogInformation($"{Events.GameEnded}");
+
+            var dialog = OpenScores();
+            if (dialog != null) await dialog.Result;
+            NavigationManager.NavigateTo(NavigationManager.BaseUri);
+        });
+
+        return Task.CompletedTask;
+    }
+
+    private async void CardClicked(string card)
+    {
+        Logger.LogInformation($"Clicked on {card}");
+        await Connection.SendAsync(Events.PlayCard, card);
+    }
+
+    private IDialogReference? OpenScores()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        return DialogService.Show<ScoresPopup>("Tableau des scores", options);
+    }
+
+    private Player GetPlayer()
+    {
+        return _game.Player(Connection.ConnectionId!);
+    }
+
+}
