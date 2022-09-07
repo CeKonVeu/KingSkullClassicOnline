@@ -169,12 +169,14 @@ public class Controller
             //TODO mettre à jour et envoyer les scores
             CurrentRound.EndRound();
             _view.RoundEnded(Turn, Players.Select(p => new PlayerVote(p.Data.Id, p.GetVote(Turn)!.Total)));
-            ++Turn;
+
             if (Turn == Config.RoundsPerGame)
             {
-                _view.GameEnded(GetScores(Turn), CurrentRound.CurrentFold.GetWinner().Player.Data.Name);
+                _view.GameEnded(GetScores(Turn), "");
                 return;
             }
+
+            ++Turn;
 
             StartNextRound();
         }

@@ -9,6 +9,7 @@
 @inherits ComponentBase
 @inject IDialogService DialogService
 @inject ILogger<GameBoard> Logger
+@inject NavigationManager NavigationManager
 
 @if (!IsVisible)
 {
@@ -37,7 +38,7 @@
             <MudIconButton
                 Icon="@Icons.Filled.GridOn"
                 Variant="Variant.Filled"
-                OnClick="OpenScores"
+                OnClick="() => OpenScores()"
                 Color="Color.Secondary"
                 Size="Size.Large"/>
         </MudTooltip>
@@ -205,6 +206,15 @@
             StateHasChanged();
         });
 
+        Connection.On(Events.GameEnded, async (int[] scores, string winner) =>
+        {
+            Logger.LogInformation($"{Events.GameEnded}");
+
+            var dialog = OpenScores();
+            if (dialog != null) await dialog.Result;
+            NavigationManager.NavigateTo(NavigationManager.BaseUri);
+        });
+
         return Task.CompletedTask;
     }
 
@@ -214,10 +224,10 @@
         await Connection.SendAsync(Events.PlayCard, card);
     }
 
-    private void OpenScores()
+    private IDialogReference? OpenScores()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<ScoresPopup>("Tableau des scores", options);
+        return DialogService.Show<ScoresPopup>("Tableau des scores", options);
     }
 
     private Player GetPlayer()

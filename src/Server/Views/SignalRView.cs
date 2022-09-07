@@ -1,11 +1,11 @@
-﻿using KingSkullClassicOnline.Engine;
-using KingSkullClassicOnline.Engine.Cards;
-using KingSkullClassicOnline.Engine.Game;
-using KingSkullClassicOnline.Server.Hubs;
-using KingSkullClassicOnline.Shared;
-using Microsoft.AspNetCore.SignalR;
+﻿namespace KingSkullClassicOnline.Server.Views;
 
-namespace KingSkullClassicOnline.Server.Views;
+using Engine;
+using Engine.Cards;
+using Engine.Game;
+using Hubs;
+using Microsoft.AspNetCore.SignalR;
+using Shared;
 
 public class SignalRView : IView
 {
@@ -34,9 +34,7 @@ public class SignalRView : IView
 
     public async Task GameEnded(int[] scores, string winner)
     {
-        //TODO implement
-        //await _hubContext.Clients.Group(_group).SendAsync(Events.GameEnded, scores, winner);
-        throw new NotImplementedException();
+        await _hubContext.Clients.Group(_group).SendAsync(Events.GameEnded, scores, winner);
     }
 
     public async Task GameStarted(IEnumerable<PlayerData> players)
