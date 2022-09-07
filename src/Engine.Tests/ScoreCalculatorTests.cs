@@ -56,6 +56,21 @@ public class ScoreCalculatorTests
         Assert.AreEqual(_p2.GetVote(_turn)!.Total, _p2.GetTotal(_turn));
     }
     
+    private int GetWinVoteNot0(int vote)
+    {
+        return Config.ScoreVoted * vote;
+    }
+
+    private int GetLoseVoteNot0(int vote, Player p)
+    {
+        return Config.ScoreBadVote * Math.Abs((int)(vote - p.GetVote(_turn).Actual)); 
+    }
+
+    private int GetVote0(bool win)
+    {
+        return Config.Score0 * _turn * (win ? 1 : -1);
+    }
+
     // Test sur des votes > 1 //
     
     [Test]
@@ -66,7 +81,7 @@ public class ScoreCalculatorTests
         PlayFold(1, Card.NumberedCard(10, Color.Black), Card.NumberedCard(1, Color.Yellow));
         PlayFold(2, Card.NumberedCard(10, Color.Black), Card.NumberedCard(1, Color.Yellow));
         UpdateAllScores();
-        CheckScores(Config.ScoreVoted * _turn, Config.ScoreBadVote *  Math.Abs(_vote2 - 0));
+        CheckScores(GetWinVoteNot0(_vote1), GetLoseVoteNot0(_vote2, _p2));
     }
     
     // Test sur des votes = 0 //
@@ -79,25 +94,22 @@ public class ScoreCalculatorTests
         PlayFold(1, Card.NumberedCard(10, Color.Black), Card.NumberedCard(1, Color.Yellow));
         PlayFold(2, Card.NumberedCard(10, Color.Black), Card.NumberedCard(1, Color.Yellow));
         UpdateAllScores();
-        CheckScores(Config.Score0 * _turn, -(Config.Score0 * _turn));
+        CheckScores(GetVote0(true), GetVote0(false));
     }
 
-/*
+    // Test sur les points bonus //
+    
     [Test]
     public void ItShouldGiveBonusForMermaidOnSkullKing()
     {
-        _vote1 = 3;
-        _vote2 = 0;
-
-        _folds[2].PlayCard(_p1, new SpecialCard(14, "a"));
-        _folds[2].PlayCard(_p2, new SpecialCard(16, "a"));
-        ScoreCalculator.UpdateScore(_p1, _folds, _vote1, _turn);
-        ScoreCalculator.UpdateScore(_p2, _folds, _vote2, _turn);
-
-        Assert.AreEqual(_p1.Votes[_turn - 1], (_vote1, _turn * Config.ScoreVoted + Config.BonusMermaid));
-        Assert.AreEqual(_p2.Votes[_turn - 1], (_vote2, _turn * Config.Score0));
+        SetAllVotes(2, 1);
+        PlayFold(0, Card.Mermaid(), Card.SkullKing());
+        PlayFold(1, Card.Escape(), Card.Escape());
+        PlayFold(2, Card.Escape(), Card.Escape());
+        UpdateAllScores();
+        CheckScores(GetWinVoteNot0(_vote1) + Config.BonusMermaid, GetLoseVoteNot0(_vote1, _p2) + Config.BonusMermaid);
     }
-
+/*
     [Test]
     public void ItShouldGiveBonusForSkullKingOnPirate()
     {
@@ -136,7 +148,7 @@ public class ScoreCalculatorTests
     {
         _p1 = new Player("1", "");
         _p2 = new Player("2", "");
-
+        
         _turn = 3;
         _folds = new[]
         {
