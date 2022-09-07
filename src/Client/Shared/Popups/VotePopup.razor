@@ -3,22 +3,25 @@
 <div>
     <BaseDialog>
         <MudContainer MaxWidth="MaxWidth.Medium">
-            <MudStack>
-                <MudSlider TickMarks="true"
-                           TickMarkLabels="_votes"
-                           Min="0"
-                           Max="MaxValue"
-                           Color="Color.Dark"
-                           ValueLabel="true"
-                           Class="mb-6"
-                           @bind-Value="_value"/>
-                <MudButton
-                    OnClick="ConfirmVote"
-                    Variant="Variant.Filled"
-                    Color="Color.Primary">
-                    Voter @_timeLeft
-                </MudButton>
-            </MudStack>
+            <form>
+                <MudStack>
+                    <MudSlider TickMarks="true"
+                               Min="0"
+                               Max="MaxValue"
+                               Color="Color.Dark"
+                               ValueLabel="true"
+                               Autofocus="true"
+                               Class="mb-6"
+                               @bind-Value="_value"/>
+                    <MudButton
+                        OnClick="ConfirmVote"
+                        Variant="Variant.Filled"
+                        ButtonType="ButtonType.Submit"
+                        Color="Color.Primary">
+                        Voter @_timeLeft
+                    </MudButton>
+                </MudStack>
+            </form>
         </MudContainer>
     </BaseDialog>
 </div>
@@ -35,7 +38,7 @@
 
     private int _timeLeft = 10;
 
-    private string[] _votes = { "0" };
+    private string[] _votes = {"0"};
 
     private Timer _timer = null!;
 
