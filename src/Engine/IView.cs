@@ -16,5 +16,6 @@ public interface IView
     Task PlayerLeft(PlayerData player);
     Task RoomCreated(string roomName, PlayerData player);
     Task RoundEnded(int[] scores);
+    Task FoldEnded(int fold,IEnumerable<PlayerVote> votes);
     Task RoundStarted(int turn, IEnumerable<PlayerVote> votes);
 }

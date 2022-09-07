@@ -158,7 +158,8 @@ public class Controller
         CurrentRound.Play(player, playedCard);
         _view.HandReceived(player.Data, player.Hand);
         _view.CardPlayed(player.Data, playedCard, CurrentRound.CurrentFold.GetWinner().Player.Data);
-        CurrentRound.EndFold();
+        var foldNumber = CurrentRound.EndFold();
+        _view.FoldEnded(foldNumber, Players.Select(p => new PlayerVote(p.Data.Id, p.GetVote(Turn)!.Actual)));
         if (CurrentRound.IsOver)
         {
             //TODO mettre à jour et envoyer les scores

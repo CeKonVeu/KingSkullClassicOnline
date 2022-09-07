@@ -65,15 +65,16 @@ public class Round
         }
     }
     
-    public void EndFold()
+    public int EndFold()
     {
-        if (_startingPlayer != _currentPlayer) return;
+        if (_startingPlayer != _currentPlayer) return _currentFold+1;
         var (winner, _) = CurrentFold.GetWinner();
         winner.AddActual(_turn);
         _currentPlayer = _startingPlayer = _players.IndexOf(winner);
         ++_currentFold;
-        if (_currentFold != _turn) return;
+        if (_currentFold != _turn) return _currentFold;
         IsOver = true;
+        return _currentFold;
     }
     
     private static int NextIndexInCollection(int index, int count) => (index + 1) % count;

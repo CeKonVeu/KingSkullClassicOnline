@@ -19,6 +19,7 @@ public static class Events
     public const string SendVote = "SendVote";
     public const string RoundStarted = "RoundStarted";
     public const string RoundEnded = "RoundEnded";
+    public const string FoldEnded = "FoldEnded";
     public const string PlayCard = "PlayCard";
     public const string CardPlayed = "CardPlayed";
     public const string GameEnded = "GameEnded";
