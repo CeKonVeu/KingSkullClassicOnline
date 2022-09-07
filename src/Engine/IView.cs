@@ -1,7 +1,7 @@
-﻿namespace KingSkullClassicOnline.Engine;
+﻿using KingSkullClassicOnline.Engine.Cards;
+using KingSkullClassicOnline.Engine.Game;
 
-using Cards;
-using Game;
+namespace KingSkullClassicOnline.Engine;
 
 public interface IView
 {
@@ -15,7 +15,8 @@ public interface IView
     Task PlayerJoined(PlayerData player);
     Task PlayerLeft(PlayerData player);
     Task RoomCreated(string roomName, PlayerData player);
-    Task RoundEnded(int[] scores);
-    Task FoldEnded(int fold,IEnumerable<PlayerVote> votes);
+    Task RoundEnded(int turn, IEnumerable<PlayerVote> totalScores);
+    Task FoldEnded(int fold, IEnumerable<PlayerVote> votes);
+    Task FoldStarted(int fold);
     Task RoundStarted(int turn, IEnumerable<PlayerVote> votes);
 }

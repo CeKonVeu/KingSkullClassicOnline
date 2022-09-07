@@ -1,6 +1,6 @@
-﻿namespace KingSkullClassicOnline.Engine.Game;
+﻿using KingSkullClassicOnline.Engine.Cards;
 
-using Cards;
+namespace KingSkullClassicOnline.Engine.Game;
 
 public class Player
 {
@@ -64,9 +64,9 @@ public class Player
 
     public void SetTotal(int turn, int total)
     {
-        int? score = 0;
+        var score = 0;
         if (turn > 1)
-            score = _votes[turn - 2]?.Total;
+            score = _votes[turn - 2]!.Total;
         _votes[turn - 1]!.Total = total + score;
     }
 

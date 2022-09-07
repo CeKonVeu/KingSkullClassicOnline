@@ -76,7 +76,7 @@ public class Controller
     private int[] GetScores(int turn)
     {
         var scores = new int[Players.Count];
-        for (var i = 0; i < Players.Count; ++i) scores[i] = Players[i].GetVote(turn).Total!.Value;
+        for (var i = 0; i < Players.Count; ++i) scores[i] = Players[i].GetVote(turn)!.Total;
         return scores;
     }
 
@@ -161,12 +161,12 @@ public class Controller
         var foldNumber = CurrentRound.EndFold();
         if (foldNumber != -1)
             _view.FoldEnded(foldNumber, Players.Select(p => new PlayerVote(p.Data.Id, p.GetVote(Turn)!.Actual)));
+
         if (CurrentRound.IsOver)
         {
             //TODO mettre à jour et envoyer les scores
             CurrentRound.EndRound();
-            var scores = GetScores(Turn);
-            _view.RoundEnded(scores);
+            _view.RoundEnded(Turn, Players.Select(p => new PlayerVote(p.Data.Id, p.GetVote(Turn)!.Total)));
             ++Turn;
             if (Turn == Config.RoundsPerGame)
             {
@@ -178,6 +178,8 @@ public class Controller
         }
         else
         {
+            if (foldNumber != -1)
+                _view.FoldStarted(foldNumber);
             NotifyNextPlayer();
         }
     }

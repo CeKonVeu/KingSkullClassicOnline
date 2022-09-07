@@ -1,11 +1,11 @@
-﻿namespace KingSkullClassicOnline.Server.Views;
-
-using Engine;
-using Engine.Cards;
-using Engine.Game;
-using Hubs;
+﻿using KingSkullClassicOnline.Engine;
+using KingSkullClassicOnline.Engine.Cards;
+using KingSkullClassicOnline.Engine.Game;
+using KingSkullClassicOnline.Server.Hubs;
+using KingSkullClassicOnline.Shared;
 using Microsoft.AspNetCore.SignalR;
-using Shared;
+
+namespace KingSkullClassicOnline.Server.Views;
 
 public class SignalRView : IView
 {
@@ -71,19 +71,19 @@ public class SignalRView : IView
         await SendPlayers();
     }
 
-    public async Task RoundEnded(int[] scores)
-    {
-        await _hubContext.Clients.Group(_group).SendAsync(Events.RoundEnded, scores);
-    }
-
     public async Task RoundStarted(int turn, IEnumerable<PlayerVote> votes)
     {
         await _hubContext.Clients.Group(_group).SendAsync(Events.RoundStarted, turn, votes);
     }
-    
-    public async Task FoldEnded(int fold,IEnumerable<PlayerVote> votes)
+
+    public async Task FoldStarted(int fold)
     {
-        await _hubContext.Clients.Group(_group).SendAsync(Events.FoldEnded,fold ,votes);
+        await _hubContext.Clients.Group(_group).SendAsync(Events.FoldStarted, fold);
+    }
+
+    public async Task FoldEnded(int fold, IEnumerable<PlayerVote> votes)
+    {
+        await _hubContext.Clients.Group(_group).SendAsync(Events.FoldEnded, fold, votes);
     }
 
     public async Task NotifyError(PlayerData player, string message)
@@ -96,6 +96,11 @@ public class SignalRView : IView
     {
         Console.WriteLine($"Must vote between {min} and {max}");
         await _hubContext.Clients.Group(_group).SendAsync(Events.VoteAsked, min, max);
+    }
+
+    public async Task RoundEnded(int turn, IEnumerable<PlayerVote> totalScores)
+    {
+        await _hubContext.Clients.Group(_group).SendAsync(Events.RoundEnded, turn, totalScores);
     }
 
     private async Task AddToGroup(PlayerData player)
