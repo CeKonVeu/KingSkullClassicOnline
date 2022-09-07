@@ -123,7 +123,7 @@ public class ScoreCalculatorTests
     /// P1 gagne 3 plis sur 2 pariés
     /// </summary>
     [Test]
-    public void ItShouldAddScoreCorrectlyWhenTheVoteIsCorrectAndNot0()
+    public void ItShouldSubtractScoreCorrectlyWhenTheVoteIsNot0AndUndervalued()
     {
         SetAllVotes(2, 0, 0);
         PlayFold(1, Card.NumberedCard(1, Color.Yellow), Card.Escape(), Card.Escape());
@@ -132,20 +132,39 @@ public class ScoreCalculatorTests
         UpdateAllScores();
         Assert.AreEqual(_p1.GetTotal(_turn), GetBadVoteNot0(_vote1, _p1));
     }
-/*
+
     // Test sur des votes = 0 //
 
+    /// <summary>
+    /// P1 gagne 0 plis sur 0 pariés
+    /// </summary>
     [Test]
-    public void ItShouldAddAndSubtractScoreCorrectlyWhenTheVoteIs0()
+    public void ItShouldAddScoreCorrectlyWhenTheVoteIs0AndCorrect()
     {
-        SetAllVotes(0, 0);
-        PlayFold(1, Card.Escape(), Card.NumberedCard(1, Color.Yellow));
-        PlayFold(2, Card.Escape(), Card.NumberedCard(1, Color.Yellow));
-        PlayFold(3, Card.Escape(), Card.NumberedCard(1, Color.Yellow));
+        SetAllVotes(0, 0, 0);
+        PlayFold(1, Card.Escape(), Card.NumberedCard(1, Color.Yellow), Card.Escape());
+        PlayFold(2, Card.Escape(), Card.NumberedCard(1, Color.Yellow), Card.Escape());
+        PlayFold(3, Card.Escape(), Card.NumberedCard(1, Color.Yellow), Card.Escape());
         UpdateAllScores();
-        CheckScores(GetVote0(true), GetVote0(false));
+        Assert.AreEqual(_p1.GetTotal(_turn), GetGoodVote0());
     }
-
+    
+    /// <summary>
+    /// P1 gagne 1 pli sur 0 pariés
+    /// P2 gagne 2 plis sur 0 pariés
+    /// </summary>
+    [Test]
+    public void ItShouldSubtractScoreCorrectlyWhenTheVoteIs0AndOvervalued()
+    {
+        SetAllVotes(0, 0, 0);
+        PlayFold(1, Card.NumberedCard(1, Color.Yellow), Card.Escape(), Card.Escape());
+        PlayFold(2, Card.Escape(), Card.NumberedCard(1, Color.Yellow), Card.Escape());
+        PlayFold(3, Card.Escape(), Card.NumberedCard(1, Color.Yellow), Card.Escape());
+        UpdateAllScores();
+        Assert.AreEqual(_p1.GetTotal(_turn), GetBadVote0());
+        Assert.AreEqual(_p2.GetTotal(_turn), GetBadVote0());
+    }
+/*
     // Test des points bonus Mermaid//
     
     [Test]
