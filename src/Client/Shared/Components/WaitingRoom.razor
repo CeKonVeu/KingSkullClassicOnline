@@ -6,6 +6,7 @@
 @inject ISnackbar Snackbar
 @inject IClipboardService ClipboardService
 @inject NavigationManager NavigationManager
+@inject ILogger<WaitingRoom> Logger
 
 @if (!IsVisible)
 {
@@ -42,29 +43,29 @@
                 Commencer la partie
             </MudButton>
 
-            <MudStack Row="true">
-                <MudButton
-                    OnClick="OpenRulesDialog"
-                    Variant="Variant.Filled"
-                    Color="Color.Primary"
-                    FullWidth="true"
-                    Disabled="true">
-                    Modifier les règles
-                </MudButton>
-                <RulesButton/>
-            </MudStack>
+            <MudButton
+                OnClick="OpenRulesDialog"
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                FullWidth="true"
+                Disabled="true">
+                Modifier les règles
+            </MudButton>
         }
 
-        <MudTextField
-            Value="_url"
-            Variant="Variant.Filled"
-            ReadOnly="true"
-            Label="URL pour rejoindre cette room"
-            Adornment="Adornment.End"
-            AdornmentIcon="@Icons.Filled.ContentCopy"
-            OnAdornmentClick="CopyRoomLink"
-            @onclick="CopyRoomLink">
-        </MudTextField>
+        <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudTextField
+                Value="_url"
+                Variant="Variant.Filled"
+                ReadOnly="true"
+                Label="URL pour rejoindre cette room"
+                Adornment="Adornment.End"
+                AdornmentIcon="@Icons.Filled.ContentCopy"
+                OnAdornmentClick="CopyRoomLink"
+                @onclick="CopyRoomLink">
+            </MudTextField>
+            <RulesButton/>
+        </MudStack>
     </MudStack>
 
 </MudContainer>
@@ -104,12 +105,13 @@
     {
         Connection.On(Events.RoomChanged, (string roomName, IEnumerable<string> players) =>
         {
+            Logger.LogInformation($"{Events.RoomChanged}: {roomName}");
             _url = $"{NavigationManager.Uri}/{roomName}";
             Names = players;
             RoomName = roomName;
-            Console.WriteLine($"{Events.RoomChanged}: {roomName}");
             StateHasChanged();
         });
+        return Task.CompletedTask;
     }
 
     private async void StartGame()
