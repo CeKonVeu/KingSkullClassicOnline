@@ -42,7 +42,7 @@ public class SignalRView : IView
     public async Task GameStarted(IEnumerable<PlayerData> players)
     {
         Console.WriteLine("Game has started");
-        await _hubContext.Clients.Group(_group).SendAsync(Events.GameStarted,players);
+        await _hubContext.Clients.Group(_group).SendAsync(Events.GameStarted,players.Select(p=> ( p.Id, p.Name)));
     }
 
     public async Task HandReceived(PlayerData player, List<Card> cards)
