@@ -2,6 +2,7 @@
 
 using Cards;
 using Game;
+using Shared;
 
 public interface IView
 {
@@ -16,5 +17,5 @@ public interface IView
     Task PlayerLeft(PlayerData player);
     Task RoomCreated(string roomName, PlayerData player);
     Task RoundEnded(int[] scores);
-    Task RoundStarted(int turn, IEnumerable<(string,int)> votes);
+    Task RoundStarted(int turn, IEnumerable<PlayerVote> votes);
 }

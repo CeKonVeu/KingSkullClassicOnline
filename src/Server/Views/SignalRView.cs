@@ -42,13 +42,13 @@ public class SignalRView : IView
     public async Task GameStarted(IEnumerable<PlayerData> players)
     {
         Console.WriteLine("Game has started");
-        await _hubContext.Clients.Group(_group).SendAsync(Events.GameStarted,players.Select(p=> ( p.Id, p.Name)));
+        await _hubContext.Clients.Group(_group).SendAsync(Events.GameStarted, players);
     }
 
     public async Task HandReceived(PlayerData player, List<Card> cards)
     {
         Console.WriteLine($"Player {player.Name} received: {string.Join(", ", cards.Select(c => c.Name))}");
-        await _hubContext.Clients.Client(player.Id).SendAsync(Events.HandChanged, cards.Select(c => c.Name));
+        await _hubContext.Clients.Client(player.Id).SendAsync(Events.HandChanged, cards);
     }
 
     public async Task MustPlay(PlayerData player, IEnumerable<Card> availableCards)
@@ -77,9 +77,9 @@ public class SignalRView : IView
         await _hubContext.Clients.Group(_group).SendAsync(Events.RoundEnded, scores);
     }
 
-    public async Task RoundStarted(int turn, IEnumerable<(string,int)> votes)
+    public async Task RoundStarted(int turn, IEnumerable<PlayerVote> votes)
     {
-        await _hubContext.Clients.Group(_group).SendAsync(Events.RoundStarted,turn,votes);
+        await _hubContext.Clients.Group(_group).SendAsync(Events.RoundStarted, turn, votes);
     }
 
     public async Task NotifyError(PlayerData player, string message)

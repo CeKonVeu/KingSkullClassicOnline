@@ -6,6 +6,7 @@
 @inject ILogger<Game> Logger;
 @using Microsoft.AspNetCore.SignalR.Client
 @using KingSkullClassicOnline.Shared
+@using KingSkullClassicOnline.Engine.Game
 @using KingSkullClassicOnline.Client.Shared.Popups
 @using KingSkullClassicOnline.Client.Shared.Components
 @implements IAsyncDisposable
@@ -33,7 +34,7 @@
             .WithUrl(NavigationManager.ToAbsoluteUri("/connectRoom"))
             .Build();
 
-        _connection.On(Events.GameStarted, () =>
+        _connection.On(Events.GameStarted, (IEnumerable<PlayerData> _) =>
         {
             Logger.LogInformation($"{Events.GameStarted}");
             _isPlaying = true;

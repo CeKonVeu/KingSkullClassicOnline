@@ -1,12 +1,13 @@
-﻿@inherits ComponentBase
+﻿@using KingSkullClassicOnline.Engine.Cards
+@inherits ComponentBase
 
 <div>
     <MudContainer Class="@($"d-flex justify-center gap-1 {Class}")">
         @foreach (var card in Cards)
         {
-            <Card CardName="@card.Name"
-                  Class="@($"card-container {(card.IsPlayable ? "" : "disabled")}")"
-                  OnCardClick="OnCardClick"/>
+            <SingleCard CardName="@card.Name"
+                        Class="@($"card-container {(card.IsPlayable ? "" : "disabled")}")"
+                        OnCardClick="OnCardClick"/>
         }
     </MudContainer>
 </div>
@@ -21,7 +22,5 @@
 
     [Parameter]
     public ICollection<Card> Cards { get; set; } = new List<Card>();
-
-    public record Card(string Name, bool IsPlayable = true);
 
 }

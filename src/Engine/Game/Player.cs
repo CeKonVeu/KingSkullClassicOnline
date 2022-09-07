@@ -21,6 +21,11 @@ public class Player
 
     public List<Card> Hand { get; internal set; }
 
+    public void AddActual(int turn)
+    {
+        _votes[turn - 1]!.Actual += 1;
+    }
+
     private bool CheckIfCardRespectsRule(Color turnColor)
     {
         return true;
@@ -47,9 +52,9 @@ public class Player
         // return playableCards.Contains(_selectedCard);
     }
 
-    public Vote GetVote(int turn)
+    public Vote? GetVote(int turn)
     {
-        return _votes[turn - 1] ?? throw new InvalidOperationException();
+        return _votes[turn - 1];
     }
 
     public int PlayCard(Color turnColor)
@@ -57,21 +62,16 @@ public class Player
         return 1;
     }
 
-    public void SetVote(int turn, int voted)
-    {
-        _votes[turn - 1] = new Vote(voted);
-    }
-
-    public void SetTotal(int turn,int total)
+    public void SetTotal(int turn, int total)
     {
         int? score = 0;
-        if(turn > 1)
+        if (turn > 1)
             score = _votes[turn - 2]?.Total;
         _votes[turn - 1]!.Total = total + score;
     }
-    
-    public void AddActual(int turn)
+
+    public void SetVote(int turn, int voted)
     {
-        _votes[turn - 1]!.Actual+=1;
+        _votes[turn - 1] = new Vote(voted);
     }
 }

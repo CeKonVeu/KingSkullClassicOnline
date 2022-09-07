@@ -1,6 +1,9 @@
 ﻿@using Microsoft.AspNetCore.SignalR.Client
 @using KingSkullClassicOnline.Client.Shared.Popups
+@using KingSkullClassicOnline.Engine.Cards
+@using KingSkullClassicOnline.Engine.Game
 @using KingSkullClassicOnline.Shared
+@using Player = KingSkullClassicOnline.Client.Player
 @inherits ComponentBase
 @inject IDialogService DialogService
 @inject ILogger<GameBoard> Logger
@@ -49,24 +52,27 @@
                     @player.Scores[_game.Turn].Actual / @player.Scores[_game.Turn].Voted
                 </MudText>
                 <MudText Typo="Typo.h5"
-                         Class="@($"mb-2 pseudo {(player.Data.Id == Connection.ConnectionId ? "self" : "")}")"
+                         Class="@($"mb-2 pseudo {(player.Id == Connection.ConnectionId ? "self" : "")}")"
                          Align="Align.Center">
-                    @player.Data.Name
+                    @player.Name
                 </MudText>
                 @if (player.PlayedCard == null)
                 {
-                    <Card CardName="Back" Class="player-card back"/>
+                    <SingleCard CardName="Back" Class="player-card back"/>
                 }
                 else
                 {
-                    <Card CardName="@player.PlayedCard.Name"
-                          Class="@($"player-card {(player.PlayedCard.IsWinning ? "winning" : "")}")"/>
+                    <SingleCard CardName="@player.PlayedCard.Name"
+                                Class="@($"player-card {(player.PlayedCard.IsWinning ? "winning" : "")}")"/>
                 }
 
             </div>
         }
     </div>
-    <HandGame Class="hand" Cards="_game.Players[Connection.ConnectionId!].Hand" OnCardClick="CardClicked"/>
+    @if (_game.Players.TryGetValue(Connection.ConnectionId!, out var p))
+    {
+        <HandGame Class="hand" Cards="p.Hand" OnCardClick="CardClicked"/>
+    }
 </div>
 
 <svg style="height: 0">
@@ -103,17 +109,37 @@
 
     protected override Task OnInitializedAsync()
     {
-        Connection.On(Events.HandChanged, (List<string> newHand) =>
+        Connection.On(Events.GameStarted, (IEnumerable<PlayerData> players) =>
         {
-            Logger.LogInformation($"{Events.HandChanged}: {newHand}");
-    // _cards = newHand.Select(c => new HandGame.Card(c)).ToList();
+            foreach (var player in players)
+            {
+                _game.Players.Add(player.Id, new Player(player));
+            }
+            GetPlayer().Hand = new List<Card>();
+        });
+        Connection.On(Events.HandChanged, (List<Card> newHand) =>
+        {
+            Logger.LogInformation($"{Events.HandChanged}: {string.Join(", ", newHand.Select(c => c.Name))}");
+            GetPlayer().Hand = newHand;
             StateHasChanged();
         });
         Connection.On(Events.VoteAsked, async (int minVote, int maxVote) =>
         {
             Logger.LogInformation($"{Events.VoteAsked}: {minVote} - {maxVote}");
+
             var vote = await AskVote(maxVote);
             await Connection.SendAsync(Events.SendVote, vote);
+        });
+        Connection.On(Events.RoundStarted, (int turn, IEnumerable<PlayerVote> votes) =>
+        {
+            Logger.LogInformation($"{Events.RoundStarted}: Round N°{turn}");
+
+            _game.Turn = turn;
+            foreach (var (id, vote) in votes)
+            {
+                _game.Players[id].Scores[turn].Voted = vote;
+            }
+            StateHasChanged();
         });
         Connection.On(Events.MustPlay, (IEnumerable<string> playableCards) =>
         {
@@ -122,17 +148,8 @@
     // _cards = _cards.Select(c => new HandGame.Card(c.Name, playableCards.Contains(c.Name))).ToList();
             StateHasChanged();
         });
-        Connection.On(Events.RoundStarted, (string[] players, int[] scores) =>
-        {
-            Logger.LogInformation($"{Events.RoundStarted}: {string.Join(",", players)} - {string.Join(",", scores)}");
-    // _players = players.Select((p, i) =>
-    //     new Player(
-    //         new PlayerData(p, i.ToString()),
-    //         new PlayerCard("", false),
-    //         new PlayerScore(0, scores[i])))
-    //     .ToList();
-            StateHasChanged();
-        });
+
+
 
         Connection.On(Events.RoundEnded, (int[] scores) =>
         {
@@ -162,12 +179,6 @@
     // }
             StateHasChanged();
         });
-        Connection.On(Events.GameStarted, () =>
-        {
-            Console.WriteLine("test");
-            // sss
-            
-        });
 
         return Task.CompletedTask;
     }
@@ -182,6 +193,11 @@
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<ScoresPopup>("Tableau des scores", options);
+    }
+
+    private Player GetPlayer()
+    {
+        return _game.Players[Connection.ConnectionId!];
     }
 
 }
