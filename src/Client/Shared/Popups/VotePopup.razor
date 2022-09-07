@@ -6,6 +6,7 @@
             <form>
                 <MudStack>
                     <MudSlider TickMarks="true"
+                               TickMarkLabels="_votes"
                                Min="0"
                                Max="MaxValue"
                                Color="Color.Dark"
@@ -38,7 +39,7 @@
 
     private int _timeLeft = 10;
 
-    private string[] _votes = {"0"};
+    private string[] _votes = { "0" };
 
     private Timer _timer = null!;
 
