@@ -179,7 +179,7 @@ public class Controller
         else
         {
             if (CurrentRound.IsNewFold())
-                _view.FoldStarted(foldNumber);
+                _view.FoldStarted(CurrentRound.FoldNumber());
             NotifyNextPlayer();
         }
     }

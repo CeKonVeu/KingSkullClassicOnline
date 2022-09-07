@@ -73,7 +73,12 @@ public class Round
 
     public bool IsNewFold()
     {
-        return _currentFold == 0;
+        return CurrentFold.CardsPlayed.Count == 0;
+    }
+
+    public int FoldNumber()
+    {
+        return _currentFold + 1;
     }
 
     private static int NextIndexInCollection(int index, int count)
