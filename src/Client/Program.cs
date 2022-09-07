@@ -14,4 +14,6 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped<IClipboardService, ClipboardService>();
 builder.Services.AddScoped<Data>();
 
+builder.Logging.SetMinimumLevel(LogLevel.Information);
+
 await builder.Build().RunAsync();

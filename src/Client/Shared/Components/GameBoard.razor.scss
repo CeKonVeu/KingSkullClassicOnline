@@ -11,6 +11,7 @@
 ::deep .hand {
   position: absolute;
   bottom: 0;
+  z-index: 10;
 }
 
 .relative {

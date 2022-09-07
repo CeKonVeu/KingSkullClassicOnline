@@ -1,7 +1,7 @@
-﻿using KingSkullClassicOnline.Engine.Cards;
-using KingSkullClassicOnline.Engine.Game;
+﻿namespace KingSkullClassicOnline.Engine;
 
-namespace KingSkullClassicOnline.Engine;
+using Cards;
+using Game;
 
 /// <summary>
 ///     Gère le déroulement d'une partie
@@ -30,8 +30,8 @@ public class Controller
 
     private Round? CurrentRound
     {
-        get => _rounds[Turn-1];
-        set => _rounds[Turn-1] = value;
+        get => _rounds[Turn - 1];
+        set => _rounds[Turn - 1] = value;
     }
 
     public IEnumerable<Card> Deck { get; }
@@ -59,7 +59,7 @@ public class Controller
             deck.Add(Card.SkullKing());
 
         for (var i = 1; i <= Config.NumberPirates; ++i)
-            deck.Add(Card.Pirate((i % Config.PirateVariants) + 1));
+            deck.Add(Card.Pirate(i % Config.PirateVariants + 1));
 
         for (var i = 0; i < Config.NumberScaryM; ++i)
             deck.Add(Card.ScaryMary());
@@ -71,6 +71,13 @@ public class Controller
             deck.Add(Card.Escape());
 
         return deck;
+    }
+
+    private int[] GetScores(int turn)
+    {
+        var scores = new int[Players.Count];
+        for (var i = 0; i < Players.Count; ++i) scores[i] = Players[i].GetVote(turn)!.Total!.Value;
+        return scores;
     }
 
     /// <summary>
@@ -115,17 +122,14 @@ public class Controller
 
         //Send only the playable cards to the player
         var playableCards = new List<Card>();
-        
-        if (CurrentRound.CurrentColor != Color.None && nextPlayer.Hand.Exists(card => card.Color == CurrentRound.CurrentColor))
-        {
+
+        if (CurrentRound.CurrentColor != Color.None &&
+            nextPlayer.Hand.Exists(card => card.Color == CurrentRound.CurrentColor))
             playableCards.AddRange(
-                nextPlayer.Hand.
-                    Where(card => card.Color == CurrentRound.CurrentColor 
-                                  || card.IsSpecial()));
-        }else
-        {
-          playableCards = nextPlayer.Hand;   
-        }
+                nextPlayer.Hand.Where(card => card.Color == CurrentRound.CurrentColor
+                                              || card.IsSpecial()));
+        else
+            playableCards = nextPlayer.Hand;
 
         _view.MustPlay(nextPlayer.Data, playableCards);
     }
@@ -166,28 +170,18 @@ public class Controller
             ++Turn;
             if (Turn == Config.RoundsPerGame)
             {
-                _view.GameEnded(GetScores(Turn),CurrentRound.CurrentFold.GetWinner().Player.Data.Name);
+                _view.GameEnded(GetScores(Turn), CurrentRound.CurrentFold.GetWinner().Player.Data.Name);
                 return;
             }
+
             StartNextRound();
         }
         else
         {
-
             NotifyNextPlayer();
         }
     }
 
-    private int[] GetScores(int turn)
-    {
-        var scores = new int[Players.Count];
-        for (var i = 0; i < Players.Count; ++i)
-        {
-            scores[i] = Players[i].GetVote(turn)!.Total!.Value;
-        }
-        return scores;
-    }
-    
     public void SetVote(string playerId, int vote)
     {
         if (!_hasStarted || CurrentRound == null || CurrentRound.AreAllVotesIn()) return;
@@ -197,7 +191,8 @@ public class Controller
 
         if (!CurrentRound.AreAllVotesIn()) return;
         var players = CurrentRound.GetPlayersFromStarting();
-        _view.FoldStarted(players.Select(p => p.Data.Name).ToArray(),players.Select(p => p.GetVote(Turn)!.Voted).ToArray());
+        _view.RoundStarted(players.Select(p => p.Data.Name).ToArray(),
+            players.Select(p => p.GetVote(Turn)!.Voted).ToArray());
 
         NotifyNextPlayer();
     }

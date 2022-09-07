@@ -3,6 +3,7 @@
 @inject NavigationManager NavigationManager
 @inject Data Data
 @inject IDialogService DialogService
+@inject ILogger<Game> Logger;
 @using Microsoft.AspNetCore.SignalR.Client
 @using KingSkullClassicOnline.Shared
 @using KingSkullClassicOnline.Client.Shared.Popups
@@ -34,8 +35,9 @@
 
         _connection.On(Events.GameStarted, () =>
         {
+            Logger.LogInformation($"{Events.GameStarted}");
             _isPlaying = true;
-            Console.WriteLine($"{Events.GameStarted}");
+
             StateHasChanged();
         });
 

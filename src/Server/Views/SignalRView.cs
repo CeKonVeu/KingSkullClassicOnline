@@ -29,7 +29,7 @@ public class SignalRView : IView
     public async Task CardPlayed(PlayerData player, string card, string winnerName)
     {
         Console.WriteLine($"{player.Name} played {card}");
-        await _hubContext.Clients.Group(_group).SendAsync(Events.CardPlayed, player.Id, card,  winnerName);
+        await _hubContext.Clients.Group(_group).SendAsync(Events.CardPlayed, player.Id, card, winnerName);
     }
 
     public async Task GameEnded(int[] scores, string winner)
@@ -78,9 +78,10 @@ public class SignalRView : IView
     {
         await _hubContext.Clients.Group(_group).SendAsync(Events.RoundEnded, scores);
     }
-    public async Task FoldStarted(string[] players, int[] scores)
+
+    public async Task RoundStarted(string[] players, int[] scores)
     {
-        await _hubContext.Clients.Group(_group).SendAsync(Events.FoldStarted,players,scores);
+        await _hubContext.Clients.Group(_group).SendAsync(Events.RoundStarted, players, scores);
     }
 
     public async Task NotifyError(PlayerData player, string message)
@@ -112,16 +113,5 @@ public class SignalRView : IView
     private async Task SendPlayers()
     {
         await _hubContext.Clients.Group(_group).SendAsync(Events.RoomChanged, _group, _players.Select(p => p.Name));
-    }
-
-    private async Task SendToGroup(string method, params object?[] args)
-    {
-        Console.WriteLine($"Sending {method} to {_group}");
-        await _hubContext.Clients.Group(_group).SendAsync(method, args);
-    }
-
-    private async Task SendToPlayer(PlayerData player, string method, params object[] args)
-    {
-        await _hubContext.Clients.Client(player.Id).SendAsync(method, args);
     }
 }

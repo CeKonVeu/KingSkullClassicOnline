@@ -3,6 +3,7 @@
 @using KingSkullClassicOnline.Shared
 @inherits ComponentBase
 @inject IDialogService DialogService
+@inject ILogger<GameBoard> Logger
 
 @if (!IsVisible)
 {
@@ -18,7 +19,7 @@
             Class="pa-4 rounds"
             Typo="Typo.h3"
             Align="Align.Left">
-            10 / 10
+            @_game.CurrentFold / @_game.Turn
         </MudText>
     </div>
     <MudStack Class="buttons">
@@ -40,37 +41,32 @@
     <div class="d-flex justify-space-around flex-wrap mt-15 gap-4 pl-6 pr-6 parchment-game pt-4">
         <div class="parchment-bg-game board"></div>
 
-        @{ var i = 0; }
-        @foreach (var player in _players)
+        @foreach (var (_, player) in _game.Players)
         {
             <div>
-
-
-                @{
-                    var i1 = i;
-                }
-                <MudText Typo="Typo.h5" Align="Align.Center">@player.Item3.Item1 / @player.Item3.Item2</MudText>
-                <MudText Typo="Typo.h5" Class="@($"mb-2 pseudo {(i1 == 0 ? "self" : "")}")" Align="Align.Center">
-                    @player.Item1
+                <MudText Typo="Typo.h5"
+                         Align="Align.Center">
+                    @player.Scores[_game.Turn].Actual / @player.Scores[_game.Turn].Voted
                 </MudText>
-                @{
-                    if (i1 % 2 == 0)
-                    {
-                        <Card CardName="@player.Item2.Item1" Class="@($"player-card {(player.Item2.Item2 ? "winning" : "")}")" OnCardClick="@(_ => Test(i1))"/>
-                    }
-                    else
-                    {
-                        <Card CardName="Back" Class="@($"player-card back {(player.Item2.Item2 ? "winning" : "")}")" OnCardClick="@(_ => Test(i1))"/>
-                    }
-
+                <MudText Typo="Typo.h5"
+                         Class="@($"mb-2 pseudo {(player.Data.Id == Connection.ConnectionId ? "self" : "")}")"
+                         Align="Align.Center">
+                    @player.Data.Name
+                </MudText>
+                @if (player.PlayedCard == null)
+                {
+                    <Card CardName="Back" Class="player-card back"/>
                 }
+                else
+                {
+                    <Card CardName="@player.PlayedCard.Name"
+                          Class="@($"player-card {(player.PlayedCard.IsWinning ? "winning" : "")}")"/>
+                }
+
             </div>
-            {
-                i++;
-            }
         }
     </div>
-    <HandGame Class="hand" Cards="_cards" OnCardClick="CardClicked"/>
+    <HandGame Class="hand" Cards="_game.Players[Connection.ConnectionId!].Hand" OnCardClick="CardClicked"/>
 </div>
 
 <svg style="height: 0">
@@ -94,7 +90,7 @@
     [Parameter]
     public bool IsVisible { get; set; }
 
-    private bool _isMyTurn = false;
+    private Game _game = new();
 
     private async Task<int> AskVote(int maxVote)
     {
@@ -107,63 +103,79 @@
 
     protected override Task OnInitializedAsync()
     {
-        if (Connection == null) return Task.CompletedTask;
-
         Connection.On(Events.HandChanged, (List<string> newHand) =>
         {
-            _cards = newHand;
-            Console.WriteLine($"{Events.HandChanged}: {newHand}");
+            Logger.LogInformation($"{Events.HandChanged}: {newHand}");
+    // _cards = newHand.Select(c => new HandGame.Card(c)).ToList();
             StateHasChanged();
         });
-        Connection.On(Events.VoteAsked, async (int _, int maxVote) =>
+        Connection.On(Events.VoteAsked, async (int minVote, int maxVote) =>
         {
+            Logger.LogInformation($"{Events.VoteAsked}: {minVote} - {maxVote}");
             var vote = await AskVote(maxVote);
             await Connection.SendAsync(Events.SendVote, vote);
         });
         Connection.On(Events.MustPlay, (IEnumerable<string> playableCards) =>
         {
-    //TODO : sucess
-            Console.WriteLine("Must play with available cards : " + string.Join(", ", playableCards));
-
-            _isMyTurn = true;
+            Logger.LogInformation($"{Events.MustPlay}: {string.Join(",", playableCards)}");
+    // _isMyTurn = true;
+    // _cards = _cards.Select(c => new HandGame.Card(c.Name, playableCards.Contains(c.Name))).ToList();
+            StateHasChanged();
+        });
+        Connection.On(Events.RoundStarted, (string[] players, int[] scores) =>
+        {
+            Logger.LogInformation($"{Events.RoundStarted}: {string.Join(",", players)} - {string.Join(",", scores)}");
+    // _players = players.Select((p, i) =>
+    //     new Player(
+    //         new PlayerData(p, i.ToString()),
+    //         new PlayerCard("", false),
+    //         new PlayerScore(0, scores[i])))
+    //     .ToList();
+            StateHasChanged();
         });
 
         Connection.On(Events.RoundEnded, (int[] scores) =>
         {
-            Console.WriteLine("Scores of this round :");
-            for (var i = 0; i < scores.Length; i++)
-            {
-                Console.WriteLine($"Player {i} : {scores[i]}");
-            }
+            Logger.LogInformation($"{Events.RoundEnded}: {string.Join(",", scores)}");
+
+    // for (var i = 0; i < scores.Length; i++)
+    // {
+    //     _players[i].Score.Actual = scores[i];
+    // }
+            StateHasChanged();
         });
-        Connection.On(Events.CardPlayed, (string player, string card, string winnerName) => { Console.WriteLine($"{player} played {card} and winner is {winnerName}"); });
+        Connection.On(Events.CardPlayed, (string player, string card, string winnerName) =>
+        {
+            Logger.LogInformation($"{Events.CardPlayed}: {player} - {card} - {winnerName}");
+    // foreach (var p in _players)
+    // {
+    //     if (p.Data.Name == player)
+    //     {
+    //         p.Card.Name = card;
+    //         Console.WriteLine("update card");
+    //     }
+    //     if (p.Data.Name == winnerName)
+    //     {
+    //         p.Card.IsWinning = true;
+    //         Console.WriteLine("update winner");
+    //     }
+    // }
+            StateHasChanged();
+        });
+        Connection.On(Events.GameStarted, () =>
+        {
+            Console.WriteLine("test");
+            // sss
+            
+        });
+
         return Task.CompletedTask;
     }
 
     private async void CardClicked(string card)
     {
-        Console.WriteLine("Card clicked : " + card);
-    // await Connection.SendAsync(Events.PlayCard, card);
-    }
-
-    private ICollection<string> _cards = new List<string>();
-
-    private List<(string, (string, bool), (int, int))> _players = new()
-    {
-        ("Player 1", ("Red_2", false), (0, 5)),
-        ("Player 2", ("Blue_5", false), (5, 5)),
-        ("Player 3", ("Black_3", false), (7, 10)),
-        ("Player 4", ("SkullKing", false), (4, 4)),
-        ("Player 4", ("SkullKing", false), (4, 4))
-    };
-
-    private void Test(int i)
-    {
-        var t = _players[i];
-        t.Item2.Item2 = !t.Item2.Item2;
-        _players[i] = t;
-        Console.WriteLine(t.Item2.Item2);
-        StateHasChanged();
+        Logger.LogInformation($"Clicked on {card}");
+        await Connection.SendAsync(Events.PlayCard, card);
     }
 
     private void OpenScores()
