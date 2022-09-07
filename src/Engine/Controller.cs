@@ -88,9 +88,13 @@ public class Controller
     /// <returns>vrai si l'ajout s'est effectué, faux sinon</returns>
     public bool JoinGame(string playerId, string name)
     {
-        if (_hasStarted) return false;
-
         var playerData = new PlayerData(playerId, name);
+        if (_hasStarted)
+        {
+            _view.NotifyError(playerData, "La partie a déjà commencé");
+            return false;
+        }
+
         if (Players.Count >= Config.MaxPlayers || Players.Exists(p => p.Data.Name == playerId))
         {
             _view.NotifyError(playerData, "La partie est complète");
