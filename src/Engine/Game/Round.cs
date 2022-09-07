@@ -71,6 +71,11 @@ public class Round
         return _currentFold;
     }
 
+    public bool IsNewFold()
+    {
+        return _currentFold == 0;
+    }
+
     private static int NextIndexInCollection(int index, int count)
     {
         return (index + 1) % count;

@@ -178,7 +178,7 @@ public class Controller
         }
         else
         {
-            if (foldNumber != -1)
+            if (CurrentRound.IsNewFold())
                 _view.FoldStarted(foldNumber);
             NotifyNextPlayer();
         }
@@ -194,7 +194,7 @@ public class Controller
         if (!CurrentRound.AreAllVotesIn()) return;
         var players = CurrentRound.GetPlayersFromStarting();
         _view.RoundStarted(Turn, players.Select(p => new PlayerVote(p.Data.Id, p.GetVote(Turn)!.Voted)));
-
+        _view.FoldStarted(1);
         NotifyNextPlayer();
     }
 
