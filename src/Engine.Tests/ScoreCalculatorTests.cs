@@ -164,31 +164,39 @@ public class ScoreCalculatorTests
         Assert.AreEqual(_p1.GetTotal(_turn), GetBadVote0());
         Assert.AreEqual(_p2.GetTotal(_turn), GetBadVote0());
     }
-/*
+
     // Test des points bonus Mermaid//
     
+    /// <summary>
+    /// P1 gagne 3 plis sur 3 pariés et obtient un bonus Mermaid -> Skull King
+    /// P2 utilise aussi Mermaid -> Skull King mais ne doit pas obtenir de bonus
+    /// </summary>
     [Test]
-    public void ItShouldGiveBonusForMermaidOnSkullKing()
+    public void ItShouldGiveBonusForMermaidOnSkullKingIfTheVoteIsCorrect()
     {
-        SetAllVotes(2, 1);
-        PlayFold(1, Card.Mermaid(), Card.SkullKing());
-        PlayFold(2, Card.Escape(), Card.Escape());
-        PlayFold(3, Card.SkullKing(), Card.Mermaid());
+        SetAllVotes(3, 1, 0);
+        PlayFold(1, Card.Mermaid(), Card.Mermaid(),Card.SkullKing());
+        PlayFold(2, Card.Escape(), Card.Escape(), Card.Escape());
+        PlayFold(3, Card.Escape(), Card.Escape(), Card.Escape());
         UpdateAllScores();
-        CheckScores(GetGoodVoteNot0(_vote1) + Config.BonusMermaid, GetGoodVoteNot0(_vote2) + Config.BonusMermaid);
+        Assert.AreEqual(_p1.GetTotal(_turn), GetGoodVoteNot0(_vote1) + Config.BonusMermaid);
+        Assert.AreEqual(_p2.GetTotal(_turn), GetBadVoteNot0(_vote2, _p2));
     }
     
+    /// <summary>
+    /// P1 gagne 2 plis sur 3 pariés et n'obtient pas un bonus Mermaid -> Skull King
+    /// </summary>
     [Test]
-    public void ItShouldNotGiveBonusForMermaidOnSkullKingIfVoteIsWrong()
+    public void ItShouldNotGiveBonusForMermaidOnSkullKingIfTheVoteIsNotCorrect()
     {
-        SetAllVotes(1, 2);
-        PlayFold(1, Card.Mermaid(), Card.SkullKing());
-        PlayFold(2, Card.Escape(), Card.Escape());
-        PlayFold(3, Card.SkullKing(), Card.Mermaid());
+        SetAllVotes(2, 1, 0);
+        PlayFold(1, Card.Mermaid(), Card.Mermaid(),Card.SkullKing());
+        PlayFold(2, Card.Escape(), Card.Escape(), Card.Escape());
+        PlayFold(3, Card.Escape(), Card.Escape(), Card.Escape());
         UpdateAllScores();
-        CheckScores(GetBadVoteNot0(_vote1, _p1), GetBadVoteNot0(_vote2, _p2));
+        Assert.AreEqual(_p1.GetTotal(_turn), GetBadVoteNot0(_vote1, _p1));
     }
-    
+    /*
     // Test des points bonus Skull King //
     
     [Test]
