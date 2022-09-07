@@ -80,10 +80,10 @@ public class SignalRView : IView
     {
         await _hubContext.Clients.Group(_group).SendAsync(Events.RoundStarted, turn, votes);
     }
-    
-    public async Task FoldEnded(int fold,IEnumerable<PlayerVote> votes)
+
+    public async Task FoldEnded(int fold, IEnumerable<PlayerVote> votes)
     {
-        await _hubContext.Clients.Group(_group).SendAsync(Events.FoldEnded,fold ,votes);
+        await _hubContext.Clients.Group(_group).SendAsync(Events.FoldEnded, fold, votes);
     }
 
     public async Task NotifyError(PlayerData player, string message)
