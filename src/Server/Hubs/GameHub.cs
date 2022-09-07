@@ -1,6 +1,4 @@
-﻿using KingSkullClassicOnline.Shared;
-
-namespace KingSkullClassicOnline.Server.Hubs;
+﻿namespace KingSkullClassicOnline.Server.Hubs;
 
 using System.Collections.Concurrent;
 using Engine;
@@ -62,7 +60,8 @@ public class GameHub : Hub
         if (!Controllers.TryGetValue(roomName, out var controller))
             throw new Exception("Room doesn't exist");
 
-        controller.JoinGame(Context.ConnectionId, playerName);
+        if (!controller.JoinGame(Context.ConnectionId, playerName))
+            return;
 
         ConnectedUsers.TryAdd(Context.ConnectionId, roomName);
     }

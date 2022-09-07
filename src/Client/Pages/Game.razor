@@ -42,6 +42,14 @@
             StateHasChanged();
         });
 
+        _connection.On(Events.OnError, (string message) =>
+        {
+            Logger.LogInformation($"{Events.OnError}");
+            NavigationManager.NavigateTo("error");
+
+            StateHasChanged();
+        });
+
         _name = await GetName();
 
         await _connection.StartAsync();

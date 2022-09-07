@@ -86,16 +86,20 @@ public class Controller
     /// <param name="playerId">l'id du joueur</param>
     /// <param name="name">le nom du joueur</param>
     /// <returns>vrai si l'ajout s'est effectué, faux sinon</returns>
-    public void JoinGame(string playerId, string name)
+    public bool JoinGame(string playerId, string name)
     {
-        if (_hasStarted) return;
+        if (_hasStarted) return false;
 
         var playerData = new PlayerData(playerId, name);
         if (Players.Count >= Config.MaxPlayers || Players.Exists(p => p.Data.Name == playerId))
+        {
             _view.NotifyError(playerData, "La partie est complète");
+            return false;
+        }
 
         Players.Add(new Player(playerData));
         _view.PlayerJoined(playerData);
+        return true;
     }
 
     /// <summary>

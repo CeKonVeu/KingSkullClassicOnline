@@ -86,7 +86,6 @@ public class SignalRView : IView
 
     public async Task NotifyError(PlayerData player, string message)
     {
-        //TODO créer l'event
         await _hubContext.Clients.Client(player.Id).SendAsync(Events.OnError, message);
     }
 
