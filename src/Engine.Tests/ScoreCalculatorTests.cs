@@ -59,25 +59,27 @@ public class ScoreCalculatorTests
     // Test sur des votes > 1 //
     
     [Test]
-    public void ItShouldAddAndSubtractScoreCorrectlyWhenVoteIsNot0()
+    public void ItShouldAddAndSubtractScoreCorrectlyWhenTheVoteIsNot0()
     {
         SetAllVotes(3, 3);
         PlayFold(0, Card.NumberedCard(10, Color.Black), Card.NumberedCard(1, Color.Yellow));
         PlayFold(1, Card.NumberedCard(10, Color.Black), Card.NumberedCard(1, Color.Yellow));
         PlayFold(2, Card.NumberedCard(10, Color.Black), Card.NumberedCard(1, Color.Yellow));
         UpdateAllScores();
-        CheckScores(_turn * Config.ScoreVoted, Math.Abs(_vote2 - 0) * Config.ScoreBadVote);
+        CheckScores(Config.ScoreVoted * _turn, Config.ScoreBadVote *  Math.Abs(_vote2 - 0));
     }
     
-/*
     // Test sur des votes = 0 //
 
     [Test]
-    public void ItShouldCountScoreCorrectlyWhen0()
+    public void ItShouldAddAndSubtractScoreCorrectlyWhenTheVoteIs0()
     {
-        PlayLastFold(Card.NumberedCard(10, Color.Black), Card.NumberedCard(1, Color.Yellow));
+        SetAllVotes(0, 0);
+        PlayFold(0, Card.NumberedCard(10, Color.Black), Card.NumberedCard(1, Color.Yellow));
+        PlayFold(1, Card.NumberedCard(10, Color.Black), Card.NumberedCard(1, Color.Yellow));
+        PlayFold(2, Card.NumberedCard(10, Color.Black), Card.NumberedCard(1, Color.Yellow));
         UpdateAllScores();
-        CheckScores(_turn * Config.ScoreVoted, Math.Abs(_vote2 - 0) * Config.ScoreBadVote);
+        CheckScores(Config.Score0 * _turn, -(Config.Score0 * _turn));
     }
 
 /*
