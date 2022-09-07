@@ -39,12 +39,10 @@ public class SignalRView : IView
         throw new NotImplementedException();
     }
 
-    public async Task GameStarted()
+    public async Task GameStarted(IEnumerable<PlayerData>[] playerDatas)
     {
         Console.WriteLine("Game has started");
-        await _hubContext.Clients.Group(_group).SendAsync(Events.GameStarted);
-
-        throw new NotImplementedException();
+        await _hubContext.Clients.Group(_group).SendAsync(Events.GameStarted,playerDatas);
     }
 
     public async Task HandReceived(PlayerData player, List<Card> cards)

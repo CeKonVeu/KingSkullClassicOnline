@@ -7,7 +7,7 @@ public interface IView
 {
     Task CardPlayed(PlayerData data, string card, string winnerName);
     Task GameEnded(int[] scores, string winner);
-    Task GameStarted();
+    Task GameStarted(IEnumerable<PlayerData>[] playerDatas);
     Task HandReceived(PlayerData player, List<Card> cards);
     Task MustPlay(PlayerData player, IEnumerable<Card> availableCards);
     Task MustVote(int min, int max);
