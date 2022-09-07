@@ -155,7 +155,9 @@ public class Controller
             return;
         }
 
+
         CurrentRound.Play(player, playedCard);
+        foreach (var c in player.Hand) c.IsPlayable = false;
         _view.HandReceived(player.Data, player.Hand);
         _view.CardPlayed(player.Data, playedCard, CurrentRound.CurrentFold.GetWinner().Player.Data);
         var foldNumber = CurrentRound.EndFold();
