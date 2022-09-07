@@ -191,8 +191,7 @@ public class Controller
 
         if (!CurrentRound.AreAllVotesIn()) return;
         var players = CurrentRound.GetPlayersFromStarting();
-        _view.RoundStarted(players.Select(p => p.Data.Name).ToArray(),
-            players.Select(p => p.GetVote(Turn)!.Voted).ToArray());
+        _view.RoundStarted(Turn, players.Select(p => (p.Data.Id, p.GetVote(Turn).Voted)));
 
         NotifyNextPlayer();
     }

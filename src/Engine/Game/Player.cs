@@ -47,9 +47,9 @@ public class Player
         // return playableCards.Contains(_selectedCard);
     }
 
-    public Vote? GetVote(int turn)
+    public Vote GetVote(int turn)
     {
-        return _votes[turn - 1];
+        return _votes[turn - 1] ?? throw new InvalidOperationException();
     }
 
     public int PlayCard(Color turnColor)

@@ -77,9 +77,9 @@ public class SignalRView : IView
         await _hubContext.Clients.Group(_group).SendAsync(Events.RoundEnded, scores);
     }
 
-    public async Task RoundStarted(string[] players, int[] scores)
+    public async Task RoundStarted(int turn, IEnumerable<(string,int)> votes)
     {
-        await _hubContext.Clients.Group(_group).SendAsync(Events.RoundStarted, players, scores);
+        await _hubContext.Clients.Group(_group).SendAsync(Events.RoundStarted,turn,votes);
     }
 
     public async Task NotifyError(PlayerData player, string message)
