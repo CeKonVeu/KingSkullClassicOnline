@@ -126,11 +126,18 @@ public class Controller
 
         if (CurrentRound.CurrentColor != Color.None &&
             nextPlayer.Hand.Exists(card => card.Color == CurrentRound.CurrentColor))
-            playableCards.AddRange(
-                nextPlayer.Hand.Where(card => card.Color == CurrentRound.CurrentColor
-                                              || card.IsSpecial()));
+            foreach (var card in nextPlayer.Hand)
+            {
+                card.IsPlayable = card.Color == CurrentRound.CurrentColor
+                                          || card.IsSpecial();
+            }
         else
-            playableCards = nextPlayer.Hand;
+        {
+            foreach (var card in nextPlayer.Hand)
+            {
+                card.IsPlayable = true;
+            }
+        }
 
         _view.MustPlay(nextPlayer.Data, playableCards);
     }
