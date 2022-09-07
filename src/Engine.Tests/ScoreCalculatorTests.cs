@@ -196,31 +196,51 @@ public class ScoreCalculatorTests
         UpdateAllScores();
         Assert.AreEqual(_p1.GetTotal(_turn), GetBadVoteNot0(_vote1, _p1));
     }
-    /*
+    
     // Test des points bonus Skull King //
     
+    /// <summary>
+    /// P1 gagne 3 plis sur 3 pariés et obtient un bonus Skull King -> 1 Pirate
+    /// </summary>
     [Test]
-    public void ItShouldGiveBonusForSkullKingOnPirate()
+    public void ItShouldGiveBonusForSkullKingOnPirateIfTheVoteIsCorrect()
     {
-        SetAllVotes(2, 1);
-        PlayFold(1, Card.SkullKing(), Card.Pirate());
-        PlayFold(2, Card.Escape(), Card.Escape());
-        PlayFold(3, Card.Pirate(), Card.SkullKing());
+        SetAllVotes(3, 0, 0);
+        PlayFold(1, Card.SkullKing(), Card.Pirate(),Card.Escape());
+        PlayFold(2, Card.Escape(), Card.Escape(), Card.Escape());
+        PlayFold(3, Card.Escape(), Card.Escape(), Card.Escape());
         UpdateAllScores();
-        CheckScores(GetGoodVoteNot0(_vote1) + Config.BonusSkullKing, GetGoodVoteNot0(_vote2) + Config.BonusSkullKing);
+        Assert.AreEqual(_p1.GetTotal(_turn), GetGoodVoteNot0(_vote1) + Config.BonusSkullKing);
     }
     
+    /// <summary>
+    /// P1 gagne 3 plis sur 3 pariés et obtient un bonus Skull King -> 2 Pirates
+    /// </summary>
     [Test]
-    public void ItShouldNotGiveBonusForSkullKingOnPirateIfVoteIsWrong()
+    public void ItShouldGiveBonusForSkullKingOnMultiplePiratesIfTheVoteIsCorrect()
     {
-        SetAllVotes(1, 2);
-        PlayFold(1, Card.SkullKing(), Card.Pirate());
-        PlayFold(2, Card.Escape(), Card.Escape());
-        PlayFold(3, Card.Pirate(), Card.SkullKing());
+        SetAllVotes(3, 0, 0);
+        PlayFold(1, Card.SkullKing(), Card.Pirate(),Card.Pirate());
+        PlayFold(2, Card.Escape(), Card.Escape(), Card.Escape());
+        PlayFold(3, Card.Escape(), Card.Escape(), Card.Escape());
         UpdateAllScores();
-        CheckScores(GetBadVoteNot0(_vote1, _p1), GetBadVoteNot0(_vote2, _p2));
+        Assert.AreEqual(_p1.GetTotal(_turn), GetGoodVoteNot0(_vote1) + 2 * Config.BonusSkullKing);
     }
-*/
+    
+    /// <summary>
+    /// P1 gagne 2 plis sur 3 pariés et n'obtient pas un bonus Mermaid -> Skull King
+    /// </summary>
+    [Test]
+    public void ItShouldNotGiveBonusForSkullKingOnPirateIfTheVoteIsNotCorrect()
+    {
+        SetAllVotes(2, 0, 0);
+        PlayFold(1, Card.SkullKing(), Card.Pirate(),Card.Escape());
+        PlayFold(2, Card.Escape(), Card.Escape(), Card.Escape());
+        PlayFold(3, Card.Escape(), Card.Escape(), Card.Escape());
+        UpdateAllScores();
+        Assert.AreEqual(_p1.GetTotal(_turn), GetBadVoteNot0(_vote1, _p1));
+    }
+    
     /// <summary>
     /// Situation : 3 joueurs lors du 3ème tour.
     /// </summary>
