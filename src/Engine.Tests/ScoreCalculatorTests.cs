@@ -184,6 +184,22 @@ public class ScoreCalculatorTests
     }
     
     /// <summary>
+    /// P1 gagne 3 plis sur 3 pariés et obtient un bonus Mermaid -> Skull King
+    /// P3 utilise Skull King -> Pirate mais ne doit pas obtenir de bonus
+    /// </summary>
+    [Test]
+    public void ItShouldGiveBonusForMermaidOnSkullKingAndNotForSkullKingOnPirate()
+    {
+        SetAllVotes(3, 0, 1);
+        PlayFold(1, Card.Mermaid(), Card.Pirate(),Card.SkullKing());
+        PlayFold(2, Card.Escape(), Card.Escape(), Card.Escape());
+        PlayFold(3, Card.Escape(), Card.Escape(), Card.Escape());
+        UpdateAllScores();
+        Assert.AreEqual(_p1.GetTotal(_turn), GetGoodVoteNot0(_vote1) + Config.BonusMermaid);
+        Assert.AreEqual(_p3.GetTotal(_turn), GetBadVoteNot0(_vote3, _p3));
+    }
+    
+    /// <summary>
     /// P1 gagne 2 plis sur 3 pariés et n'obtient pas un bonus Mermaid -> Skull King
     /// </summary>
     [Test]
