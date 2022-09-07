@@ -46,33 +46,42 @@
     <div class="d-flex justify-space-around flex-wrap mt-15 gap-4 pl-6 pr-6 parchment-game pt-4">
         <div class="parchment-bg-game board"></div>
 
-        @*//TODO start quand je veux wallah*@
-        @foreach (var (_, player) in _game.Players)
-        {
-            <div>
-                <MudText Typo="Typo.h5"
-                         Align="Align.Center">
-                    @player.Scores[_game.Turn - 1].Actual / @player.Scores[_game.Turn - 1].Voted
-                </MudText>
-                <MudText Typo="Typo.h5"
-                         Class="@($"mb-2 pseudo {(player.Id == Connection.ConnectionId ? "self" : "")}")"
-                         Align="Align.Center">
-                    @player.Name
-                </MudText>
-                @if (player.PlayedCard == null)
-                {
-                    <SingleCard CardName="Back" Class="player-card back"/>
-                }
-                else
-                {
-                    <SingleCard CardName="@player.PlayedCard.Name"
-                                Class="@($"player-card {(player.Id == _game.Winner?.Id ? "winning" : "")}")"/>
-                }
+        @{
+            var winnerIndex = _game.GetWinnerIndex();
+            var i = winnerIndex;
+            do
+            {
+                if (_game.Players.Count == 0) break;
+                var player = _game.Players[i];
 
-            </div>
+                <div>
+                    <MudText Typo="Typo.h5"
+                             Align="Align.Center">
+                        @player.Scores[_game.Turn - 1].Actual / @player.Scores[_game.Turn - 1].Voted
+                    </MudText>
+                    <MudText Typo="Typo.h5"
+                             Class="@($"mb-2 pseudo {(player.Id == Connection.ConnectionId ? "self" : "")}")"
+                             Align="Align.Center">
+                        @player.Name
+                    </MudText>
+                    @if (player.PlayedCard == null)
+                    {
+                        <SingleCard CardName="Back" Class="player-card back"/>
+                    }
+                    else
+                    {
+                        <SingleCard CardName="@player.PlayedCard.Name"
+                                    Class="@($"player-card {(player.Id == _game.Winner?.Id ? "winning" : "")}")"/>
+                    }
+
+                </div>
+
+
+                i = (i + 1) % _game.Players.Count;
+            } while (i != winnerIndex);
         }
     </div>
-    @if (_game.Players.TryGetValue(Connection.ConnectionId!, out var p))
+    @if (_game.Player(Connection.ConnectionId!, out var p))
     {
         <HandGame Class="hand" Cards="p.Hand" OnCardClick="CardClicked"/>
     }
@@ -116,7 +125,7 @@
         {
             foreach (var player in players)
             {
-                _game.Players.Add(player.Id, new Player(player));
+                _game.Players.Add(new Player(player));
             }
             GetPlayer().Hand = new List<Card>();
         });
@@ -142,7 +151,7 @@
             _game.Turn = turn;
             foreach (var (id, vote) in votes)
             {
-                _game.Players[id].Scores[turn - 1].Voted = vote;
+                _game.Player(id).Scores[turn - 1].Voted = vote;
             }
 
             StateHasChanged();
@@ -159,8 +168,8 @@
         {
             Logger.LogInformation($"{Events.CardPlayed}: {player.Name} - {card} - {winner.Name}");
 
-            _game.Players[player.Id].PlayedCard = card;
-            _game.Winner = _game.Players[winner.Id];
+            _game.Player(player.Id).PlayedCard = card;
+            _game.Winner = _game.Player(winner.Id);
 
             StateHasChanged();
         });
@@ -171,7 +180,7 @@
             _game.ClearPlayedCards();
             foreach (var (id, vote) in votes)
             {
-                _game.Players[id].Scores[_game.Turn - 1].Actual = vote;
+                _game.Player(id).Scores[_game.Turn - 1].Actual = vote;
             }
 
             StateHasChanged();
@@ -179,7 +188,7 @@
         Connection.On(Events.FoldStarted, (int fold) =>
         {
             Logger.LogInformation($"{Events.FoldStarted}: Fold N°{fold}");
-            
+
             _game.CurrentFold = fold;
 
             StateHasChanged();
@@ -191,7 +200,7 @@
 
             foreach (var (id, score) in scores)
             {
-                _game.Players[id].Scores[turn - 1].Total = score;
+                _game.Player(id).Scores[turn - 1].Total = score;
             }
             StateHasChanged();
         });
@@ -213,7 +222,7 @@
 
     private Player GetPlayer()
     {
-        return _game.Players[Connection.ConnectionId!];
+        return _game.Player(Connection.ConnectionId!);
     }
 
 }

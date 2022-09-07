@@ -12,17 +12,34 @@ public class Game
     {
         CurrentFold = 1;
         Turn = 1;
-        Players = new Dictionary<string, Player>();
+        Players = new List<Player>();
     }
 
     public int CurrentFold { get; set; }
-    public Dictionary<string, Player> Players { get; }
+    public List<Player> Players { get; }
 
     public int Turn { get; set; }
 
     public void ClearPlayedCards()
     {
-        foreach (var (_, player) in Players) player.PlayedCard = null;
+        foreach (var player in Players) player.PlayedCard = null;
+    }
+
+    public int GetWinnerIndex()
+    {
+        return Winner == null ? 0 : Players.FindIndex(p => p == Winner);
+    }
+
+    public Player Player(string id)
+    {
+        Player(id, out var p);
+        return p ?? throw new Exception("Player not found");
+    }
+
+    public bool Player(string id, out Player? player)
+    {
+        player = Players.SingleOrDefault(p => p.Id == id);
+        return player != null;
     }
 }
 
