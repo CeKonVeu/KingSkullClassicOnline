@@ -203,7 +203,7 @@ public class Controller
         if (_hasStarted || Players.Count is < 1 or > Config.MaxPlayers) return;
 
         _hasStarted = true;
-        _view.GameStarted();
+        _view.GameStarted(Players.Select(p => p.Data));
 
         StartNextRound();
     }
