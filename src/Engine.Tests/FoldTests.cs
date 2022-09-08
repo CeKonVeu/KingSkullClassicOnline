@@ -278,7 +278,7 @@ public class FoldTests
         var c1 = Card.NumberedCard(5, Color.Black);
         var c2 = Card.NumberedCard(1, Color.Black);
         var c3 = Card.NumberedCard(13, Color.Red);
-        
+
         PlayThreeTestCardsBotsWays(c1, c2, c3);
     }
 
@@ -320,6 +320,45 @@ public class FoldTests
         PlayTwoTestCardsBothWays(c1, c2);
     }
 
+
+    // Tests des Scary Mary (escapes) //
+
+    [Test]
+    public void ARedCardShouldWinAgainstAScaryMaryEscape()
+    {
+        var c1 = Card.NumberedCard(1, Color.Red);
+        var c2 = Card.ScaryMary(false);
+
+        PlayTwoTestCardsBothWays(c1, c2);
+    }
+
+    [Test]
+    public void ABlueCardShouldWinAgainstAScaryMaryEscape()
+    {
+        var c1 = Card.NumberedCard(1, Color.Blue);
+        var c2 = Card.ScaryMary(false);
+
+        PlayTwoTestCardsBothWays(c1, c2);
+    }
+
+    [Test]
+    public void AYellowCardShouldWinAgainstAScaryMaryEscape()
+    {
+        var c1 = Card.NumberedCard(1, Color.Yellow);
+        var c2 = Card.ScaryMary(false);
+
+        PlayTwoTestCardsBothWays(c1, c2);
+    }
+
+    [Test]
+    public void ABlackCardShouldWinAgainstAScaryMaryEscape()
+    {
+        var c1 = Card.NumberedCard(1, Color.Black);
+        var c2 = Card.ScaryMary(false);
+
+        PlayTwoTestCardsBothWays(c1, c2);
+    }
+
     // Test des sirènes //
 
     [Test]
@@ -327,6 +366,15 @@ public class FoldTests
     {
         var c1 = Card.Mermaid();
         var c2 = Card.Escape();
+
+        PlayTwoTestCardsBothWays(c1, c2);
+    }
+    
+    [Test]
+    public void AMermaidShouldWinAgainstAScaryMaryEscape()
+    {
+        var c1 = Card.Mermaid();
+        var c2 = Card.ScaryMary(false);
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
@@ -423,6 +471,62 @@ public class FoldTests
         PlayTwoTestCardsBothWays(c1, c2);
     }
 
+    // Test des Scary Mary (pirate) //
+
+    [Test]
+    public void AScaryMaryPirateShouldWinAgainstAnEscape()
+    {
+        var c1 = Card.ScaryMary(true);
+        var c2 = Card.Escape();
+
+        PlayTwoTestCardsBothWays(c1, c2);
+    }
+
+    [Test]
+    public void AScaryMaryPirateShouldWinAgainstRedCards()
+    {
+        var c1 = Card.ScaryMary(true);
+        var c2 = Card.NumberedCard(13, Color.Red);
+
+        PlayTwoTestCardsBothWays(c1, c2);
+    }
+
+    [Test]
+    public void AScaryMaryPirateShouldWinAgainstBlueCards()
+    {
+        var c1 = Card.ScaryMary(true);
+        var c2 = Card.NumberedCard(13, Color.Blue);
+
+        PlayTwoTestCardsBothWays(c1, c2);
+    }
+
+    [Test]
+    public void AScaryMaryPirateShouldWinAgainstYellowCards()
+    {
+        var c1 = Card.ScaryMary(true);
+        var c2 = Card.NumberedCard(13, Color.Yellow);
+
+        PlayTwoTestCardsBothWays(c1, c2);
+    }
+
+    [Test]
+    public void AScaryMaryPirateShouldWinAgainstBlackCards()
+    {
+        var c1 = Card.ScaryMary(true);
+        var c2 = Card.NumberedCard(13, Color.Black);
+
+        PlayTwoTestCardsBothWays(c1, c2);
+    }
+
+    [Test]
+    public void AScaryMaryPirateShouldWinAgainstAMermaid()
+    {
+        var c1 = Card.ScaryMary(true);
+        var c2 = Card.Mermaid();
+
+        PlayTwoTestCardsBothWays(c1, c2);
+    }
+
     // Test du Skull King //
 
     [Test]
@@ -430,6 +534,15 @@ public class FoldTests
     {
         var c1 = Card.SkullKing();
         var c2 = Card.Escape();
+
+        PlayTwoTestCardsBothWays(c1, c2);
+    }
+    
+    [Test]
+    public void ASkullKingShouldWinAgainstAScaryMaryEscape()
+    {
+        var c1 = Card.SkullKing();
+        var c2 = Card.ScaryMary(false);
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
@@ -478,6 +591,15 @@ public class FoldTests
 
         PlayTwoTestCardsBothWays(c1, c2);
     }
+    
+    [Test]
+    public void ASkullKingShouldWinAgainstAScaryMaryPirate()
+    {
+        var c1 = Card.SkullKing();
+        var c2 = Card.ScaryMary(true);
+
+        PlayTwoTestCardsBothWays(c1, c2);
+    }
 
     // Cas particulier //
 
@@ -496,7 +618,7 @@ public class FoldTests
         var c1 = Card.Mermaid();
         var c2 = Card.Mermaid();
         var c3 = Card.SkullKing();
-        
+
         // Sière 1 gagne
         PlayThreeTestCards(c1, c2, c3);
         CheckThreeTestCards(c1, c2, c3);
@@ -541,6 +663,17 @@ public class FoldTests
         ResetFold();
         PlayTwoTestCards(c2, c1, true);
     }
+    
+    [Test]
+    public void TheFirstEscapeOrScaryMaryEscapePlayedShouldWinIfThereAreOnlyEscapes()
+    {
+        var c1 = Card.Escape();
+        var c2 = Card.ScaryMary(false);
+
+        PlayTwoTestCards(c1, c2, true);
+        ResetFold();
+        PlayTwoTestCards(c2, c1, true);
+    }
 
     [Test]
     public void TheFirstMermaidPlayedShouldWin()
@@ -558,6 +691,17 @@ public class FoldTests
     {
         var c1 = Card.Pirate();
         var c2 = Card.Pirate();
+
+        PlayTwoTestCards(c1, c2, true);
+        ResetFold();
+        PlayTwoTestCards(c2, c1, true);
+    }
+    
+    [Test]
+    public void TheFirstPirateOrScaryMaryPiratePlayedShouldWin()
+    {
+        var c1 = Card.Pirate();
+        var c2 = Card.ScaryMary(true);
 
         PlayTwoTestCards(c1, c2, true);
         ResetFold();
