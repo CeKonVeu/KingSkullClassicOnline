@@ -1,7 +1,7 @@
-﻿namespace KingSkullClassicOnline.Engine;
+﻿using KingSkullClassicOnline.Engine.Cards;
+using KingSkullClassicOnline.Engine.Game;
 
-using Cards;
-using Game;
+namespace KingSkullClassicOnline.Engine;
 
 /// <summary>
 ///     Gère le déroulement d'une partie
@@ -174,7 +174,6 @@ public class Controller
 
         if (CurrentRound.IsOver)
         {
-            //TODO mettre à jour et envoyer les scores
             CurrentRound.EndRound();
             _view.RoundEnded(Turn, Players.Select(p => new PlayerVote(p.Data.Id, p.GetVote(Turn)!.Total)));
 
@@ -185,7 +184,6 @@ public class Controller
             }
 
             ++Turn;
-
             StartNextRound();
         }
         else
@@ -230,6 +228,7 @@ public class Controller
         foreach (var player in Players)
         {
             CurrentRound.DealCards(player);
+            foreach (var c in player.Hand) c.IsPlayable = false;
             _view.HandReceived(player.Data, player.Hand);
         }
 
