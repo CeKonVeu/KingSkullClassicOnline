@@ -3,6 +3,7 @@
 using System.Collections.Concurrent;
 using Engine;
 using Microsoft.AspNetCore.SignalR;
+using Shared;
 using Views;
 
 /// <summary>
@@ -57,8 +58,10 @@ public class GameHub : Hub
     /// <exception cref="Exception">si la salle n'existe pas ou qu'elle est pleine</exception>
     public async Task JoinRoom(string roomName, string playerName)
     {
-        if (!Controllers.TryGetValue(roomName, out var controller))
-            throw new Exception("Room doesn't exist");
+        if (!Controllers.TryGetValue(roomName, out var controller)) {
+            await Clients.Caller.SendAsync(Events.OnError, "La partie n'existe pas");
+            return;
+        }
 
         if (!controller.JoinGame(Context.ConnectionId, playerName))
             return;
