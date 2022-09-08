@@ -1,7 +1,7 @@
-﻿namespace KingSkullClassicOnline.Engine;
+﻿using KingSkullClassicOnline.Engine.Cards;
+using KingSkullClassicOnline.Engine.Game;
 
-using Cards;
-using Game;
+namespace KingSkullClassicOnline.Engine;
 
 /// <summary>
 ///     Gère le déroulement d'une partie
@@ -149,19 +149,11 @@ public class Controller
         if (player == null)
             return;
 
-        if (CurrentRound.NextPlayer.Data.Id != playerId)
-        {
-            _view.NotifyError(player.Data, "Ce n'est pas votre tour de jouer");
-            return;
-        }
+        if (CurrentRound.NextPlayer.Data.Id != playerId) return;
 
         var playedCard = player.Hand.Find(c => c.Name == card);
 
-        if (playedCard == null)
-        {
-            _view.NotifyError(player.Data, "Vous ne possédez pas cette carte");
-            return;
-        }
+        if (playedCard == null) return;
 
 
         CurrentRound.Play(player, playedCard);
@@ -174,18 +166,17 @@ public class Controller
 
         if (CurrentRound.IsOver)
         {
-            //TODO mettre à jour et envoyer les scores
             CurrentRound.EndRound();
-            _view.RoundEnded(Turn, Players.Select(p => new PlayerVote(p.Data.Id, p.GetVote(Turn)!.Total)));
+            _view.RoundEnded(Turn, Players.Select(p => new PlayerVote(p.Data.Id, p.GetVote(Turn)!.Total)),
+                Players[Turn % Players.Count].Data);
 
             if (Turn == Config.RoundsPerGame)
             {
-                _view.GameEnded(GetScores(Turn), "");
+                _view.GameEnded();
                 return;
             }
 
             ++Turn;
-
             StartNextRound();
         }
         else
@@ -230,6 +221,7 @@ public class Controller
         foreach (var player in Players)
         {
             CurrentRound.DealCards(player);
+            foreach (var c in player.Hand) c.IsPlayable = false;
             _view.HandReceived(player.Data, player.Hand);
         }
 

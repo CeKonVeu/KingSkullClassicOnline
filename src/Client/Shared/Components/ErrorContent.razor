@@ -1,0 +1,24 @@
+﻿@inherits ComponentBase
+
+<PageTitle>Île des naufragés</PageTitle>
+
+<h1 class="title">Yo-ho-ho matelot.</h1>
+
+<MudContainer Class="d-flex flex-wrap">
+    <div class="flex-1">
+        <MudImage Src="@("./images/SkullKing-transparent.png")" Class="rounded-lg sk"/>
+    </div>
+    <div class="error-message">
+        <p>
+            Je vois que tu t'es échoué sur l'île des naufragés.<br><br>
+            La page que tu essaies d'atteindre n'existe pas.<br><br>
+            Pas de soucis tu n'as qu'à suivre mon perroquet pour retourner à la page d'accueil.
+        </p>
+        <MudIconButton
+            Href="/"
+            Icon="@Icons.Custom.Brands.Twitter"
+            Variant="Variant.Filled"
+            Color="Color.Secondary"
+            Size="Size.Large"/>
+    </div>
+</MudContainer>

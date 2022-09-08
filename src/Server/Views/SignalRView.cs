@@ -1,11 +1,11 @@
-﻿namespace KingSkullClassicOnline.Server.Views;
-
-using Engine;
-using Engine.Cards;
-using Engine.Game;
-using Hubs;
+﻿using KingSkullClassicOnline.Engine;
+using KingSkullClassicOnline.Engine.Cards;
+using KingSkullClassicOnline.Engine.Game;
+using KingSkullClassicOnline.Server.Hubs;
+using KingSkullClassicOnline.Shared;
 using Microsoft.AspNetCore.SignalR;
-using Shared;
+
+namespace KingSkullClassicOnline.Server.Views;
 
 public class SignalRView : IView
 {
@@ -30,11 +30,6 @@ public class SignalRView : IView
     {
         Console.WriteLine($"{player.Name} played {card}");
         await _hubContext.Clients.Group(_group).SendAsync(Events.CardPlayed, player, card, winner);
-    }
-
-    public async Task GameEnded(int[] scores, string winner)
-    {
-        await _hubContext.Clients.Group(_group).SendAsync(Events.GameEnded, scores, winner);
     }
 
     public async Task GameStarted(IEnumerable<PlayerData> players)
@@ -69,11 +64,6 @@ public class SignalRView : IView
         await SendPlayers();
     }
 
-    public async Task RoundStarted(int turn, IEnumerable<PlayerVote> votes)
-    {
-        await _hubContext.Clients.Group(_group).SendAsync(Events.RoundStarted, turn, votes);
-    }
-
     public async Task FoldStarted(int fold)
     {
         await _hubContext.Clients.Group(_group).SendAsync(Events.FoldStarted, fold);
@@ -95,9 +85,19 @@ public class SignalRView : IView
         await _hubContext.Clients.Group(_group).SendAsync(Events.VoteAsked, min, max);
     }
 
-    public async Task RoundEnded(int turn, IEnumerable<PlayerVote> totalScores)
+    public async Task RoundEnded(int turn, IEnumerable<PlayerVote> totalScores, PlayerData startingPlayer)
     {
-        await _hubContext.Clients.Group(_group).SendAsync(Events.RoundEnded, turn, totalScores);
+        await _hubContext.Clients.Group(_group).SendAsync(Events.RoundEnded, turn, totalScores, startingPlayer);
+    }
+
+    public async Task GameEnded()
+    {
+        await _hubContext.Clients.Group(_group).SendAsync(Events.GameEnded);
+    }
+
+    public async Task RoundStarted(int turn, IEnumerable<PlayerVote> votes)
+    {
+        await _hubContext.Clients.Group(_group).SendAsync(Events.RoundStarted, turn, votes);
     }
 
     private async Task AddToGroup(PlayerData player)

@@ -48,8 +48,8 @@
         <div class="parchment-bg-game board"></div>
 
         @{
-            var winnerIndex = _game.GetWinnerIndex();
-            var i = winnerIndex;
+            var startingPlayer = _game.GetStartingPlayerIndex();
+            var i = startingPlayer;
             do
             {
                 if (_game.Players.Count == 0) break;
@@ -79,7 +79,7 @@
 
 
                 i = (i + 1) % _game.Players.Count;
-            } while (i != winnerIndex);
+            } while (i != startingPlayer);
         }
     </div>
     @if (_game.Player(Connection.ConnectionId!, out var p))
@@ -154,13 +154,11 @@
             {
                 _game.Player(id).Scores[turn - 1].Voted = vote;
             }
-
             StateHasChanged();
         });
         Connection.On(Events.MustPlay, (List<Card> cards) =>
         {
-            Logger.LogInformation($"{Events.MustPlay}: {string.Join(",", cards)}");
-
+            Logger.LogInformation($"{Events.MustPlay}: {string.Join(",", cards.Select(c => c.Name))}");
             GetPlayer().Hand = cards;
 
             StateHasChanged();
@@ -174,17 +172,20 @@
 
             StateHasChanged();
         });
-        Connection.On(Events.FoldEnded, (int fold, IEnumerable<PlayerVote> votes) =>
+        Connection.On(Events.FoldEnded, async (int fold, IEnumerable<PlayerVote> votes) =>
         {
             Logger.LogInformation($"{Events.FoldEnded}: Fold N°{fold} - {string.Join(",", votes.Select(v => v.Value))}");
 
-            _game.ClearPlayedCards();
             foreach (var (id, vote) in votes)
             {
                 _game.Player(id).Scores[_game.Turn - 1].Actual = vote;
             }
-
             StateHasChanged();
+
+            await Task.Delay(2000);
+            _game.StartingPlayer = _game.Winner;
+            StateHasChanged();
+            _game.ClearPlayedCards();
         });
         Connection.On(Events.FoldStarted, (int fold) =>
         {
@@ -195,7 +196,7 @@
             StateHasChanged();
         });
 
-        Connection.On(Events.RoundEnded, (int turn, IEnumerable<PlayerVote> scores) =>
+        Connection.On(Events.RoundEnded, (int turn, IEnumerable<PlayerVote> scores, PlayerData startingPlayer) =>
         {
             Logger.LogInformation($"{Events.RoundEnded}");
 
@@ -203,10 +204,11 @@
             {
                 _game.Player(id).Scores[turn - 1].Total = score;
             }
+            _game.StartingPlayer = _game.Players.Find(p => p.Id == startingPlayer.Id);
             StateHasChanged();
         });
 
-        Connection.On(Events.GameEnded, async (int[] scores, string winner) =>
+        Connection.On(Events.GameEnded, async () =>
         {
             Logger.LogInformation($"{Events.GameEnded}");
 
@@ -226,8 +228,9 @@
 
     private IDialogReference? OpenScores()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        return DialogService.Show<ScoresPopup>("Tableau des scores", options);
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium };
+        var parameters = new DialogParameters { ["Players"] = _game.Players };
+        return DialogService.Show<ScoresPopup>("Tableau des scores", parameters, options);
     }
 
     private Player GetPlayer()

@@ -1,12 +1,14 @@
-﻿namespace KingSkullClassicOnline.Client;
+﻿using KingSkullClassicOnline.Engine;
+using KingSkullClassicOnline.Engine.Cards;
+using KingSkullClassicOnline.Engine.Game;
 
-using Engine;
-using Engine.Cards;
-using Engine.Game;
+namespace KingSkullClassicOnline.Client;
 
 public class Game
 {
+    public Player? StartingPlayer = null;
     public Player? Winner = null;
+
 
     public Game()
     {
@@ -25,9 +27,9 @@ public class Game
         foreach (var player in Players) player.PlayedCard = null;
     }
 
-    public int GetWinnerIndex()
+    public int GetStartingPlayerIndex()
     {
-        return Winner == null ? 0 : Players.FindIndex(p => p == Winner);
+        return StartingPlayer == null ? 0 : Players.FindIndex(p => p == StartingPlayer);
     }
 
     public Player Player(string id)
