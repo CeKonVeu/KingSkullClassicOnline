@@ -44,44 +44,8 @@ public class Round
 
     public void DealCards(Player player)
     {
-        if (_turn == 3)
-        {
-            CustomHands(player);
-            return;
-        }
         player.Hand = _deck.GetRange(0, _turn);
         _deck.RemoveRange(0, _turn);
-    }
-
-    private void CustomHands(Player player)
-    {
-        switch (player.Data.Name)
-        {
-            case "Alex":
-                player.Hand = new List<Card>
-                {
-                    Card.NumberedCard(4, Color.Black),
-                    Card.NumberedCard(2, Color.Yellow),
-                    Card.NumberedCard(6, Color.Red)
-                };
-                break;
-            case "Loic":
-                player.Hand = new List<Card>
-                {
-                    Card.NumberedCard(1, Color.Blue),
-                    Card.Pirate(),
-                    Card.SkullKing()
-                };
-                break;
-            case "Loris":
-                player.Hand = new List<Card>
-                {
-                    Card.NumberedCard(8, Color.Blue),
-                    Card.Pirate(),
-                    Card.Escape()
-                };
-                break;
-        }
     }
 
     public void Play(Player player, Card card)
