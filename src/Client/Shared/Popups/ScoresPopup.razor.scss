@@ -1,0 +1,32 @@
+﻿::deep .mud-table.mud-table-outlined {
+  border: 2px solid #000000;
+  background-color: transparent;
+}
+
+::deep .mud-table-root .mud-table-head .mud-table-cell:not(:last-child) {
+  border-right: 1px solid #000000;
+}
+
+::deep .mud-table-cell {
+  border-bottom: 1px solid #000000;
+}
+
+::deep .mud-table-bordered .mud-table-container .mud-table-root .mud-table-body .mud-table-row .mud-table-cell:not(:last-child) {
+  border-right: 1px solid #000000;
+}
+
+::deep .mud-table-cell.last-col:not(:last-child) {
+  border-right-width: 2px !important;
+}
+
+::deep .mud-table-cell {
+  text-align: center;
+
+  &.left {
+    text-align: left;
+  }
+}
+
+::deep .mud-table-root .mud-table-head {
+  border-bottom-width: 2px;
+}

@@ -228,8 +228,9 @@
 
     private IDialogReference? OpenScores()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        return DialogService.Show<ScoresPopup>("Tableau des scores", options);
+        var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true };
+        var parameters = new DialogParameters { ["Players"] = _game.Players };
+        return DialogService.Show<ScoresPopup>("Tableau des scores", parameters, options);
     }
 
     private Player GetPlayer()
