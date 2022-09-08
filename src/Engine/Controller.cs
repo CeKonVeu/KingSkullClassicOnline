@@ -167,11 +167,12 @@ public class Controller
         if (CurrentRound.IsOver)
         {
             CurrentRound.EndRound();
-            _view.RoundEnded(Turn, Players.Select(p => new PlayerVote(p.Data.Id, p.GetVote(Turn)!.Total)));
+            _view.RoundEnded(Turn, Players.Select(p => new PlayerVote(p.Data.Id, p.GetVote(Turn)!.Total)),
+                Players[Turn % Players.Count].Data);
 
             if (Turn == Config.RoundsPerGame)
             {
-                _view.GameEnded(GetScores(Turn), "");
+                _view.GameEnded();
                 return;
             }
 
@@ -195,8 +196,7 @@ public class Controller
 
         if (!CurrentRound.AreAllVotesIn()) return;
         var players = CurrentRound.GetPlayersFromStarting();
-        _view.RoundStarted(Turn, players.Select(p => new PlayerVote(p.Data.Id, p.GetVote(Turn)!.Voted)),
-            CurrentRound.NextPlayer.Data);
+        _view.RoundStarted(Turn, players.Select(p => new PlayerVote(p.Data.Id, p.GetVote(Turn)!.Voted)));
         _view.FoldStarted(1);
         NotifyNextPlayer();
     }

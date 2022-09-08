@@ -6,7 +6,7 @@ namespace KingSkullClassicOnline.Engine;
 public interface IView
 {
     Task CardPlayed(PlayerData player, Card card, PlayerData winner);
-    Task GameEnded(int[] scores, string winner);
+    Task GameEnded();
     Task GameStarted(IEnumerable<PlayerData> players);
     Task HandReceived(PlayerData player, List<Card> cards);
     Task MustPlay(PlayerData player, List<Card> cards);
@@ -15,8 +15,8 @@ public interface IView
     Task PlayerJoined(PlayerData player);
     Task PlayerLeft(PlayerData player);
     Task RoomCreated(string roomName, PlayerData player);
-    Task RoundEnded(int turn, IEnumerable<PlayerVote> totalScores);
+    Task RoundEnded(int turn, IEnumerable<PlayerVote> totalScores, PlayerData startingPlayer);
     Task FoldEnded(int fold, IEnumerable<PlayerVote> votes);
     Task FoldStarted(int fold);
-    Task RoundStarted(int turn, IEnumerable<PlayerVote> votes, PlayerData player);
+    Task RoundStarted(int turn, IEnumerable<PlayerVote> votes);
 }
