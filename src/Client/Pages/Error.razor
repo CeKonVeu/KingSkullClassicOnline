@@ -1,22 +1,8 @@
-﻿@page "/Error"
+﻿@page "/error"
+@using KingSkullClassicOnline.Client.Shared.Components
 
-<PageTitle>Error</PageTitle>
-
-<h1 class="title">Yo-ho-ho matelot.</h1>
-
-<MudBreakpointProvider>
-    <MudHidden Breakpoint="Breakpoint.MdAndDown">
-        <MudImage Src="@($"./images/SkullKing-transparent.png")" Class="rounded-lg"/>
-    </MudHidden>
-    <MudHidden Breakpoint="Breakpoint.MdAndDown">
-        <p class="error-message">
-            Je vois que tu t'es échoué sur l'île perdue.<br><br>
-            La page que tu essaies d'atteindre n'existe pas.<br><br>
-            Pas de soucis tu n'as qu'à suivre mon perroquet pour retourner à la page d'accueil.
-        </p>
-    </MudHidden>
-</MudBreakpointProvider>
+<ErrorContent/>
 
 @code {
-    
+
 }
