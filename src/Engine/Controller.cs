@@ -149,19 +149,11 @@ public class Controller
         if (player == null)
             return;
 
-        if (CurrentRound.NextPlayer.Data.Id != playerId)
-        {
-            _view.NotifyError(player.Data, "Ce n'est pas votre tour de jouer");
-            return;
-        }
+        if (CurrentRound.NextPlayer.Data.Id != playerId) return;
 
         var playedCard = player.Hand.Find(c => c.Name == card);
 
-        if (playedCard == null)
-        {
-            _view.NotifyError(player.Data, "Vous ne possédez pas cette carte");
-            return;
-        }
+        if (playedCard == null) return;
 
 
         CurrentRound.Play(player, playedCard);
