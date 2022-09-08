@@ -174,17 +174,19 @@
 
             StateHasChanged();
         });
-        Connection.On(Events.FoldEnded, (int fold, IEnumerable<PlayerVote> votes) =>
+        Connection.On(Events.FoldEnded, async (int fold, IEnumerable<PlayerVote> votes) =>
         {
             Logger.LogInformation($"{Events.FoldEnded}: Fold N°{fold} - {string.Join(",", votes.Select(v => v.Value))}");
 
-            _game.ClearPlayedCards();
             foreach (var (id, vote) in votes)
             {
                 _game.Player(id).Scores[_game.Turn - 1].Actual = vote;
             }
 
             StateHasChanged();
+
+            await Task.Delay(2000);
+            _game.ClearPlayedCards();
         });
         Connection.On(Events.FoldStarted, (int fold) =>
         {
