@@ -1,30 +1,33 @@
 ﻿@using KingSkullClassicOnline.Engine
-<MudDialog>
-    <DialogContent>
-        <MudTable Items="_scoresReformat" Hover="true" Breakpoint="Breakpoint.Sm">
+<div>
+    <BaseDialog>
+        <MudTable Items="_scoresReformat"
+                  Hover="true"
+                  Breakpoint="Breakpoint.None"
+                  Bordered="true"
+                  Striped="true"
+                  Outlined="true">
             <HeaderContent>
-                <MudTh>N°</MudTh>
+                <MudTh Class="left last-col">N°</MudTh>
                 @foreach (var player in Players)
                 {
-                    <MudTh colspan="3">@player.Name</MudTh>
+                    <MudTh colspan="3" Class="last-col">@player.Name</MudTh>
                 }
             </HeaderContent>
             <RowTemplate>
-                <MudTd>@GetRowNumber(context)</MudTd>
+                <MudTd Class="left last-col">@GetRowNumber(context)</MudTd>
 
                 @for (var k = 0; k < Players.Count; k++)
                 {
                     var i = k;
                     <MudTd DataLabel="">@context[i].Voted</MudTd>
                     <MudTd DataLabel="">@context[i].Actual</MudTd>
-                    <MudTd DataLabel="">@context[i].Total</MudTd>
+                    <MudTd DataLabel="" Class="last-col">@context[i].Total</MudTd>
                 }
             </RowTemplate>
         </MudTable>
-    </DialogContent>
-    <DialogActions>
-    </DialogActions>
-</MudDialog>
+    </BaseDialog>
+</div>
 
 @code {
     // private readonly (int, int, int)[][] _scoresReformat = new (int, int, int)[Config.RoundsPerGame][];
