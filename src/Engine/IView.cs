@@ -18,5 +18,5 @@ public interface IView
     Task RoundEnded(int turn, IEnumerable<PlayerVote> totalScores);
     Task FoldEnded(int fold, IEnumerable<PlayerVote> votes);
     Task FoldStarted(int fold);
-    Task RoundStarted(int turn, IEnumerable<PlayerVote> votes);
+    Task RoundStarted(int turn, IEnumerable<PlayerVote> votes, PlayerData player);
 }

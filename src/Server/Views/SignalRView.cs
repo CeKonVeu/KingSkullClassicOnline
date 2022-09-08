@@ -1,11 +1,11 @@
-﻿namespace KingSkullClassicOnline.Server.Views;
-
-using Engine;
-using Engine.Cards;
-using Engine.Game;
-using Hubs;
+﻿using KingSkullClassicOnline.Engine;
+using KingSkullClassicOnline.Engine.Cards;
+using KingSkullClassicOnline.Engine.Game;
+using KingSkullClassicOnline.Server.Hubs;
+using KingSkullClassicOnline.Shared;
 using Microsoft.AspNetCore.SignalR;
-using Shared;
+
+namespace KingSkullClassicOnline.Server.Views;
 
 public class SignalRView : IView
 {
@@ -69,7 +69,7 @@ public class SignalRView : IView
         await SendPlayers();
     }
 
-    public async Task RoundStarted(int turn, IEnumerable<PlayerVote> votes)
+    public async Task RoundStarted(int turn, IEnumerable<PlayerVote> votes, PlayerData player)
     {
         await _hubContext.Clients.Group(_group).SendAsync(Events.RoundStarted, turn, votes);
     }

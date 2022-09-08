@@ -145,7 +145,7 @@
             var vote = await AskVote(maxVote);
             await Connection.SendAsync(Events.SendVote, vote);
         });
-        Connection.On(Events.RoundStarted, (int turn, IEnumerable<PlayerVote> votes) =>
+        Connection.On(Events.RoundStarted, (int turn, IEnumerable<PlayerVote> votes, PlayerData startingPlayer) =>
         {
             Logger.LogInformation($"{Events.RoundStarted}: Round N°{turn}");
 
@@ -154,7 +154,7 @@
             {
                 _game.Player(id).Scores[turn - 1].Voted = vote;
             }
-
+            _game.StartingPlayer = _game.Players.Find(p => p.Id == startingPlayer.Id);
             StateHasChanged();
         });
         Connection.On(Events.MustPlay, (List<Card> cards) =>
@@ -186,7 +186,7 @@
 
             await Task.Delay(2000);
             _game.StartingPlayer = _game.Winner;
-
+            StateHasChanged();
             _game.ClearPlayedCards();
         });
         Connection.On(Events.FoldStarted, (int fold) =>
