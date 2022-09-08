@@ -28,7 +28,7 @@ public class Fold
     /// <returns>le nombre de pirates</returns>
     public int CountPirates()
     {
-        return CardsPlayed.Count(card => card.IsPirate());
+        return CardsPlayed.Count(card => card.IsPirate() || card.IsScaryMary());
     }
 
     /// <summary>
@@ -87,6 +87,7 @@ public class Fold
                 }
             }
         }
+
         return winningPlay ?? throw new Exception("On sait pas coder.");
     }
 

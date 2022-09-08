@@ -9,7 +9,7 @@ public static class Config
     public const int NumberEscapes = 5;
     public const int NumberPirates = 5;
     public const int NumberSkullKing = 1;
-    public const int NumberScaryM = 1;
+    public const int NumberScaryM = 30;
     public const int NumberMermaids = 2;
     public const int MinPlayers = 2;
     public const int MaxPlayers = 6;

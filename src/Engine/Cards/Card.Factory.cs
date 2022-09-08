@@ -21,6 +21,15 @@ public partial class Card
         return new Card(Config.PirateValue, "ScaryMary");
     }
 
+    public static Card ChosenScaryMary(bool isPirate)
+    {
+        if (isPirate)
+        {
+        }
+
+        return new Card(Config.PirateValue, "ScaryMary" + (isPirate ? "Pirate" : "Escape"));
+    }
+
     public static Card Mermaid()
     {
         return new Card(Config.MermaidValue, "Mermaid");
@@ -39,16 +48,16 @@ public partial class Card
         string? name;
         switch (color)
         {
-            case Engine.Color.Red:
+            case Color.Red:
                 name = "Red_";
                 break;
-            case Engine.Color.Blue:
+            case Color.Blue:
                 name = "Blue_";
                 break;
-            case Engine.Color.Yellow:
+            case Color.Yellow:
                 name = "Yellow_";
                 break;
-            case Engine.Color.Black:
+            case Color.Black:
                 name = "Black_";
                 break;
             default:

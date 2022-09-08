@@ -151,10 +151,11 @@ public class Controller
 
         if (CurrentRound.NextPlayer.Data.Id != playerId) return;
 
-        var playedCard = player.Hand.Find(c => c.Name == card);
+        var playedCard = player.Hand.Find(c => c.Name.StartsWith(card));
 
         if (playedCard == null) return;
 
+        if (playedCard.IsScaryMary()) playedCard = Card.ChosenScaryMary(playedCard.IsScaryMaryPirate());
 
         CurrentRound.Play(player, playedCard);
         foreach (var c in player.Hand) c.IsPlayable = false;

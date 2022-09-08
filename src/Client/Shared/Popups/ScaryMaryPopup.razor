@@ -1,0 +1,27 @@
+﻿@using KingSkullClassicOnline.Shared
+@using KingSkullClassicOnline.Client.Shared.Components
+<div>
+    <BaseDialog>
+        <MudContainer Class="d-flex justify-space-around align-center" MaxWidth="MaxWidth.Medium">
+            <SingleCard CardName="Escape" OnCardClick="EscapeSelected"/>
+            <SingleCard CardName="Pirate_4" OnCardClick="PirateSelected"/>
+        </MudContainer>
+    </BaseDialog>
+</div>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
+
+    private void PirateSelected()
+    {
+        MudDialog.Close(DialogResult.Ok(CardNames.ScaryMaryPirate));
+    }
+
+    private void EscapeSelected()
+    {
+        MudDialog.Close(DialogResult.Ok(CardNames.ScaryMaryEscape));
+    }
+
+}
