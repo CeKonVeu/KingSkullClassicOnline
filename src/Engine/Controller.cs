@@ -1,7 +1,8 @@
-﻿using KingSkullClassicOnline.Engine.Cards;
-using KingSkullClassicOnline.Engine.Game;
+﻿namespace KingSkullClassicOnline.Engine;
 
-namespace KingSkullClassicOnline.Engine;
+using Cards;
+using Game;
+using Shared;
 
 /// <summary>
 ///     Gère le déroulement d'une partie
@@ -151,10 +152,18 @@ public class Controller
 
         if (CurrentRound.NextPlayer.Data.Id != playerId) return;
 
-        var playedCard = player.Hand.Find(c => c.Name == card);
+        var playedCard = player.Hand.Find(c => card.StartsWith(c.Name));
 
         if (playedCard == null) return;
 
+        if (playedCard.IsScaryMary())
+        {
+            var sm = Card.ScaryMary(card == CardNames.ScaryMaryPirate);
+
+            var i = player.Hand.IndexOf(playedCard);
+            player.Hand[i] = sm;
+            playedCard = sm;
+        }
 
         CurrentRound.Play(player, playedCard);
         foreach (var c in player.Hand) c.IsPlayable = false;

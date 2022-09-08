@@ -1,5 +1,7 @@
 ﻿namespace KingSkullClassicOnline.Engine.Cards;
 
+using Shared;
+
 /// <summary>
 ///     Carte de jeu
 /// </summary>

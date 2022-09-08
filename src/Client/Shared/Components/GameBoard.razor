@@ -223,7 +223,20 @@
     private async void CardClicked(string card)
     {
         Logger.LogInformation($"Clicked on {card}");
+        if (card == CardNames.ScaryMary)
+            card = await GetScaryMary();
         await Connection.SendAsync(Events.PlayCard, card);
+    }
+
+    /**
+     * Pirate is true Escape is false
+     */
+    private async Task<string> GetScaryMary()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, DisableBackdropClick = true, NoHeader = true };
+        var dialog = DialogService.Show<ScaryMaryPopup>("", options);
+        var result = await dialog.Result;
+        return (string)result.Data;
     }
 
     private IDialogReference? OpenScores()

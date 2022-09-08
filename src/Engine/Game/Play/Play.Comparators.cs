@@ -27,6 +27,11 @@ public partial record Play
         return Card == Config.PirateValue;
     }
 
+    public bool IsScaryMary()
+    {
+        return Card.IsScaryMary();
+    }
+
     public bool IsSkullKing()
     {
         return Card == Config.SkullKingValue;
